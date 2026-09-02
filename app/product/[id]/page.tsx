@@ -32,7 +32,6 @@ export default function ProductDetailPage() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [activeImage, setActiveImage] = useState("");
 
@@ -101,14 +100,19 @@ export default function ProductDetailPage() {
       ? `Payment Method: Whish Money\nStatus: Transfer sent to +${momWhishNumber}`
       : `Payment Method: Cash on Delivery`;
 
+    const pageUrl = typeof window !== "undefined" ? window.location.href : "";
+
     return (
       `Hello Rizk Fashion! I would like to place an order:\n\n` +
-      `Product: ${product.name}\n` +
+      `Product Name: ${product.name}\n` +
+      `Category: ${product.category || "Collection"}\n` +
       `Size: ${selectedSize}\n` +
       `Color: ${selectedColor}\n\n` +
       `Customer Phone: ${customerPhone}\n` +
       `Delivery Address: ${customerAddress}\n\n` +
       `Total Amount: $${totalPrice.toFixed(2)}\n\n` +
+      `Product Image URL: ${activeImage || product.image_url || "N/A"}\n` +
+      `Page Link: ${pageUrl}\n\n` +
       `${paymentDetails}`
     );
   }
@@ -121,7 +125,6 @@ export default function ProductDetailPage() {
     setShowSuccessBanner(true);
     const message = encodeURIComponent(getOrderMessageText());
     
-    // Direct mobile-safe redirect
     setTimeout(() => {
       window.location.href = `https://wa.me/${momWhatsAppNumber}?text=${message}`;
     }, 400);
