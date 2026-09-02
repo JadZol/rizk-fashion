@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -31,7 +30,6 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
-  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -157,19 +155,19 @@ export default function Home() {
               const hasSale = product.sale_price !== null && product.sale_price > 0;
 
               return (
-                <div 
+                <Link 
                   key={product.id} 
-                  onClick={() => router.push(`/product/${product.id}`)}
-                  className="bg-white border border-[#F3D9CE] overflow-hidden group block hover:shadow-md transition-all cursor-pointer relative"
+                  href={`/product/${product.id}`}
+                  className="bg-white border border-[#F3D9CE] overflow-hidden group block hover:shadow-md transition-all relative z-20 cursor-pointer"
                 >
                   <div className="w-full h-80 bg-[#F3D9CE] overflow-hidden relative">
                     {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 pointer-events-none" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-[#6B5F5A]">No image</div>
                     )}
                     {hasSale && (
-                      <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase tracking-widest px-2 py-1 font-medium">
+                      <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase tracking-widest px-2 py-1 font-medium z-10">
                         Sale
                       </span>
                     )}
@@ -190,7 +188,7 @@ export default function Home() {
                       )}
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
