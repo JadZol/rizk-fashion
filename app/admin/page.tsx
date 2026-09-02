@@ -33,30 +33,28 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
-  
-  // Form state
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [salePrice, setSalePrice] = useState("");
   const [category, setCategory] = useState("Dresses");
   const [stockStatus, setStockStatus] = useState(STOCK_OPTIONS[0]);
   const [description, setDescription] = useState("");
-  
+
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L"]);
   const [selectedColors, setSelectedColors] = useState<string[]>(["Black", "White", "Rose"]);
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  // Edit state
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
 
   useEffect(() => {
     async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
         router.push("/admin/login");
         return;
       }
@@ -77,19 +75,15 @@ export default function AdminDashboard() {
   }
 
   function toggleSize(size: string) {
-    if (selectedSizes.includes(size)) {
-      setSelectedSizes(selectedSizes.filter(s => s !== size));
-    } else {
-      setSelectedSizes([...selectedSizes, size]);
-    }
+    setSelectedSizes(prev =>
+      prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
+    );
   }
 
   function toggleColor(color: string) {
-    if (selectedColors.includes(color)) {
-      setSelectedColors(selectedColors.filter(c => c !== color));
-    } else {
-      setSelectedColors([...selectedColors, color]);
-    }
+    setSelectedColors(prev =>
+      prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
+    );
   }
 
   async function handleAddProduct(e: React.FormEvent) {
@@ -105,21 +99,25 @@ export default function AdminDashboard() {
 
     setUploading(true);
 
-    const uploadedUrls: string[] = [];
-    for (const file of imageFiles) {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
-        .from("product-images")
-        .upload(fileName, file);
+    const uploadResults = await Promise.all(
+      imageFiles.map(async (file) => {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(fileName, file);
 
-      if (!uploadError) {
+        if (uploadError) return null;
+
         const { data } = supabase.storage
           .from("product-images")
           .getPublicUrl(fileName);
-        if (data.publicUrl) uploadedUrls.push(data.publicUrl);
-      }
-    }
+
+        return data.publicUrl ?? null;
+      })
+    );
+
+    const uploadedUrls = uploadResults.filter((url): url is string => !!url);
 
     const mainImageUrl = uploadedUrls.length > 0 ? uploadedUrls[0] : null;
     const allImageUrlsString = uploadedUrls.length > 0 ? uploadedUrls.join(", ") : null;
@@ -190,8 +188,7 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-[#FBF3EC] p-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        
-        {/* Header */}
+
         <div className="bg-white p-6 border border-[#F3D9CE] flex justify-between items-center shadow-sm">
           <h1 className="text-2xl font-serif text-[#2E2624]">Rizk Fashion Admin Control</h1>
           <button onClick={handleLogout} className="text-[#6B5F5A] underline text-sm hover:text-[#2E2624]">
@@ -199,7 +196,6 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* Analytics Summary Row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white p-6 border border-[#F3D9CE] text-center shadow-sm">
             <p className="text-xs uppercase tracking-widest text-[#6B5F5A] mb-1">Total Catalog Items</p>
@@ -211,11 +207,10 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Add Product Form */}
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
           <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Multi-Photo Gallery)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Product Name</label>
@@ -251,7 +246,6 @@ export default function AdminDashboard() {
               </select>
             </div>
 
-            {/* Sizes Grid */}
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Sizes</label>
               <div className="flex flex-wrap gap-2">
@@ -263,8 +257,8 @@ export default function AdminDashboard() {
                       key={size}
                       onClick={() => toggleSize(size)}
                       className={`w-12 h-12 text-sm font-medium border transition-all ${
-                        isSelected 
-                          ? "bg-[#2E2624] text-white border-[#2E2624]" 
+                        isSelected
+                          ? "bg-[#2E2624] text-white border-[#2E2624]"
                           : "bg-white text-[#6B5F5A] border-[#F3D9CE] hover:border-[#D98C7A]"
                       }`}
                     >
@@ -275,7 +269,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Colors Grid */}
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Colors</label>
               <div className="flex flex-wrap gap-2">
@@ -287,8 +280,8 @@ export default function AdminDashboard() {
                       key={color}
                       onClick={() => toggleColor(color)}
                       className={`px-4 py-2 text-xs uppercase tracking-wider border transition-all ${
-                        isSelected 
-                          ? "bg-[#2E2624] text-white border-[#2E2624]" 
+                        isSelected
+                          ? "bg-[#2E2624] text-white border-[#2E2624]"
                           : "bg-white text-[#6B5F5A] border-[#F3D9CE] hover:border-[#D98C7A]"
                       }`}
                     >
@@ -304,7 +297,6 @@ export default function AdminDashboard() {
               <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none focus:border-[#D98C7A]" rows={2} placeholder="Leave blank or type details..." />
             </div>
 
-            {/* Multi-Photo Upload */}
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Product Photos (Select multiple for gallery)</label>
               <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#F3D9CE] cursor-pointer bg-[#FAFAFA] hover:bg-[#F3D9CE]/20 transition-colors">
@@ -317,19 +309,19 @@ export default function AdminDashboard() {
                   </p>
                   <p className="text-xs text-[#6B5F5A] mt-1">First photo will be the main display cover</p>
                 </div>
-                <input 
-                  type="file" 
-                  accept="image/*" 
+                <input
+                  type="file"
+                  accept="image/*"
                   multiple
-                  className="hidden" 
-                  onChange={e => { if (e.target.files) setImageFiles(Array.from(e.target.files)); }} 
+                  className="hidden"
+                  onChange={e => { if (e.target.files) setImageFiles(Array.from(e.target.files)); }}
                 />
               </label>
             </div>
 
-            <button 
-              type="submit" 
-              disabled={uploading} 
+            <button
+              type="submit"
+              disabled={uploading}
               className="w-full bg-[#D98C7A] text-white py-4 uppercase tracking-widest text-sm hover:bg-[#C4735F] transition-colors font-medium disabled:opacity-50"
             >
               {uploading ? "Publishing Product & Photos..." : "Publish Product"}
@@ -337,7 +329,6 @@ export default function AdminDashboard() {
           </form>
         </div>
 
-        {/* Inventory List */}
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
           <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Inventory ({products.length})</h2>
           <div className="space-y-4">
@@ -361,11 +352,11 @@ export default function AdminDashboard() {
                         <p className="text-xs text-[#D98C7A] mt-0.5">
                           {p.sale_price ? (
                             <>
-                              <span className="line-through text-gray-400 mr-2">${p.price.toFixed(2)}</span>
-                              <span className="text-red-600 font-bold">Sale: ${p.sale_price.toFixed(2)}</span>
+                              <span className="line-through text-gray-400 mr-2">${Number(p.price).toFixed(2)}</span>
+                              <span className="text-red-600 font-bold">Sale: ${Number(p.sale_price).toFixed(2)}</span>
                             </>
                           ) : (
-                            `$${p.price.toFixed(2)}`
+                            `$${Number(p.price).toFixed(2)}`
                           )}
                         </p>
                       </>
