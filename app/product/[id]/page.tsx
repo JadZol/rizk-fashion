@@ -32,11 +32,8 @@ export default function ProductDetailPage() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [shareCopied, setShareCopied] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
-  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [activeImage, setActiveImage] = useState("");
 
   const deliveryFee = 4.00;
@@ -65,15 +62,6 @@ export default function ProductDetailPage() {
           const list: Product[] = JSON.parse(saved);
           setIsWishlisted(list.some(item => item.id === data.id));
         }
-
-        const recentSaved = localStorage.getItem("rizk_recently_viewed");
-        let recentList: Product[] = recentSaved ? JSON.parse(recentSaved) : [];
-        recentList = recentList.filter(p => p.id !== data.id);
-        recentList.unshift(data);
-        if (recentList.length > 4) recentList.pop();
-        localStorage.setItem("rizk_recently_viewed", JSON.stringify(recentList));
-        
-        setRecentProducts(recentList.filter(p => p.id !== data.id));
       }
       setLoading(false);
     }
@@ -116,17 +104,12 @@ export default function ProductDetailPage() {
     return (
       `Hello Rizk Fashion! I would like to place an order:\n\n` +
       `Product: ${product.name}\n` +
-      `Category: ${product.category || "Collection"}\n` +
       `Size: ${selectedSize}\n` +
       `Color: ${selectedColor}\n\n` +
-      `Customer Phone: ${customerPhone || "Not provided"}\n` +
-      `Delivery Address: ${customerAddress || "Not provided"}\n\n` +
-      `Item Price: $${effectivePrice.toFixed(2)}${product.sale_price ? " (SALE)" : ""}\n` +
-      `Delivery Fee: $${deliveryFee.toFixed(2)}\n` +
+      `Customer Phone: ${customerPhone}\n` +
+      `Delivery Address: ${customerAddress}\n\n` +
       `Total Amount: $${totalPrice.toFixed(2)}\n\n` +
-      `Product Photo URL: ${activeImage || product.image_url || "N/A"}\n\n` +
-      `${paymentDetails}\n\n` +
-      `Please confirm my order!`
+      `${paymentDetails}`
     );
   }
 
@@ -136,48 +119,37 @@ export default function ProductDetailPage() {
       return;
     }
     setShowSuccessBanner(true);
-    setTimeout(() => setShowSuccessBanner(false), 4000);
-
     const message = encodeURIComponent(getOrderMessageText());
-    window.open(`https://wa.me/${momWhatsAppNumber}?text=${message}`, "_blank");
-  }
-
-  function handleCopyOrder() {
-    if (!customerPhone || !customerAddress) {
-      alert("Please enter your phone number and delivery address before copying.");
-      return;
-    }
-    navigator.clipboard.writeText(getOrderMessageText());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    
+    // Direct mobile-safe redirect
+    setTimeout(() => {
+      window.location.href = `https://wa.me/${momWhatsAppNumber}?text=${message}`;
+    }, 400);
   }
 
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624]">
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20">
       <div className="bg-[#D98C7A] text-white text-center py-2 text-xs tracking-widest uppercase">
         Express Delivery Across Lebanon • Secure Checkout
       </div>
 
       {showSuccessBanner && (
-        <div className="bg-[#2E2624] text-white text-center py-3 text-xs tracking-widest uppercase transition-all shadow-md">
-          ✓ Order successfully prepared! Redirecting to WhatsApp...
+        <div className="bg-[#2E2624] text-white text-center py-3 text-xs uppercase shadow-md">
+          ✓ Redirecting to WhatsApp...
         </div>
       )}
 
-      <nav className="flex justify-between items-center px-8 py-6 border-b border-[#F3D9CE]">
-        <h1 className="text-2xl font-serif tracking-wider">RIZK FASHION</h1>
-        <div className="space-x-6 text-sm tracking-widest uppercase text-[#6B5F5A]">
-          <Link href="/" className="hover:text-[#2E2624]">← Back to Shop</Link>
-          <Link href="/wishlist" className="hover:text-[#2E2624]">Wishlist</Link>
-        </div>
+      <nav className="flex justify-between items-center px-6 md:px-8 py-6 border-b border-[#F3D9CE]">
+        <h1 className="text-xl font-serif">RIZK FASHION</h1>
+        <Link href="/" className="text-xs uppercase tracking-widest text-[#6B5F5A]">← Back to Shop</Link>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
-        <div className="bg-white p-8 md:p-12 border border-[#F3D9CE] grid grid-cols-1 md:grid-cols-2 gap-12 shadow-sm relative">
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="bg-white p-6 md:p-12 border border-[#F3D9CE] grid grid-cols-1 md:grid-cols-2 gap-8 relative">
           
           <button 
             onClick={toggleWishlist}
-            className="absolute top-6 right-6 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-[#F3D9CE] hover:scale-110 transition-transform shadow-sm"
+            className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-[#F3D9CE]"
           >
             <span className={`text-lg ${isWishlisted ? "text-red-500" : "text-[#6B5F5A]"}`}>
               {isWishlisted ? "♥" : "♡"}
@@ -185,27 +157,15 @@ export default function ProductDetailPage() {
           </button>
 
           <div className="space-y-4">
-            <div 
-              onClick={() => setIsModalOpen(true)}
-              className="w-full h-[480px] bg-[#F3D9CE] overflow-hidden cursor-zoom-in relative group"
-            >
+            <div className="w-full h-[380px] md:h-[480px] bg-[#F3D9CE] overflow-hidden">
               {activeImage ? (
-                <img src={activeImage} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-[#6B5F5A]">No image available</div>
-              )}
+                <img src={activeImage} alt={product.name} className="w-full h-full object-cover" />
+              ) : null}
             </div>
-
             {galleryList.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
+              <div className="flex gap-2 overflow-x-auto pb-2">
                 {galleryList.map((imgUrl, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImage(imgUrl)}
-                    className={`w-20 h-24 bg-[#F3D9CE] flex-shrink-0 overflow-hidden border-2 transition-all ${
-                      activeImage === imgUrl ? "border-[#2E2624]" : "border-transparent opacity-70"
-                    }`}
-                  >
+                  <button key={idx} onClick={() => setActiveImage(imgUrl)} className="w-16 h-20 flex-shrink-0 border">
                     <img src={imgUrl} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
@@ -215,35 +175,20 @@ export default function ProductDetailPage() {
 
           <div className="flex flex-col justify-between space-y-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#D98C7A] font-medium">{product.category || "Collection"}</span>
-              <h1 className="text-3xl font-light mt-1 mb-2 font-serif">{product.name}</h1>
-              
-              <div className="flex items-center space-x-3 mb-3">
-                {product.sale_price !== null && product.sale_price > 0 ? (
-                  <>
-                    <span className="text-xl text-gray-400 line-through">${product.price.toFixed(2)}</span>
-                    <span className="text-2xl font-bold text-red-600">${product.sale_price.toFixed(2)}</span>
-                  </>
-                ) : (
-                  <span className="text-2xl text-[#D98C7A] font-medium">${product.price.toFixed(2)}</span>
-                )}
-              </div>
+              <span className="text-xs uppercase tracking-widest text-[#D98C7A]">{product.category || "Collection"}</span>
+              <h1 className="text-2xl md:text-3xl font-serif mt-1 mb-2">{product.name}</h1>
+              <p className="text-xl font-bold text-[#D98C7A] mb-4">${effectivePrice.toFixed(2)}</p>
+              <p className="text-sm text-[#6B5F5A] mb-6">{product.description || "Crafted for the modern wardrobe."}</p>
 
-              <p className="text-sm text-[#6B5F5A] leading-relaxed mb-6 border-b border-[#F3D9CE] pb-4">
-                {product.description || "Crafted for the modern wardrobe."}
-              </p>
-            
               {colorList.length > 0 && (
-                <div className="mb-5">
-                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Color: <span className="text-[#2E2624]">{selectedColor}</span></label>
+                <div className="mb-4">
+                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Color: {selectedColor}</label>
                   <div className="flex flex-wrap gap-2">
                     {colorList.map(color => (
                       <button
                         key={color}
                         onClick={() => setSelectedColor(color)}
-                        className={`px-4 py-2 text-xs uppercase tracking-wider border transition-all ${
-                          selectedColor === color ? "border-[#2E2624] bg-[#2E2624] text-white" : "border-[#F3D9CE]"
-                        }`}
+                        className={`px-3 py-2 text-xs uppercase border ${selectedColor === color ? "bg-[#2E2624] text-white" : "bg-white"}`}
                       >
                         {color}
                       </button>
@@ -253,16 +198,14 @@ export default function ProductDetailPage() {
               )}
 
               {sizeList.length > 0 && (
-                <div className="mb-5">
-                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Size: <span className="text-[#2E2624]">{selectedSize}</span></label>
+                <div className="mb-4">
+                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Size: {selectedSize}</label>
                   <div className="flex flex-wrap gap-2">
                     {sizeList.map(size => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
-                        className={`w-12 h-12 flex items-center justify-center text-sm font-medium border transition-all ${
-                          selectedSize === size ? "border-[#2E2624] bg-[#2E2624] text-white" : "border-[#F3D9CE]"
-                        }`}
+                        className={`w-10 h-10 text-xs font-medium border ${selectedSize === size ? "bg-[#2E2624] text-white" : "bg-white"}`}
                       >
                         {size}
                       </button>
@@ -271,16 +214,16 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              <div className="space-y-4 mb-6 border-t border-[#F3D9CE] pt-6">
+              <div className="space-y-3 pt-4 border-t border-[#F3D9CE]">
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-1">Phone Number *</label>
                   <input 
-                    type="text"
+                    type="tel"
                     required
                     placeholder="e.g. 70123456"
                     value={customerPhone}
                     onChange={e => setCustomerPhone(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-white border border-[#F3D9CE] text-sm focus:outline-none"
+                    className="w-full px-4 py-3 bg-white border border-[#F3D9CE] text-sm focus:outline-none"
                   />
                 </div>
                 <div>
@@ -288,60 +231,41 @@ export default function ProductDetailPage() {
                   <input 
                     type="text"
                     required
-                    placeholder="e.g. Beirut, Hamra Street"
+                    placeholder="e.g. Beirut, Hamra"
                     value={customerAddress}
                     onChange={e => setCustomerAddress(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-white border border-[#F3D9CE] text-sm focus:outline-none"
+                    className="w-full px-4 py-3 bg-white border border-[#F3D9CE] text-sm focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="mb-6">
+              <div className="mt-4">
                 <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Payment Method</label>
-                <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("Cash on Delivery")}
-                    className={`p-3 text-xs uppercase tracking-wider border text-center ${
-                      paymentMethod === "Cash on Delivery" ? "border-[#2E2624] bg-[#2E2624] text-white" : "border-[#F3D9CE] bg-white"
-                    }`}
+                    className={`p-2.5 text-xs uppercase border ${paymentMethod === "Cash on Delivery" ? "bg-[#2E2624] text-white" : "bg-white"}`}
                   >
                     Cash on Delivery
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("Whish Money")}
-                    className={`p-3 text-xs uppercase tracking-wider border text-center ${
-                      paymentMethod === "Whish Money" ? "border-[#2E2624] bg-[#2E2624] text-white" : "border-[#F3D9CE] bg-white"
-                    }`}
+                    className={`p-2.5 text-xs uppercase border ${paymentMethod === "Whish Money" ? "bg-[#2E2624] text-white" : "bg-white"}`}
                   >
                     Whish Money
                   </button>
                 </div>
-
-                {paymentMethod === "Whish Money" && (
-                  <div className="bg-[#FBF3EC] p-3 border border-[#D98C7A] text-xs text-[#2E2624]">
-                    <p className="font-medium">Whish Transfer Instructions:</p>
-                    <p className="text-[#6B5F5A]">Transfer <span className="font-bold text-[#2E2624]">${totalPrice.toFixed(2)}</span> to Whish Account: <span className="font-bold text-[#D98C7A]">+{momWhishNumber}</span></p>
-                  </div>
-                )}
               </div>
             </div>
 
-            <div className="space-y-3">
-              <button 
-                onClick={handleWhatsAppOrder}
-                className="w-full bg-[#25D366] text-white py-4 uppercase tracking-widest text-sm hover:bg-[#20ba5a] font-medium"
-              >
-                Complete Order via WhatsApp
-              </button>
-              <button 
-                onClick={handleCopyOrder}
-                className="w-full bg-white text-[#2E2624] py-3 uppercase tracking-widest text-xs border border-[#F3D9CE]"
-              >
-                {copied ? "✓ Copied!" : "Copy Order Summary Text"}
-              </button>
-            </div>
+            <button 
+              onClick={handleWhatsAppOrder}
+              className="w-full bg-[#25D366] text-white py-4 uppercase tracking-widest text-sm font-medium shadow-sm active:bg-[#20ba5a]"
+            >
+              Complete Order via WhatsApp
+            </button>
           </div>
         </div>
       </div>
