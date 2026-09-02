@@ -127,6 +127,8 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map(product => {
               const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
+              const hasSale = product.sale_price !== null && product.sale_price > 0;
+              
               return (
                 <Link 
                   key={product.id} 
@@ -139,8 +141,10 @@ export default function Home() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-[#6B5F5A]">No image</div>
                     )}
-                    {product.sale_price && product.sale_price > 0 && (
-                      <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase px-2 py-1">Sale</span>
+                    {hasSale && (
+                      <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase px-2 py-1 font-medium z-10">
+                        Sale
+                      </span>
                     )}
                   </div>
                   <div className="p-4 flex justify-between items-start bg-white">
@@ -148,7 +152,16 @@ export default function Home() {
                       <p className="text-[10px] uppercase tracking-wider text-[#6B5F5A] mb-1">{product.category || "Collection"}</p>
                       <h3 className="text-sm font-medium text-[#2E2624]">{product.name}</h3>
                     </div>
-                    <span className="text-xs font-bold text-[#D98C7A]">${effectivePrice.toFixed(2)}</span>
+                    <div className="text-right">
+                      {hasSale ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-gray-400 line-through">${product.price.toFixed(2)}</span>
+                          <span className="text-xs font-bold text-red-600">${effectivePrice.toFixed(2)}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs font-bold text-[#D98C7A]">${effectivePrice.toFixed(2)}</span>
+                      )}
+                    </div>
                   </div>
                 </Link>
               );
