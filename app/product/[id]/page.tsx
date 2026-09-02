@@ -95,6 +95,7 @@ export default function ProductDetailPage() {
   const totalPrice = effectivePrice + deliveryFee;
 
   function toggleWishlist() {
+    if (!product) return;
     const saved = localStorage.getItem("rizk_wishlist");
     let currentWishlist: Product[] = saved ? JSON.parse(saved) : [];
 
@@ -109,14 +110,15 @@ export default function ProductDetailPage() {
   }
 
   function getOrderMessageText() {
+    if (!product) return "";
     const paymentDetails = paymentMethod === "Whish Money" 
       ? `Payment Method: Whish Money\nStatus: Transfer sent to +${momWhishNumber} (Please see attached receipt)`
       : `Payment Method: Cash on Delivery`;
 
     return (
       `Hello Rizk Fashion! I would like to place an order:\n\n` +
-      `Product: ${product?.name}\n` +
-      `Category: ${product?.category || "Collection"}\n` +
+      `Product: ${product.name}\n` +
+      `Category: ${product.category || "Collection"}\n` +
       `Size: ${selectedSize}\n` +
       `Color: ${selectedColor}\n\n` +
       `Customer Phone: ${customerPhone || "Not provided"}\n` +
@@ -124,7 +126,7 @@ export default function ProductDetailPage() {
       `Item Price: $${effectivePrice.toFixed(2)}${product.sale_price ? " (SALE)" : ""}\n` +
       `Delivery Fee: $${deliveryFee.toFixed(2)}\n` +
       `Total Amount: $${totalPrice.toFixed(2)}\n\n` +
-      `Product Photo URL: ${activeImage || product?.image_url || "N/A"}\n\n` +
+      `Product Photo URL: ${activeImage || product.image_url || "N/A"}\n\n` +
       `${paymentDetails}\n\n` +
       `Please confirm my order and arrange delivery!`
     );
