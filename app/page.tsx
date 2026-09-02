@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -30,6 +31,7 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -155,10 +157,10 @@ export default function Home() {
               const hasSale = product.sale_price !== null && product.sale_price > 0;
 
               return (
-                <Link 
+                <div 
                   key={product.id} 
-                  href={`/product/${product.id}`}
-                  className="bg-white border border-[#F3D9CE] overflow-hidden group block hover:shadow-md transition-all relative z-10 cursor-pointer"
+                  onClick={() => router.push(`/product/${product.id}`)}
+                  className="bg-white border border-[#F3D9CE] overflow-hidden group block hover:shadow-md transition-all cursor-pointer relative"
                 >
                   <div className="w-full h-80 bg-[#F3D9CE] overflow-hidden relative">
                     {product.image_url ? (
@@ -188,7 +190,7 @@ export default function Home() {
                       )}
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
