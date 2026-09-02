@@ -42,8 +42,8 @@ export default function ProductDetailPage() {
 
   const deliveryFee = 4.00;
 
-  const momWhatsAppNumber = process.env.NEXT_PUBLIC_MOM_WHATSAPP || "96176380819";
-  const momWhishNumber = process.env.NEXT_PUBLIC_MOM_WHISH || "96176380819";
+  const momWhatsAppNumber = process.env.NEXT_PUBLIC_MOM_WHATSAPP ?? "";
+const momWhishNumber = process.env.NEXT_PUBLIC_MOM_WHISH ?? "";
 
   useEffect(() => {
     async function fetchProduct() {
