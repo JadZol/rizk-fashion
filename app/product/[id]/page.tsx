@@ -152,12 +152,6 @@ export default function ProductDetailPage() {
     setTimeout(() => setCopied(false), 2500);
   }
 
-  function handleShareProduct() {
-    navigator.clipboard.writeText(window.location.href);
-    setShareCopied(true);
-    setTimeout(() => setShareCopied(false), 2500);
-  }
-
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624]">
       <div className="bg-[#D98C7A] text-white text-center py-2 text-xs tracking-widest uppercase">

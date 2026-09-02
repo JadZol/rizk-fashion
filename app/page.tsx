@@ -158,7 +158,7 @@ export default function Home() {
                 <Link 
                   key={product.id} 
                   href={`/product/${product.id}`}
-                  className="bg-white border border-[#F3D9CE] overflow-hidden group block hover:shadow-md transition-all"
+                  className="bg-white border border-[#F3D9CE] overflow-hidden group block hover:shadow-md transition-all relative z-10 cursor-pointer"
                 >
                   <div className="w-full h-80 bg-[#F3D9CE] overflow-hidden relative">
                     {product.image_url ? (
