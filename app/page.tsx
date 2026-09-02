@@ -72,7 +72,7 @@ export default function Home() {
         <h1 className="text-xl md:text-2xl font-serif tracking-wider">RIZK FASHION</h1>
         <div className="space-x-4 md:space-x-6 text-xs md:text-sm tracking-widest uppercase text-[#6B5F5A]">
           <Link href="/wishlist" className="hover:text-[#2E2624]">Wishlist</Link>
-          <Link href="/admin" className="hover:text-[#2E2624]">Admin</Link>
+          {/* Admin link removed from public view */}
         </div>
       </nav>
 
