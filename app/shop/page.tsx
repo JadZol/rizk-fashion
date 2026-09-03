@@ -28,7 +28,7 @@ export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   
-  const { cart } = useCart();
+  const { cart, addToCart } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -48,10 +48,17 @@ export default function ShopPage() {
   }
 
   const filteredProducts = products.filter(product => {
+    const query = searchQuery.toLowerCase().trim();
+    const hasActiveSale = product.sale_price !== null && product.sale_price > 0;
+
+    if (query === "sale") {
+      return hasActiveSale;
+    }
+
     const matchesSearch = 
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      product.name.toLowerCase().includes(query) ||
+      (product.description && product.description.toLowerCase().includes(query)) ||
+      (product.category && product.category.toLowerCase().includes(query));
 
     return matchesSearch;
   }).sort((a, b) => {
@@ -61,6 +68,18 @@ export default function ShopPage() {
     if (sortBy === "price-high") return priceB - priceA;
     return 0;
   });
+
+  const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault(); // Prevent navigating to product detail page
+    const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: effectivePrice,
+      image_url: product.image_url,
+      size: "One Size"
+    });
+  };
 
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20">
@@ -72,7 +91,6 @@ export default function ShopPage() {
       </div>
 
       <nav className="flex justify-between items-center px-6 md:px-8 py-6 bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#F3D9CE]">
-        {/* Small Logo wrapper that zooms in slightly to cut off the black borders */}
         <Link href="/" className="block rounded-full overflow-hidden h-10 w-10 md:h-12 md:w-12 shadow-sm border border-[#F3D9CE] hover:opacity-80 transition-opacity">
           <img 
             src="/logo.png" 
@@ -142,7 +160,7 @@ export default function ShopPage() {
         })}
       </div>
 
-      {/* Products Grid */}
+      {/* Products Grid with Zara-style Quick Add Hover */}
       <div className="max-w-7xl mx-auto px-6">
         {loading ? (
           <p className="text-center py-20 text-[#6B5F5A] text-xs uppercase tracking-widest">Loading Collection...</p>
@@ -158,7 +176,7 @@ export default function ShopPage() {
                 <Link 
                   key={product.id} 
                   href={`/product/${product.id}`}
-                  className="bg-white border border-[#F3D9CE] block touch-manipulation group"
+                  className="bg-white border border-[#F3D9CE] block touch-manipulation group relative overflow-hidden"
                 >
                   <div className="w-full h-[400px] bg-[#F3D9CE] relative overflow-hidden">
                     {product.image_url ? (
@@ -171,7 +189,18 @@ export default function ShopPage() {
                         Sale
                       </span>
                     )}
+
+                    {/* Zara-Style Quick Add Overlay Button on Hover */}
+                    <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm z-20">
+                      <button 
+                        onClick={(e) => handleQuickAdd(e, product)}
+                        className="w-full bg-[#2E2624] text-white py-3 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors"
+                      >
+                        + Quick Add to Bag
+                      </button>
+                    </div>
                   </div>
+
                   <div className="p-5 flex justify-between items-start bg-white">
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-[#D98C7A] mb-1.5">{product.category || "Collection"}</p>
