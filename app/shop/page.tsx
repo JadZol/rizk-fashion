@@ -27,11 +27,13 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   
   const { cart, addToCart } = useCart();
 
   useEffect(() => {
     fetchProducts();
+    loadWishlist();
   }, []);
 
   async function fetchProducts() {
@@ -46,6 +48,34 @@ export default function ShopPage() {
     }
     setLoading(false);
   }
+
+  function loadWishlist() {
+    const saved = localStorage.getItem("rizk_wishlist");
+    if (saved) {
+      try {
+        const items: Product[] = JSON.parse(saved);
+        setWishlistIds(items.map(i => i.id));
+      } catch (e) {
+        setWishlistIds([]);
+      }
+    }
+  }
+
+  const toggleWishlist = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault(); // Prevent navigating to product detail page
+    const saved = localStorage.getItem("rizk_wishlist");
+    let wishlist: Product[] = saved ? JSON.parse(saved) : [];
+    
+    const exists = wishlist.some(item => item.id === product.id);
+    if (exists) {
+      wishlist = wishlist.filter(item => item.id !== product.id);
+    } else {
+      wishlist.push(product);
+    }
+    
+    localStorage.setItem("rizk_wishlist", JSON.stringify(wishlist));
+    setWishlistIds(wishlist.map(i => i.id));
+  };
 
   const filteredProducts = products.filter(product => {
     const query = searchQuery.toLowerCase().trim();
@@ -160,7 +190,7 @@ export default function ShopPage() {
         })}
       </div>
 
-      {/* Products Grid with Zara-style Quick Add Hover */}
+      {/* Products Grid with Zara-style Quick Add & Wishlist Heart */}
       <div className="max-w-7xl mx-auto px-6">
         {loading ? (
           <p className="text-center py-20 text-[#6B5F5A] text-xs uppercase tracking-widest">Loading Collection...</p>
@@ -171,6 +201,7 @@ export default function ShopPage() {
             {filteredProducts.map(product => {
               const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
               const hasSale = product.sale_price !== null && product.sale_price > 0;
+              const isWishlisted = wishlistIds.includes(product.id);
               
               return (
                 <Link 
@@ -184,11 +215,30 @@ export default function ShopPage() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-[#6B5F5A]">No image</div>
                     )}
+
                     {hasSale && (
                       <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase px-3 py-1.5 font-medium z-10 shadow-sm">
                         Sale
                       </span>
                     )}
+
+                    {/* Interactive Wishlist Heart Button */}
+                    <button
+                      onClick={(e) => toggleWishlist(e, product)}
+                      className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm border border-[#F3D9CE] flex items-center justify-center hover:bg-white transition-all z-20 shadow-sm"
+                      title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
+                    >
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill={isWishlisted ? "#D98C7A" : "none"} 
+                        viewBox="0 0 24 24" 
+                        strokeWidth={1.5} 
+                        stroke="currentColor" 
+                        className={`w-4 h-4 transition-colors ${isWishlisted ? "text-[#D98C7A]" : "text-[#2E2624]"}`}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                      </svg>
+                    </button>
 
                     {/* Zara-Style Quick Add Overlay Button on Hover */}
                     <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm z-20">
