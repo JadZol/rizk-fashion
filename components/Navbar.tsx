@@ -62,19 +62,19 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* Smooth Animated Slide-out Menu Drawer */}
+      {/* Smooth Top Drop-down Menu Panel */}
       {mounted && (
-        <div className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div className={`fixed inset-0 z-50 flex flex-col transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
           {/* Backdrop Fade */}
           <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm" 
             onClick={handleClose} 
           />
 
-          {/* Sliding Drawer Panel */}
-          <div className={`relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10 transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-            <div>
-              <div className="flex justify-between items-center mb-12">
+          {/* Dropping Panel from Top */}
+          <div className={`relative bg-[#FBF3EC] w-full shadow-2xl p-8 flex flex-col justify-between border-b border-[#F3D9CE] z-10 transition-transform duration-300 ease-out ${menuOpen ? "translate-y-0" : "-translate-y-full"}`}>
+            <div className="max-w-2xl mx-auto w-full">
+              <div className="flex justify-between items-center mb-10">
                 <span className="text-xs uppercase tracking-[0.2em] font-serif font-bold text-[#2E2624]">Rizk Fashion — RZK</span>
                 <button 
                   onClick={handleClose} 
@@ -87,7 +87,7 @@ export default function Navbar() {
                 </button>
               </div>
 
-              <div className="space-y-6 text-lg font-serif tracking-wide text-[#2E2624]">
+              <div className="space-y-6 text-center text-xl font-serif tracking-wide text-[#2E2624] py-4">
                 <Link href="/" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Home</Link>
                 <Link href="/shop" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Shop Collection</Link>
                 <Link href="/wishlist" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Wishlist</Link>
@@ -95,7 +95,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="pt-8 border-t border-[#F3D9CE] space-y-2 text-xs text-[#6B5F5A]">
+            <div className="pt-6 mt-6 border-t border-[#F3D9CE] flex justify-between items-center text-xs text-[#6B5F5A] max-w-2xl mx-auto w-full">
               <p>rizkfashion82@gmail.com</p>
               <p>+961 76 380 819</p>
             </div>
