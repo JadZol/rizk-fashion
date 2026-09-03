@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useCart } from "./context/CartContext";
 
 type Product = {
   id: string;
@@ -26,6 +27,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  
+  // Bring in the global cart to show the item count on the homepage
+  const { cart } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -67,9 +71,11 @@ export default function Home() {
 
       <nav className="flex justify-between items-center px-6 md:px-8 py-6 border-b border-[#F3D9CE]">
         <h1 className="text-xl md:text-2xl font-serif tracking-wider">RIZK FASHION</h1>
-        <div className="space-x-4 md:space-x-6 text-xs md:text-sm tracking-widest uppercase text-[#6B5F5A]">
+        <div className="flex gap-6 items-center text-xs md:text-sm tracking-widest uppercase text-[#6B5F5A]">
           <Link href="/wishlist" className="hover:text-[#2E2624]">Wishlist</Link>
-          {/* Admin link safely removed from public view */}
+          <Link href="/cart" className="font-bold text-[#D98C7A] hover:text-[#2E2624]">
+            Bag ({cart.length})
+          </Link>
         </div>
       </nav>
 
@@ -101,7 +107,6 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-wrap gap-2 justify-center">
         {CATEGORIES.map(category => {
-          // Format category text into a clean URL slug (e.g., "Tops & Sweaters" -> "tops-sweaters")
           const slug = category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
           return (
             <Link
