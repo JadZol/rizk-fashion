@@ -21,26 +21,6 @@ type Product = {
   stock_status: string | null;
 };
 
-const COLOR_MAP: Record<string, string> = {
-  black: "#000000",
-  white: "#FFFFFF",
-  beige: "#EEDC82",
-  camel: "#C19A6B",
-  rose: "#FFC0CB",
-  pink: "#FFB6C1",
-  red: "#FF0000",
-  burgundy: "#800020",
-  navy: "#000080",
-  blue: "#0000FF",
-  green: "#008000",
-  grey: "#808080",
-  charcoal: "#36454F",
-  brown: "#A52A2A",
-  olive: "#808000",
-  gold: "#FFD700",
-  silver: "#C0C0C0"
-};
-
 export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
@@ -82,7 +62,6 @@ export default function ProductDetailPage() {
 
   const colorsList = product?.colors ? product.colors.split(",").map(c => c.trim()) : [];
 
-  // When clicking a thumbnail, change image AND automatically update the color swatch
   function handleThumbnailClick(imgUrl: string, index: number) {
     setSelectedImage(imgUrl);
     if (colorsList.length > index) {
@@ -90,7 +69,6 @@ export default function ProductDetailPage() {
     }
   }
 
-  // When clicking a color swatch, change color AND automatically update the gallery image
   function handleColorSelect(colorName: string, index: number) {
     setSelectedColor(colorName);
     if (galleryImages.length > index) {
@@ -251,7 +229,6 @@ export default function ProductDetailPage() {
               </label>
               <div className="flex flex-wrap gap-3">
                 {colorsList.map((colorName, index) => {
-                  const hex = COLOR_MAP[colorName.toLowerCase()] || "#CCCCCC";
                   const isSelected = selectedColor === colorName;
                   return (
                     <button
@@ -259,12 +236,12 @@ export default function ProductDetailPage() {
                       onClick={() => handleColorSelect(colorName, index)}
                       title={colorName}
                       className={`w-9 h-9 rounded-full border-2 transition-all flex items-center justify-center ${
-                        isSelected ? "border-[#2E2624] scale-110 shadow-md" : "border-gray-300 hover:border-gray-500"
+                        isSelected ? "border-[#2E2624] scale-110 shadow-md ring-2 ring-[#2E2624]/20" : "border-gray-300 hover:border-gray-500"
                       }`}
-                      style={{ backgroundColor: hex }}
+                      style={{ backgroundColor: colorName.toLowerCase() }}
                     >
                       {isSelected && (
-                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver", "gold"].includes(colorName.toLowerCase()) ? "text-black" : "text-white"}`}>
+                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver", "gold", "yellow"].includes(colorName.toLowerCase()) ? "text-black" : "text-white"}`}>
                           ✓
                         </span>
                       )}

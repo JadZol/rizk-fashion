@@ -20,6 +20,7 @@ type Product = {
 };
 
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL"];
+const QUICK_COLORS = ["Black", "White", "Beige", "Camel", "Rose", "Pink", "Red", "Burgundy", "Navy", "Blue", "Green", "Grey", "Charcoal", "Brown", "Olive", "Gold", "Silver"];
 const CATEGORIES = ["Dresses", "Tops & Sweaters", "Shirts", "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"];
 const STOCK_OPTIONS = [
   "In Stock — Ready for Express Delivery",
@@ -43,7 +44,7 @@ export default function AdminDashboard() {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L"]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [photoColors, setPhotoColors] = useState<string[]>([]); // Tracks text input per photo index
+  const [photoColors, setPhotoColors] = useState<string[]>([]); 
   const [uploading, setUploading] = useState(false);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -89,7 +90,7 @@ export default function AdminDashboard() {
 
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
-    setPhotoColors(files.map(() => "")); // Initialize empty text inputs for each photo
+    setPhotoColors(files.map(() => "")); 
   }
 
   function handlePhotoColorChange(index: number, textValue: string) {
@@ -117,11 +118,10 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Collect all typed colors and filter out blanks
     const uniqueColors = Array.from(new Set(photoColors.map(c => c.trim()).filter(Boolean)));
 
     if (uniqueColors.length === 0) {
-      alert("Please type a color name for each uploaded photo.");
+      alert("Please specify a color name for each uploaded photo.");
       return;
     }
 
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
     if (error) {
       alert("Error adding product: " + error.message);
     } else {
-      alert("Product published successfully with custom photo colors!");
+      alert("Product published successfully!");
       setName("");
       setPrice("");
       setSalePrice("");
@@ -223,9 +223,7 @@ export default function AdminDashboard() {
 
         <div className="bg-white p-6 border border-[#F3D9CE] flex justify-between items-center shadow-sm">
           <h1 className="text-2xl font-serif text-[#2E2624]">Rizk Fashion Admin Control</h1>
-          <button onClick={handleLogout} className="text-[#6B5F5A] underline text-sm hover:text-[#2E2624]">
-            Sign Out
-          </button>
+          <button onClick={handleLogout} className="text-[#6B5F5A] underline text-sm hover:text-[#2E2624]">Sign Out</button>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -240,13 +238,13 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Type Custom Color Per Photo Grid)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Product Name</label>
-                <input required value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none focus:border-[#D98C7A]" placeholder="e.g. Silk Evening Dress" />
+                <input required value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none" placeholder="e.g. Silk Evening Dress" />
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Category</label>
@@ -259,17 +257,17 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Regular Price ($)</label>
-                <input type="number" step="0.01" required value={price} onChange={e => setPrice(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none" placeholder="0.00" />
+                <input type="number" step="0.01" required value={price} onChange={e => setPrice(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE]" placeholder="0.00" />
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wider text-red-600 mb-2">Sale Price ($) - Optional</label>
-                <input type="number" step="0.01" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="w-full px-4 py-2 border border-red-200 focus:outline-none" placeholder="Leave blank if not on sale" />
+                <input type="number" step="0.01" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="w-full px-4 py-2 border border-red-200" placeholder="Leave blank if not on sale" />
               </div>
             </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Stock Urgency Status</label>
-              <select value={stockStatus} onChange={e => setStockStatus(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] bg-white focus:outline-none text-sm">
+              <select value={stockStatus} onChange={e => setStockStatus(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] bg-white text-sm">
                 {STOCK_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
             </div>
@@ -277,41 +275,34 @@ export default function AdminDashboard() {
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Sizes</label>
               <div className="flex flex-wrap gap-2">
-                {AVAILABLE_SIZES.map(size => {
-                  const isSelected = selectedSizes.includes(size);
-                  return (
-                    <button
-                      type="button"
-                      key={size}
-                      onClick={() => toggleSize(size)}
-                      className={`w-12 h-12 text-sm font-medium border transition-all ${
-                        isSelected ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#6B5F5A] border-[#F3D9CE]"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  );
-                })}
+                {AVAILABLE_SIZES.map(size => (
+                  <button
+                    type="button"
+                    key={size}
+                    onClick={() => toggleSize(size)}
+                    className={`w-12 h-12 text-sm font-medium border transition-all ${
+                      selectedSizes.includes(size) ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#6B5F5A] border-[#F3D9CE]"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Description (Optional)</label>
-              <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none" rows={2} />
+              <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE]" rows={2} />
             </div>
 
-            {/* Product Photos with Custom Text Inputs Grid */}
+            {/* Product Photos with Quick-Select Grid & Text Box */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-xs uppercase tracking-wider text-[#6B5F5A]">
-                  Product Gallery Photos & Color Typing Grid <span className="text-[10px] text-[#D98C7A]">(Type color for each photo below)</span>
+                  Product Gallery Photos & Color Assignment <span className="text-[10px] text-[#D98C7A]">(Click a color or type any custom color)</span>
                 </label>
                 {imageFiles.length > 0 && (
-                  <button 
-                    type="button" 
-                    onClick={handleClearPhotos}
-                    className="text-xs text-red-600 underline font-medium hover:text-red-800"
-                  >
+                  <button type="button" onClick={handleClearPhotos} className="text-xs text-red-600 underline font-medium">
                     Remove All Photos ({imageFiles.length})
                   </button>
                 )}
@@ -329,20 +320,39 @@ export default function AdminDashboard() {
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-[#FBF3EC] border border-[#F3D9CE]">
                   {imagePreviews.map((src, index) => (
-                    <div key={index} className="flex items-center gap-4 bg-white p-3 border border-[#F3D9CE]">
-                      <div className="w-16 h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
-                        <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                    <div key={index} className="flex flex-col gap-3 bg-white p-4 border border-[#F3D9CE]">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
+                          <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                          <p className="text-[10px] uppercase tracking-wider font-bold text-[#2E2624]">Photo #{index + 1} {index === 0 && "(Cover)"}</p>
+                          <label className="block text-[10px] text-[#6B5F5A] uppercase">Color Name:</label>
+                          <input 
+                            type="text"
+                            value={photoColors[index] || ""}
+                            onChange={(e) => handlePhotoColorChange(index, e.target.value)}
+                            placeholder="e.g. Champagne"
+                            className="w-full p-2 border border-[#F3D9CE] text-xs bg-white focus:outline-none focus:border-[#D98C7A]"
+                          />
+                        </div>
                       </div>
-                      <div className="flex-1 space-y-1">
-                        <p className="text-[10px] uppercase tracking-wider font-bold text-[#2E2624]">Photo #{index + 1} {index === 0 && "(Cover)"}</p>
-                        <label className="block text-[10px] text-[#6B5F5A] uppercase">Type Color Name:</label>
-                        <input 
-                          type="text"
-                          value={photoColors[index] || ""}
-                          onChange={(e) => handlePhotoColorChange(index, e.target.value)}
-                          placeholder="e.g. Champagne, Green, Black"
-                          className="w-full p-2 border border-[#F3D9CE] text-xs bg-white focus:outline-none focus:border-[#D98C7A]"
-                        />
+
+                      {/* Quick-Select Color Grid */}
+                      <div>
+                        <p className="text-[9px] uppercase tracking-wider text-gray-400 mb-1">Quick Select:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {QUICK_COLORS.map(c => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => handlePhotoColorChange(index, c)}
+                              className="px-2 py-0.5 text-[9px] uppercase border border-[#F3D9CE] bg-[#FBF3EC] text-[#2E2624] hover:bg-[#2E2624] hover:text-white transition-colors"
+                            >
+                              {c}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
