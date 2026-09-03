@@ -18,7 +18,7 @@ type Product = {
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<Product[]>([]);
-  const { cart, addToCart } = useCart();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const saved = localStorage.getItem("rizk_wishlist");
