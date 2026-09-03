@@ -19,7 +19,7 @@ type Product = {
 
 const CATEGORIES = [
   "All", "Sale", "Dresses", "Tops & Sweaters", "Shirts", 
-  "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"
+  "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts", "Sets"
 ];
 
 export default function ShopPage() {

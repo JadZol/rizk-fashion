@@ -21,7 +21,7 @@ type Product = {
 
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL"];
 const QUICK_COLORS = ["Black", "White", "Beige", "Camel", "Rose", "Pink", "Red", "Burgundy", "Navy", "Blue", "Green", "Grey", "Charcoal", "Brown", "Olive", "Gold", "Silver"];
-const CATEGORIES = ["Dresses", "Tops & Sweaters", "Shirts", "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"];
+const CATEGORIES = ["Dresses", "Tops & Sweaters", "Shirts", "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts", "Sets"];
 const STOCK_OPTIONS = [
   "In Stock — Ready for Express Delivery",
   "Low Stock — Only 2 pieces left",

@@ -18,10 +18,26 @@ type Product = {
   colors: string | null;
 };
 
+// Map URL slugs to clean display names, including "Sets"
+const CATEGORY_TITLE_MAP: Record<string, string> = {
+  "tops-sweaters": "Tops & Sweaters",
+  "coats-jackets": "Coats & Jackets",
+  "dresses": "Dresses",
+  "shirts": "Shirts",
+  "jeans": "Jeans",
+  "pants": "Pants",
+  "skirts": "Skirts",
+  "shorts": "Shorts",
+  "sets": "Sets",
+  "sale": "Sale Collection",
+  "all": "All Collection"
+};
+
 export default function CategoryPage() {
   const params = useParams();
-  const rawSlug = typeof params?.slug === 'string' ? params.slug : "";
-  const categoryName = decodeURIComponent(rawSlug).replace(/-/g, " ");
+  const rawSlug = typeof params?.slug === 'string' ? params.slug.toLowerCase() : "";
+  
+  const categoryName = CATEGORY_TITLE_MAP[rawSlug] || decodeURIComponent(rawSlug).replace(/-/g, " ");
   
   const { cart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
@@ -39,8 +55,8 @@ export default function CategoryPage() {
       setLoading(true);
       let query = supabase.from("products").select("*").order("created_at", { ascending: false });
       
-      if (categoryName.toLowerCase() !== "all" && categoryName.toLowerCase() !== "sale") {
-        query = query.ilike("category", categoryName);
+      if (rawSlug !== "all" && rawSlug !== "sale") {
+        query = query.or(`category.ilike.${categoryName},category.ilike.${rawSlug.replace(/-/g, " ")}`);
       }
       
       const { data, error } = await query;
@@ -50,7 +66,7 @@ export default function CategoryPage() {
       setLoading(false);
     }
     fetchCategoryProducts();
-  }, [categoryName]);
+  }, [rawSlug, categoryName]);
 
   function toggleSize(size: string) {
     setSelectedSizes(prev => 
@@ -62,7 +78,7 @@ export default function CategoryPage() {
     const effectivePrice = product.sale_price && product.sale_price > 0 ? product.sale_price : product.price;
     if (effectivePrice > maxPrice) return false;
 
-    if (categoryName.toLowerCase() === "sale" && (!product.sale_price || product.sale_price <= 0)) {
+    if (rawSlug === "sale" && (!product.sale_price || product.sale_price <= 0)) {
       return false;
     }
 
