@@ -28,6 +28,9 @@ export default function CartPage() {
 
     cart.forEach((item, index) => {
       message += `${index + 1}. ${item.name} (Size: ${item.size}) - $${item.price.toFixed(2)}\n`;
+      if (item.image_url) {
+        message += `   Image: ${item.image_url}\n`;
+      }
     });
 
     message += `\nSubtotal: $${cartTotal.toFixed(2)}`;
@@ -35,8 +38,6 @@ export default function CartPage() {
     message += `\n*Total: $${finalTotal.toFixed(2)}*\n\nPlease confirm my order!`;
 
     const encodedMessage = encodeURIComponent(message);
-    
-    // Connected to the live store number
     const storePhoneNumber = "96176380819"; 
     window.open(`https://wa.me/${storePhoneNumber}?text=${encodedMessage}`, "_blank");
   };
@@ -45,8 +46,12 @@ export default function CartPage() {
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624]">
       <nav className="flex justify-between items-center px-8 py-6 border-b border-[#F3D9CE] bg-white sticky top-0 z-50">
         <Link href="/" className="text-xl font-serif tracking-wider">RIZK FASHION</Link>
-        <Link href="/cart" className="text-xs font-bold tracking-widest uppercase text-[#D98C7A]">
-          Bag ({cart.length})
+        
+        <Link href="/cart" className="flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase text-[#D98C7A] hover:text-[#2E2624] transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          <span>({cart.length})</span>
         </Link>
       </nav>
 
