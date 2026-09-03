@@ -2,10 +2,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../../../app/context/CartContext";
 
 type Product = {
   id: string;
@@ -15,211 +15,285 @@ type Product = {
   description: string | null;
   image_url: string | null;
   image_urls: string | null;
+  category: string | null;
   sizes: string | null;
   colors: string | null;
-  category: string | null;
   stock_status: string | null;
+};
+
+// Helper mapping for color codes
+const COLOR_MAP: Record<string, string> = {
+  black: "#000000",
+  white: "#FFFFFF",
+  beige: "#EEDC82",
+  rose: "#FFC0CB",
+  red: "#FF0000",
+  navy: "#000080",
+  grey: "#808080",
+  brown: "#A52A2A",
+  pink: "#FFC0CB",
+  blue: "#0000FF",
+  green: "#008000",
+  gold: "#FFD700",
+  silver: "#C0C0C0"
 };
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const router = useRouter();
-  const { addToCart, cart } = useCart();
-  
+  const id = params?.id as string;
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("S");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [addedNotification, setAddedNotification] = useState(false);
 
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [activeImage, setActiveImage] = useState("");
+  const { cart, addToCart } = useCart();
 
   useEffect(() => {
-    async function fetchProduct() {
-      if (!params.id) return;
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", params.id)
-        .single();
+    if (id) fetchProduct();
+  }, [id]);
 
-      if (error || !data) {
-        router.push("/");
-      } else {
-        setProduct(data);
-        setActiveImage(data.image_url || "");
-        if (data.sizes) setSelectedSize(data.sizes.split(",")[0].trim());
-        if (data.colors) setSelectedColor(data.colors.split(",")[0].trim());
+  async function fetchProduct() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-        const saved = localStorage.getItem("rizk_wishlist");
-        if (saved) {
-          const list: Product[] = JSON.parse(saved);
-          setIsWishlisted(list.some(item => item.id === data.id));
-        }
+    if (!error && data) {
+      setProduct(data);
+      if (data.image_url) {
+        setSelectedImage(data.image_url);
       }
-      setLoading(false);
+      if (data.sizes) {
+        const firstSize = data.sizes.split(",")[0].trim();
+        setSelectedSize(firstSize);
+      }
+      if (data.colors) {
+        const firstColor = data.colors.split(",")[0].trim();
+        setSelectedColor(firstColor);
+      }
     }
-    fetchProduct();
-  }, [params.id, router]);
+    setLoading(false);
+  }
 
-  if (loading) return <p className="p-20 text-center text-[#6B5F5A] text-xs uppercase tracking-widest">Loading piece...</p>;
-  if (!product) return null;
+  function handleAddToCart() {
+    if (!product) return;
+    const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
+    
+    addToCart({
+      id: product.id,
+      name: `${product.name} (${selectedColor || "Standard"} / ${selectedSize})`,
+      price: effectivePrice,
+      image_url: selectedImage || product.image_url,
+      size: selectedSize
+    });
 
-  const sizeList = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
-  const colorList = product.colors ? product.colors.split(",").map(c => c.trim()) : [];
-  const galleryList = product.image_urls 
-    ? product.image_urls.split(",").map(url => url.trim()).filter(Boolean) 
-    : product.image_url ? [product.image_url] : [];
-  
-  const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
+    setAddedNotification(true);
+    setTimeout(() => setAddedNotification(false), 3000);
+  }
 
   function toggleWishlist() {
     if (!product) return;
     const saved = localStorage.getItem("rizk_wishlist");
-    let currentWishlist: Product[] = saved ? JSON.parse(saved) : [];
-
-    if (isWishlisted) {
-      currentWishlist = currentWishlist.filter(item => item.id !== product.id);
-      setIsWishlisted(false);
+    let wishlist: Product[] = saved ? JSON.parse(saved) : [];
+    
+    const exists = wishlist.some(item => item.id === product.id);
+    if (exists) {
+      wishlist = wishlist.filter(item => item.id !== product.id);
     } else {
-      currentWishlist.push(product);
-      setIsWishlisted(true);
+      wishlist.push(product);
     }
-    localStorage.setItem("rizk_wishlist", JSON.stringify(currentWishlist));
+    localStorage.setItem("rizk_wishlist", JSON.stringify(wishlist));
+    alert(exists ? "Removed from wishlist" : "Added to wishlist!");
   }
 
-  function handleAddToBag() {
-    if (!product) return;
-
-    if (sizeList.length > 0 && !selectedSize) {
-      alert("Please select a size.");
-      return;
-    }
-    if (colorList.length > 0 && !selectedColor) {
-      alert("Please select a color.");
-      return;
-    }
-
-    const combinedOptions = [selectedSize, selectedColor].filter(Boolean).join(" / ");
-
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: effectivePrice,
-      image_url: activeImage || product.image_url,
-      size: combinedOptions || "One Size"
-    });
+  if (loading) {
+    return <div className="min-h-screen bg-[#FBF3EC] flex items-center justify-center text-xs uppercase tracking-widest text-[#6B5F5A]">Loading piece...</div>;
   }
+
+  if (!product) {
+    return <div className="min-h-screen bg-[#FBF3EC] flex items-center justify-center text-xs uppercase tracking-widest text-[#6B5F5A]">Piece not found.</div>;
+  }
+
+  const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
+  const hasSale = product.sale_price !== null && product.sale_price > 0;
+  
+  const sizesList = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
+  const colorsList = product.colors ? product.colors.split(",").map(c => c.trim()) : [];
+  
+  // Extract all gallery images if available
+  const galleryImages = product.image_urls 
+    ? product.image_urls.split(",").map(url => url.trim()).filter(Boolean)
+    : product.image_url ? [product.image_url] : [];
 
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20">
+      {/* Top Announcement Bar */}
       <div className="bg-[#D98C7A] text-white text-center py-2 text-xs tracking-widest uppercase">
-        Express Delivery Across Lebanon • Secure Checkout
+        Express Delivery Across Lebanon • Whish Money & Cash on Delivery
       </div>
 
-      <nav className="flex justify-between items-center px-6 md:px-8 py-6 border-b border-[#F3D9CE] bg-white sticky top-0 z-50">
-        <h1 className="text-xl font-serif">RIZK FASHION</h1>
-        <div className="flex gap-6 items-center">
-          <Link href="/" className="text-xs uppercase tracking-widest text-[#6B5F5A] hover:text-[#2E2624]">← Shop</Link>
-          <Link href="/cart" className="flex items-center gap-1.5 font-bold text-[#D98C7A] hover:text-[#2E2624] transition-colors">
+      {/* Navigation Header */}
+      <nav className="flex justify-between items-center px-8 py-6 border-b border-[#F3D9CE] bg-white/90 backdrop-blur-md sticky top-0 z-50">
+        <Link href="/" className="block rounded-full overflow-hidden h-10 w-10 md:h-12 md:w-12 shadow-sm border border-[#F3D9CE]">
+          <img src="/logo.png" alt="Rizk" className="h-full w-full object-cover scale-[1.15]" />
+        </Link>
+        <div className="flex gap-6 items-center text-xs tracking-widest uppercase text-[#6B5F5A]">
+          <Link href="/shop" className="hover:text-[#2E2624]">Shop</Link>
+          <Link href="/wishlist" className="hover:text-[#2E2624]">Wishlist</Link>
+          <Link href="/cart" className="flex items-center gap-1.5 font-bold text-[#D98C7A] hover:text-[#2E2624]">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
             </svg>
-            <span className="text-xs uppercase tracking-widest">({cart.length})</span>
+            <span>({cart.length})</span>
           </Link>
         </div>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        <div className="bg-white p-6 md:p-12 border border-[#F3D9CE] grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-          
-          <button 
-            onClick={toggleWishlist}
-            className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-[#F3D9CE] shadow-sm transition-transform hover:scale-105"
-          >
-            <span className={`text-lg ${isWishlisted ? "text-red-500" : "text-[#6B5F5A]"}`}>
-              {isWishlisted ? "♥" : "♡"}
-            </span>
-          </button>
-
-          <div className="space-y-4">
-            <div className="w-full h-[380px] md:h-[480px] bg-[#F3D9CE] overflow-hidden">
-              {activeImage ? (
-                <img src={activeImage} alt={product.name} className="w-full h-full object-cover" />
-              ) : null}
-            </div>
-            {galleryList.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {galleryList.map((imgUrl, idx) => (
-                  <button key={idx} onClick={() => setActiveImage(imgUrl)} className={`w-16 h-20 flex-shrink-0 border ${activeImage === imgUrl ? 'border-[#2E2624]' : 'border-[#F3D9CE]'}`}>
-                    <img src={imgUrl} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
+      {/* Product Details Section */}
+      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        
+        {/* Gallery Section */}
+        <div className="space-y-4">
+          <div className="w-full h-[600px] bg-[#F3D9CE] overflow-hidden relative border border-[#F3D9CE]">
+            {selectedImage ? (
+              <img src={selectedImage} alt={product.name} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[#6B5F5A]">No image available</div>
+            )}
+            {hasSale && (
+              <span className="absolute top-4 left-4 bg-red-600 text-white text-xs uppercase px-3 py-1 font-medium shadow-sm">
+                Sale
+              </span>
             )}
           </div>
 
-          <div className="flex flex-col justify-between space-y-6">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-[#D98C7A]">{product.category || "Collection"}</span>
-              <h1 className="text-2xl md:text-3xl font-serif mt-1 mb-2">{product.name}</h1>
-              
-              <div className="text-xl font-bold text-[#D98C7A] mb-4">
-                {product.sale_price && product.sale_price > 0 ? (
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-400 line-through text-sm">${product.price.toFixed(2)}</span>
-                    <span>${effectivePrice.toFixed(2)}</span>
-                  </div>
-                ) : (
-                  <span>${product.price.toFixed(2)}</span>
-                )}
-              </div>
-              
-              <p className="text-sm text-[#6B5F5A] mb-6 leading-relaxed">{product.description || "Crafted for the modern wardrobe."}</p>
+          {/* Thumbnail Selector */}
+          {galleryImages.length > 1 && (
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {galleryImages.map((imgUrl, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(imgUrl)}
+                  className={`w-20 h-24 flex-shrink-0 border-2 overflow-hidden transition-all ${
+                    selectedImage === imgUrl ? "border-[#2E2624] scale-105" : "border-[#F3D9CE] opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-              {colorList.length > 0 && (
-                <div className="mb-4">
-                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Color: {selectedColor}</label>
-                  <div className="flex flex-wrap gap-2">
-                    {colorList.map(color => (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        className={`px-3 py-2 text-xs uppercase border transition-colors ${selectedColor === color ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white border-[#F3D9CE] hover:border-[#D98C7A]"}`}
-                      >
-                        {color}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {sizeList.length > 0 && (
-                <div className="mb-4">
-                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Size: {selectedSize}</label>
-                  <div className="flex flex-wrap gap-2">
-                    {sizeList.map(size => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`w-10 h-10 text-xs font-medium border transition-colors ${selectedSize === size ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white border-[#F3D9CE] hover:border-[#D98C7A]"}`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+        {/* Product Info & Options */}
+        <div className="space-y-8 bg-white p-8 border border-[#F3D9CE] shadow-sm">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-[#D98C7A] mb-2">{product.category || "Collection"}</p>
+            <h1 className="text-3xl font-serif font-light text-[#2E2624] mb-4">{product.name}</h1>
+            <div className="flex items-center gap-4 mb-2">
+              {hasSale ? (
+                <>
+                  <span className="text-lg text-gray-400 line-through">${product.price.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-red-600">${effectivePrice.toFixed(2)}</span>
+                </>
+              ) : (
+                <span className="text-2xl font-bold text-[#2E2624]">${effectivePrice.toFixed(2)}</span>
               )}
             </div>
+            {product.stock_status && (
+              <p className="text-xs font-medium text-emerald-700 bg-emerald-50 inline-block px-2.5 py-1 border border-emerald-200">
+                {product.stock_status}
+              </p>
+            )}
+          </div>
 
-            <button 
-              onClick={handleAddToBag}
-              className="w-full bg-[#2E2624] text-white py-4 uppercase tracking-widest text-xs font-bold shadow-sm hover:bg-[#D98C7A] transition-colors"
+          <p className="text-xs text-[#6B5F5A] leading-relaxed">
+            {product.description || "Crafted with signature boutique styling, combining timeless elegance with modern comfort."}
+          </p>
+
+          {/* Size Selection */}
+          {sizesList.length > 0 && (
+            <div>
+              <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">Select Size</label>
+              <div className="flex flex-wrap gap-3">
+                {sizesList.map(size => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`w-12 h-12 text-xs tracking-wider border transition-all font-medium ${
+                      selectedSize === size 
+                        ? "bg-[#2E2624] text-white border-[#2E2624]" 
+                        : "bg-white text-[#2E2624] border-[#F3D9CE] hover:border-[#2E2624]"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Color Selection Swatches */}
+          {colorsList.length > 0 && (
+            <div>
+              <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">
+                Select Color: <span className="font-normal text-[#D98C7A]">{selectedColor}</span>
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {colorsList.map(colorName => {
+                  const hex = COLOR_MAP[colorName.toLowerCase()] || "#CCCCCC";
+                  const isSelected = selectedColor === colorName;
+                  return (
+                    <button
+                      key={colorName}
+                      onClick={() => setSelectedColor(colorName)}
+                      title={colorName}
+                      className={`w-9 h-9 rounded-full border-2 transition-all flex items-center justify-center ${
+                        isSelected ? "border-[#2E2624] scale-110 shadow-md" : "border-gray-300 hover:border-gray-500"
+                      }`}
+                      style={{ backgroundColor: hex }}
+                    >
+                      {isSelected && (
+                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver"].includes(colorName.toLowerCase()) ? "text-black" : "text-white"}`}>
+                          ✓
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="space-y-3 pt-4 border-t border-[#F3D9CE]">
+            <button
+              onClick={handleAddToCart}
+              className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm"
             >
               Add to Bag
             </button>
+            <button
+              onClick={toggleWishlist}
+              className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors"
+            >
+              Save to Wishlist
+            </button>
           </div>
+
+          {addedNotification && (
+            <div className="bg-[#D98C7A]/10 border border-[#D98C7A] text-[#2E2624] p-3 text-center text-xs tracking-wider uppercase">
+              Added to your bag with {selectedColor} / {selectedSize}!
+            </div>
+          )}
         </div>
+
       </div>
     </main>
   );

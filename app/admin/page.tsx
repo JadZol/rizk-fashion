@@ -50,6 +50,9 @@ export default function AdminDashboard() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
+  const [editSalePrice, setEditSalePrice] = useState("");
+  const [editSizes, setEditSizes] = useState("");
+  const [editColors, setEditColors] = useState("");
 
   useEffect(() => {
     async function init() {
@@ -142,7 +145,7 @@ export default function AdminDashboard() {
     if (error) {
       alert("Error adding product: " + error.message);
     } else {
-      alert("Product published successfully with gallery!");
+      alert("Product published successfully with gallery, sizes, and colors!");
       setName("");
       setPrice("");
       setSalePrice("");
@@ -164,6 +167,9 @@ export default function AdminDashboard() {
       .update({
         name: editName,
         price: parseFloat(editPrice),
+        sale_price: editSalePrice ? parseFloat(editSalePrice) : null,
+        sizes: editSizes,
+        colors: editColors,
       })
       .eq("id", id);
 
@@ -208,7 +214,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Multi-Photo Gallery)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Multi-Photo Gallery & Colors)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -340,9 +346,16 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     {editingId === p.id ? (
-                      <div className="flex space-x-2">
-                        <input value={editName} onChange={e => setEditName(e.target.value)} className="px-2 py-1 border border-[#F3D9CE] text-sm" />
-                        <input value={editPrice} onChange={e => setEditPrice(e.target.value)} className="px-2 py-1 border border-[#F3D9CE] text-sm w-20" />
+                      <div className="space-y-2 py-1">
+                        <div className="flex space-x-2">
+                          <input value={editName} onChange={e => setEditName(e.target.value)} placeholder="Name" className="px-2 py-1 border border-[#F3D9CE] text-sm" />
+                          <input value={editPrice} onChange={e => setEditPrice(e.target.value)} placeholder="Price" className="px-2 py-1 border border-[#F3D9CE] text-sm w-20" />
+                          <input value={editSalePrice} onChange={e => setEditSalePrice(e.target.value)} placeholder="Sale $" className="px-2 py-1 border border-[#F3D9CE] text-sm w-20 text-red-600" />
+                        </div>
+                        <div className="flex space-x-2">
+                          <input value={editSizes} onChange={e => setEditSizes(e.target.value)} placeholder="Sizes (e.g. S, M, L)" className="px-2 py-1 border border-[#F3D9CE] text-xs w-48" />
+                          <input value={editColors} onChange={e => setEditColors(e.target.value)} placeholder="Colors (e.g. Black, Rose)" className="px-2 py-1 border border-[#F3D9CE] text-xs w-48" />
+                        </div>
                       </div>
                     ) : (
                       <>
@@ -359,6 +372,7 @@ export default function AdminDashboard() {
                             `$${Number(p.price).toFixed(2)}`
                           )}
                         </p>
+                        <p className="text-[10px] text-gray-500 mt-0.5">Sizes: {p.sizes || "N/A"} | Colors: {p.colors || "N/A"}</p>
                       </>
                     )}
                   </div>
@@ -372,7 +386,7 @@ export default function AdminDashboard() {
                     </>
                   ) : (
                     <>
-                      <button onClick={() => { setEditingId(p.id); setEditName(p.name); setEditPrice(p.price.toString()); }} className="text-[#6B5F5A] underline hover:text-[#2E2624]">Edit</button>
+                      <button onClick={() => { setEditingId(p.id); setEditName(p.name); setEditPrice(p.price.toString()); setEditSalePrice(p.sale_price ? p.sale_price.toString() : ""); setEditSizes(p.sizes || ""); setEditColors(p.colors || ""); }} className="text-[#6B5F5A] underline hover:text-[#2E2624]">Edit</button>
                       <button onClick={() => handleDelete(p.id)} className="text-red-600 underline hover:text-red-800">Delete</button>
                     </>
                   )}
