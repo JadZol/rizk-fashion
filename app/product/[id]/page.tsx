@@ -172,7 +172,9 @@ export default function ProductDetailPage() {
       }) 
     : [];
 
-  const whatsappMessage = encodeURIComponent(`Hi Rizk Fashion, I have a question regarding fit/sizing for the "${product.name}" piece.`);
+  // Generate dynamic WhatsApp message with the current product page URL
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const whatsappMessage = encodeURIComponent(`Hi Rizk Fashion, I have a question regarding fit/sizing for this piece:\n\n*${product.name}*\n${currentUrl}`);
   const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
 
   return (
