@@ -93,7 +93,7 @@ export default function ProductDetailPage() {
       setProduct(data);
       if (data.image_url) setSelectedImage(data.image_url);
       if (data.sizes) {
-        const sortedSizes = data.sizes.split(",").map(s => s.trim()).sort((a, b) => {
+        const sortedSizes = data.sizes.split(",").map((s: string) => s.trim()).sort((a: string, b: string) => {
           return SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b);
         });
         setSelectedSize(sortedSizes[0] || "S");
@@ -104,10 +104,10 @@ export default function ProductDetailPage() {
   }
 
   const galleryImages = product?.image_urls 
-    ? product.image_urls.split(",").map(url => url.trim()).filter(Boolean)
+    ? product.image_urls.split(",").map((url: string) => url.trim()).filter(Boolean)
     : product?.image_url ? [product.image_url] : [];
 
-  const colorsList = product?.colors ? product.colors.split(",").map(c => c.trim()) : [];
+  const colorsList = product?.colors ? product.colors.split(",").map((c: string) => c.trim()) : [];
 
   function handleThumbnailClick(imgUrl: string, index: number) {
     setSelectedImage(imgUrl);
@@ -145,9 +145,9 @@ export default function ProductDetailPage() {
     const saved = localStorage.getItem("rizk_wishlist");
     let wishlist: Product[] = saved ? JSON.parse(saved) : [];
     
-    const exists = wishlist.some(item => item.id === product.id);
+    const exists = wishlist.some((item: Product) => item.id === product.id);
     if (exists) {
-      wishlist = wishlist.filter(item => item.id !== product.id);
+      wishlist = wishlist.filter((item: Product) => item.id !== product.id);
     } else {
       wishlist.push(product);
     }
@@ -166,9 +166,8 @@ export default function ProductDetailPage() {
   const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
   const hasSale = product.sale_price !== null && product.sale_price > 0;
   
-  // Clean and sort sizes properly (XS, S, M, L, XL)
   const sizesList = product.sizes 
-    ? product.sizes.split(",").map(s => s.trim()).sort((a, b) => {
+    ? product.sizes.split(",").map((s: string) => s.trim()).sort((a: string, b: string) => {
         return SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b);
       }) 
     : [];
@@ -217,7 +216,7 @@ export default function ProductDetailPage() {
 
           {galleryImages.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {galleryImages.map((imgUrl, index) => (
+              {galleryImages.map((imgUrl: string, index: number) => (
                 <button
                   key={index}
                   onClick={() => handleThumbnailClick(imgUrl, index)}
@@ -263,7 +262,7 @@ export default function ProductDetailPage() {
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">Select Size</label>
               <div className="flex flex-wrap gap-3">
-                {sizesList.map(size => (
+                {sizesList.map((size: string) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
@@ -284,7 +283,7 @@ export default function ProductDetailPage() {
                 Select Color: <span className="font-normal text-[#D98C7A]">{selectedColor}</span>
               </label>
               <div className="flex flex-wrap gap-3">
-                {colorsList.map((colorName, index) => {
+                {colorsList.map((colorName: string, index: number) => {
                   const cleanedKey = colorName.toLowerCase().replace(/\s+/g, '');
                   const hex = BOUTIQUE_COLOR_MAP[cleanedKey] || colorName;
                   const isSelected = selectedColor === colorName;
