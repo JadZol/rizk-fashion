@@ -76,20 +76,7 @@ export default function CategoryPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624]">
-      <nav className="flex justify-between items-center px-8 py-6 border-b border-[#F3D9CE] bg-white sticky top-0 z-50">
-        <Link href="/" className="text-xl font-serif tracking-wider">RIZK FASHION</Link>
-        <div className="flex gap-6 items-center">
-          <Link href="/wishlist" className="text-xs tracking-widest uppercase text-[#6B5F5A] hover:text-[#2E2624]">Wishlist</Link>
-          <Link href="/cart" className="flex items-center gap-1.5 font-bold text-[#D98C7A] hover:text-[#2E2624] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-            </svg>
-            <span className="text-xs uppercase tracking-widest">({cart.length})</span>
-          </Link>
-        </div>
-      </nav>
-
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pt-8">
       <div className="max-w-[1400px] mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
         <aside className="w-full md:w-64 flex-shrink-0">
           <h2 className="text-2xl font-serif capitalize mb-8">{categoryName}</h2>
