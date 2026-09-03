@@ -155,6 +155,19 @@ export default function ProductDetailPage() {
     alert(exists ? "Removed from wishlist" : "Added to wishlist!");
   }
 
+  function handleShare() {
+    const currentUrl = window.location.href;
+    if (navigator.share) {
+      navigator.share({
+        title: product?.name || "Rizk Fashion Piece",
+        url: currentUrl
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(currentUrl);
+      alert("Product link copied to clipboard!");
+    }
+  }
+
   if (loading) {
     return <div className="min-h-screen bg-[#FBF3EC] flex items-center justify-center text-xs uppercase tracking-widest text-[#6B5F5A]">Loading piece...</div>;
   }
@@ -172,7 +185,6 @@ export default function ProductDetailPage() {
       }) 
     : [];
 
-  // Generate dynamic WhatsApp message with the current product page URL
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const whatsappMessage = encodeURIComponent(`Hi Rizk Fashion, I have a question regarding fit/sizing for this piece:\n\n*${product.name}*\n${currentUrl}`);
   const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
@@ -316,9 +328,17 @@ export default function ProductDetailPage() {
             <button onClick={handleAddToCart} className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm">
               Add to Bag
             </button>
-            <button onClick={toggleWishlist} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors">
-              Save to Wishlist
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={toggleWishlist} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors">
+                Save to Wishlist
+              </button>
+              <button onClick={handleShare} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors flex items-center justify-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                </svg>
+                Share Piece
+              </button>
+            </div>
           </div>
 
           <div className="bg-[#FBF3EC] p-4 border border-[#F3D9CE] flex items-center justify-between">
@@ -348,6 +368,15 @@ export default function ProductDetailPage() {
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+        </button>
+        <button
+          onClick={handleShare}
+          className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0"
+          title="Share Piece"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
           </svg>
         </button>
         <button

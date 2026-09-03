@@ -86,11 +86,17 @@ export default function AdminDashboard() {
   function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
-    setImageFiles(files);
+    setImageFiles(prev => [...prev, ...files]);
 
-    const previews = files.map(file => URL.createObjectURL(file));
-    setImagePreviews(previews);
-    setPhotoColors(files.map(() => "")); 
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(prev => [...prev, ...newPreviews]);
+    setPhotoColors(prev => [...prev, ...files.map(() => "")]);
+  }
+
+  function handleRemovePhoto(indexToRemove: number) {
+    setImageFiles(prev => prev.filter((_, i) => i !== indexToRemove));
+    setImagePreviews(prev => prev.filter((_, i) => i !== indexToRemove));
+    setPhotoColors(prev => prev.filter((_, i) => i !== indexToRemove));
   }
 
   function handlePhotoColorChange(index: number, textValue: string) {
@@ -295,11 +301,11 @@ export default function AdminDashboard() {
               <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE]" rows={2} />
             </div>
 
-            {/* Product Photos with Quick-Select Grid & Text Box */}
+            {/* Product Photos with Individual Remove Buttons */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-xs uppercase tracking-wider text-[#6B5F5A]">
-                  Product Gallery Photos & Color Assignment <span className="text-[10px] text-[#D98C7A]">(Click a color or type any custom color)</span>
+                  Product Gallery Photos & Color Assignment <span className="text-[10px] text-[#D98C7A]">(Click a color or type custom)</span>
                 </label>
                 {imageFiles.length > 0 && (
                   <button type="button" onClick={handleClearPhotos} className="text-xs text-red-600 underline font-medium">
@@ -320,8 +326,18 @@ export default function AdminDashboard() {
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-[#FBF3EC] border border-[#F3D9CE]">
                   {imagePreviews.map((src, index) => (
-                    <div key={index} className="flex flex-col gap-3 bg-white p-4 border border-[#F3D9CE]">
-                      <div className="flex items-center gap-4">
+                    <div key={index} className="flex flex-col gap-3 bg-white p-4 border border-[#F3D9CE] relative">
+                      {/* Individual Remove Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhoto(index)}
+                        className="absolute top-2 right-2 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold transition-colors"
+                        title="Remove this photo"
+                      >
+                        ✕
+                      </button>
+
+                      <div className="flex items-center gap-4 pr-6">
                         <div className="w-16 h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
                           <img src={src} alt="Preview" className="w-full h-full object-cover" />
                         </div>
