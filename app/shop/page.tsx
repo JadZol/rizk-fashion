@@ -72,12 +72,12 @@ export default function ShopPage() {
       </div>
 
       <nav className="flex justify-between items-center px-6 md:px-8 py-6 bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#F3D9CE]">
-        {/* Corrected to /logo.png */}
-        <Link href="/">
+        {/* Small Logo wrapper that zooms in slightly to cut off the black borders */}
+        <Link href="/" className="block rounded-full overflow-hidden h-10 w-10 md:h-12 md:w-12 shadow-sm border border-[#F3D9CE] hover:opacity-80 transition-opacity">
           <img 
             src="/logo.png" 
             alt="Rizk" 
-            className="h-10 w-10 md:h-12 md:w-12 object-cover rounded-full shadow-sm border border-[#F3D9CE] hover:opacity-80 transition-opacity" 
+            className="h-full w-full object-cover scale-[1.15]" 
           />
         </Link>
 
