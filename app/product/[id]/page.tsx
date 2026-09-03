@@ -32,6 +32,7 @@ const COLOR_MAP: Record<string, string> = {
   burgundy: "#800020",
   navy: "#000080",
   blue: "#0000FF",
+  green: "#008000",
   grey: "#808080",
   charcoal: "#36454F",
   brown: "#A52A2A",
@@ -75,14 +76,25 @@ export default function ProductDetailPage() {
     setLoading(false);
   }
 
+  const galleryImages = product?.image_urls 
+    ? product.image_urls.split(",").map(url => url.trim()).filter(Boolean)
+    : product?.image_url ? [product.image_url] : [];
+
+  const colorsList = product?.colors ? product.colors.split(",").map(c => c.trim()) : [];
+
+  // When clicking a thumbnail, change image AND automatically update the color swatch
+  function handleThumbnailClick(imgUrl: string, index: number) {
+    setSelectedImage(imgUrl);
+    if (colorsList.length > index) {
+      setSelectedColor(colorsList[index]);
+    }
+  }
+
+  // When clicking a color swatch, change color AND automatically update the gallery image
   function handleColorSelect(colorName: string, index: number) {
     setSelectedColor(colorName);
-    const gallery = product?.image_urls 
-      ? product.image_urls.split(",").map(u => u.trim()).filter(Boolean)
-      : product?.image_url ? [product.image_url] : [];
-
-    if (gallery.length > index) {
-      setSelectedImage(gallery[index]);
+    if (galleryImages.length > index) {
+      setSelectedImage(galleryImages[index]);
     }
   }
 
@@ -127,26 +139,17 @@ export default function ProductDetailPage() {
 
   const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
   const hasSale = product.sale_price !== null && product.sale_price > 0;
-  
   const sizesList = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
-  const colorsList = product.colors ? product.colors.split(",").map(c => c.trim()) : [];
-  
-  const galleryImages = product.image_urls 
-    ? product.image_urls.split(",").map(url => url.trim()).filter(Boolean)
-    : product.image_url ? [product.image_url] : [];
 
-  // WhatsApp Concierge custom message linking to this exact item
   const whatsappMessage = encodeURIComponent(`Hi Rizk Fashion, I have a question regarding fit/sizing for the "${product.name}" piece.`);
   const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
 
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20 relative">
-      {/* Top Announcement Bar */}
       <div className="bg-[#D98C7A] text-white text-center py-2 text-xs tracking-widest uppercase">
         Express Delivery Across Lebanon • Whish Money & Cash on Delivery
       </div>
 
-      {/* Navigation Header */}
       <nav className="flex justify-between items-center px-8 py-6 border-b border-[#F3D9CE] bg-white/90 backdrop-blur-md sticky top-0 z-50">
         <Link href="/" className="block rounded-full overflow-hidden h-10 w-10 md:h-12 md:w-12 shadow-sm border border-[#F3D9CE]">
           <img src="/logo.png" alt="Rizk" className="h-full w-full object-cover scale-[1.15]" />
@@ -163,9 +166,7 @@ export default function ProductDetailPage() {
         </div>
       </nav>
 
-      {/* Product Details Section */}
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        
         {/* Gallery Section */}
         <div className="space-y-4">
           <div className="w-full h-[600px] bg-[#F3D9CE] overflow-hidden relative border border-[#F3D9CE]">
@@ -181,13 +182,12 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Thumbnail Selector */}
           {galleryImages.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
               {galleryImages.map((imgUrl, index) => (
                 <button
                   key={index}
-                  onClick={() => setSelectedImage(imgUrl)}
+                  onClick={() => handleThumbnailClick(imgUrl, index)}
                   className={`w-20 h-24 flex-shrink-0 border-2 overflow-hidden transition-all ${
                     selectedImage === imgUrl ? "border-[#2E2624] scale-105" : "border-[#F3D9CE] opacity-70 hover:opacity-100"
                   }`}
@@ -214,8 +214,6 @@ export default function ProductDetailPage() {
                 <span className="text-2xl font-bold text-[#2E2624]">${effectivePrice.toFixed(2)}</span>
               )}
             </div>
-            
-            {/* Elite Touch: Dynamic Stock Status Badge */}
             {product.stock_status && (
               <div className="inline-block bg-[#FBF3EC] border border-[#D98C7A]/40 px-3 py-1 text-[11px] uppercase tracking-wider text-[#2E2624] font-medium">
                 ⚡ {product.stock_status}
@@ -227,22 +225,16 @@ export default function ProductDetailPage() {
             {product.description || "Crafted with signature boutique styling, combining timeless elegance with modern comfort."}
           </p>
 
-          {/* Size Selection */}
           {sizesList.length > 0 && (
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <label className="text-xs uppercase tracking-widest font-bold text-[#2E2624]">Select Size</label>
-                <span className="text-[10px] text-[#6B5F5A] italic">Standard Turkish / European Fit</span>
-              </div>
+              <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">Select Size</label>
               <div className="flex flex-wrap gap-3">
                 {sizesList.map(size => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={`w-12 h-12 text-xs tracking-wider border transition-all font-medium ${
-                      selectedSize === size 
-                        ? "bg-[#2E2624] text-white border-[#2E2624]" 
-                        : "bg-white text-[#2E2624] border-[#F3D9CE] hover:border-[#2E2624]"
+                      selectedSize === size ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#2E2624] border-[#F3D9CE]"
                     }`}
                   >
                     {size}
@@ -252,7 +244,6 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Color Selection Swatches */}
           {colorsList.length > 0 && (
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">
@@ -284,34 +275,21 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="space-y-3 pt-4 border-t border-[#F3D9CE]">
-            <button
-              onClick={handleAddToCart}
-              className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm"
-            >
+            <button onClick={handleAddToCart} className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm">
               Add to Bag
             </button>
-            <button
-              onClick={toggleWishlist}
-              className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors"
-            >
+            <button onClick={toggleWishlist} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors">
               Save to Wishlist
             </button>
           </div>
 
-          {/* Elite Tier Addition: In-Context Stylist Support */}
           <div className="bg-[#FBF3EC] p-4 border border-[#F3D9CE] flex items-center justify-between">
             <div className="space-y-0.5">
               <p className="text-[11px] uppercase tracking-wider font-bold text-[#2E2624]">Need Fit Advice?</p>
               <p className="text-[10px] text-[#6B5F5A]">Chat directly with our boutique stylist about measurements.</p>
             </div>
-            <a 
-              href={whatsappUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="bg-[#2E2624] text-white px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors flex items-center gap-1.5 flex-shrink-0"
-            >
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="bg-[#2E2624] text-white px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors flex items-center gap-1.5 flex-shrink-0">
               Ask Stylist
             </a>
           </div>
@@ -322,7 +300,6 @@ export default function ProductDetailPage() {
             </div>
           )}
         </div>
-
       </div>
     </main>
   );

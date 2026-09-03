@@ -22,7 +22,7 @@ type Product = {
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL"];
 const AVAILABLE_COLORS = [
   "Black", "White", "Beige", "Camel", "Rose", "Pink", 
-  "Red", "Burgundy", "Navy", "Blue", "Grey", "Charcoal", 
+  "Red", "Burgundy", "Navy", "Blue", "Green", "Grey", "Charcoal", 
   "Brown", "Olive", "Gold", "Silver"
 ];
 const CATEGORIES = ["Dresses", "Tops & Sweaters", "Shirts", "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"];
@@ -51,6 +51,7 @@ export default function AdminDashboard() {
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [photoColors, setPhotoColors] = useState<string[]>([]); // Tracks color tagged per photo index for mobile
   const [uploading, setUploading] = useState(false);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -95,7 +96,6 @@ export default function AdminDashboard() {
     );
   }
 
-  // Handle mobile file selection and generate instant preview links
   function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
@@ -103,11 +103,21 @@ export default function AdminDashboard() {
 
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
+
+    // Default each photo to "Black" initially so you can easily select its actual color
+    setPhotoColors(files.map(() => "Black"));
+  }
+
+  function handlePhotoColorChange(index: number, color: string) {
+    const updated = [...photoColors];
+    updated[index] = color;
+    setPhotoColors(updated);
   }
 
   function handleClearPhotos() {
     setImageFiles([]);
     setImagePreviews([]);
+    setPhotoColors([]);
     const fileInput = document.getElementById("product-photo-input") as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   }
@@ -119,13 +129,19 @@ export default function AdminDashboard() {
       return;
     }
 
+    // Combine manual checkboxes, custom typed colors, and photo-tagged colors
     let allColorsArray = [...selectedColors];
     if (customColors.trim()) {
       const typedList = customColors.split(",").map(c => c.trim()).filter(Boolean);
       allColorsArray = [...allColorsArray, ...typedList];
     }
+    if (photoColors.length > 0) {
+      allColorsArray = [...allColorsArray, ...photoColors];
+    }
 
-    if (allColorsArray.length === 0) {
+    const uniqueColors = Array.from(new Set(allColorsArray));
+
+    if (uniqueColors.length === 0) {
       alert("Please select or type at least one color.");
       return;
     }
@@ -163,7 +179,7 @@ export default function AdminDashboard() {
         stock_status: stockStatus,
         description: description || null,
         sizes: selectedSizes.join(", "),
-        colors: allColorsArray.join(", "),
+        colors: uniqueColors.join(", "),
         image_url: mainImageUrl,
         image_urls: allImageUrlsString,
       },
@@ -174,7 +190,7 @@ export default function AdminDashboard() {
     if (error) {
       alert("Error adding product: " + error.message);
     } else {
-      alert("Product published successfully!");
+      alert("Product published successfully with photo color mapping!");
       setName("");
       setPrice("");
       setSalePrice("");
@@ -182,6 +198,7 @@ export default function AdminDashboard() {
       setCustomColors("");
       setImageFiles([]);
       setImagePreviews([]);
+      setPhotoColors([]);
       fetchInventory();
     }
   }
@@ -245,7 +262,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Mobile-Friendly Gallery & Colors)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Mobile Photo Color Mapping)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -282,23 +299,26 @@ export default function AdminDashboard() {
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Sizes</label>
               <div className="flex flex-wrap gap-2">
-                {AVAILABLE_SIZES.map(size => (
-                  <button
-                    type="button"
-                    key={size}
-                    onClick={() => toggleSize(size)}
-                    className={`w-12 h-12 text-sm font-medium border transition-all ${
-                      selectedSizes.includes(size) ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#6B5F5A] border-[#F3D9CE]"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {AVAILABLE_SIZES.map(size => {
+                  const isSelected = selectedSizes.includes(size);
+                  return (
+                    <button
+                      type="button"
+                      key={size}
+                      onClick={() => toggleSize(size)}
+                      className={`w-12 h-12 text-sm font-medium border transition-all ${
+                        isSelected ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#6B5F5A] border-[#F3D9CE]"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Available Colors (Select or Type)</label>
+              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Additional Colors (Optional)</label>
               <div className="flex flex-wrap gap-2 mb-3">
                 {AVAILABLE_COLORS.map(color => {
                   const isSelected = selectedColors.includes(color);
@@ -330,11 +350,11 @@ export default function AdminDashboard() {
               <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none" rows={2} />
             </div>
 
-            {/* Product Photos with Mobile Previews & Clear Button */}
+            {/* Product Photos with Mobile Color Mapping Dropdowns */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-xs uppercase tracking-wider text-[#6B5F5A]">
-                  Product Gallery Photos <span className="text-[10px] text-[#D98C7A]">(First photo is cover)</span>
+                  Product Gallery Photos & Color Mapping <span className="text-[10px] text-[#D98C7A]">(Assign exact color to each photo)</span>
                 </label>
                 {imageFiles.length > 0 && (
                   <button 
@@ -356,17 +376,24 @@ export default function AdminDashboard() {
                 className="w-full p-2 border border-[#F3D9CE] text-sm bg-white mb-4"
               />
 
-              {/* Instant Image Previews Grid */}
               {imagePreviews.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#FBF3EC] border border-[#F3D9CE]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-[#FBF3EC] border border-[#F3D9CE]">
                   {imagePreviews.map((src, index) => (
-                    <div key={index} className="relative group">
-                      <div className="w-full h-32 bg-white border border-[#F3D9CE] overflow-hidden">
+                    <div key={index} className="flex items-center gap-4 bg-white p-3 border border-[#F3D9CE]">
+                      <div className="w-16 h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
                         <img src={src} alt="Preview" className="w-full h-full object-cover" />
                       </div>
-                      <span className="absolute top-1 left-1 bg-[#2E2624] text-white text-[10px] px-1.5 py-0.5">
-                        #{index + 1}
-                      </span>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-[10px] uppercase tracking-wider font-bold text-[#2E2624]">Photo #{index + 1} {index === 0 && "(Cover)"}</p>
+                        <label className="block text-[10px] text-[#6B5F5A] uppercase">Color for this photo:</label>
+                        <select 
+                          value={photoColors[index] || "Black"}
+                          onChange={(e) => handlePhotoColorChange(index, e.target.value)}
+                          className="w-full p-1.5 border border-[#F3D9CE] text-xs bg-white focus:outline-none"
+                        >
+                          {AVAILABLE_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
                     </div>
                   ))}
                 </div>
