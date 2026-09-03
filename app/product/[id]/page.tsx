@@ -21,7 +21,6 @@ type Product = {
   stock_status: string | null;
 };
 
-// Comprehensive Boutique Color Map for accurate rendering of any custom color
 const BOUTIQUE_COLOR_MAP: Record<string, string> = {
   black: "#000000",
   white: "#FFFFFF",
@@ -115,6 +114,8 @@ export default function ProductDetailPage() {
     if (galleryImages.length > index) {
       setSelectedImage(galleryImages[index]);
     }
+    // Smoothly scroll back to top on mobile so photo is instantly in view
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleAddToCart() {
@@ -164,7 +165,7 @@ export default function ProductDetailPage() {
   const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
 
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20 relative">
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-28 relative">
       <div className="bg-[#D98C7A] text-white text-center py-2 text-xs tracking-widest uppercase">
         Express Delivery Across Lebanon • Whish Money & Cash on Delivery
       </div>
@@ -185,12 +186,13 @@ export default function ProductDetailPage() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        {/* Gallery Section */}
-        <div className="space-y-4">
-          <div className="w-full h-[600px] bg-[#F3D9CE] overflow-hidden relative border border-[#F3D9CE]">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        
+        {/* Gallery Section - Sticky on Desktop so photo never leaves view */}
+        <div className="space-y-4 md:sticky md:top-28">
+          <div className="w-full h-[500px] md:h-[600px] bg-[#F3D9CE] overflow-hidden relative border border-[#F3D9CE]">
             {selectedImage ? (
-              <img src={selectedImage} alt={product.name} className="w-full h-full object-cover transition-all duration-500" />
+              <img src={selectedImage} alt={product.name} className="w-full h-full object-cover transition-all duration-300" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-[#6B5F5A]">No image available</div>
             )}
@@ -219,7 +221,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product Info & Options */}
-        <div className="space-y-8 bg-white p-8 border border-[#F3D9CE] shadow-sm relative">
+        <div className="space-y-8 bg-white p-6 md:p-8 border border-[#F3D9CE] shadow-sm relative">
           <div>
             <p className="text-xs uppercase tracking-widest text-[#D98C7A] mb-2">{product.category || "Collection"}</p>
             <h1 className="text-3xl font-serif font-light text-[#2E2624] mb-4">{product.name}</h1>
@@ -295,7 +297,8 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          <div className="space-y-3 pt-4 border-t border-[#F3D9CE]">
+          {/* Action Buttons (Desktop view) */}
+          <div className="space-y-3 pt-4 border-t border-[#F3D9CE] hidden md:block">
             <button onClick={handleAddToCart} className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm">
               Add to Bag
             </button>
@@ -320,6 +323,25 @@ export default function ProductDetailPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Zara-Style Sticky Mobile Bottom Action Bar */}
+      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#F3D9CE] p-4 flex gap-3 items-center z-50 md:hidden shadow-lg">
+        <button
+          onClick={toggleWishlist}
+          className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0"
+          title="Save to Wishlist"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+        </button>
+        <button
+          onClick={handleAddToCart}
+          className="flex-1 bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm"
+        >
+          Add to Bag — ${effectivePrice.toFixed(2)}
+        </button>
       </div>
     </main>
   );
