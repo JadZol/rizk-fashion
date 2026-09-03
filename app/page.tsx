@@ -45,7 +45,6 @@ export default function Home() {
       {/* Navigation */}
       <nav className="flex justify-between items-center px-6 md:px-8 py-6 bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#F3D9CE]">
         <div className="flex items-center gap-4">
-          {/* Hamburger Menu Button */}
           <button 
             onClick={() => setMenuOpen(true)}
             className="text-[#2E2624] hover:opacity-70 transition-opacity p-1"
@@ -73,34 +72,26 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Slide-out Mobile/Boutique Menu Drawer */}
+      {/* Slide-out Mobile Menu Drawer */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-start transition-opacity">
-          <div className="bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] animate-in slide-in-from-left duration-300">
+          <div className="bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE]">
             <div>
               <div className="flex justify-between items-center mb-12">
                 <span className="text-xs uppercase tracking-[0.2em] font-serif font-bold text-[#2E2624]">Rizk Fashion — RZK</span>
-                <button 
-                  onClick={() => setMenuOpen(false)}
-                  className="text-[#2E2624] p-2 hover:opacity-70"
-                  aria-label="Close Menu"
-                >
+                <button onClick={() => setMenuOpen(false)} className="text-[#2E2624] p-2">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-
               <div className="space-y-6 text-lg font-serif tracking-wide text-[#2E2624]">
-                <Link href="/" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Home</Link>
-                <Link href="/shop" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Shop Collection</Link>
-                <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Wishlist</Link>
-                <Link href="/cart" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Shopping Bag ({cart.length})</Link>
-                <Link href="/about" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Our Story</Link>
-                <Link href="/faq" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Contact & FAQ</Link>
+                <Link href="/" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Home</Link>
+                <Link href="/shop" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Shop Collection</Link>
+                <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Wishlist</Link>
+                <Link href="/cart" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Shopping Bag ({cart.length})</Link>
               </div>
             </div>
-
             <div className="pt-8 border-t border-[#F3D9CE] space-y-2 text-xs text-[#6B5F5A]">
               <p>rizkfashion82@gmail.com</p>
               <p>+961 76 380 819</p>
@@ -163,38 +154,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer with Email & Phone */}
-      <footer className="bg-white border-t border-[#F3D9CE] py-16 px-8 mt-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-          <div>
-            <h3 className="text-lg font-serif mb-2">Rizk Fashion — RZK</h3>
-            <p className="text-xs text-[#6B5F5A] leading-relaxed">Curated women's clothing and boutique pieces delivered across Lebanon.</p>
+      {/* Unified Boutique Footer */}
+      <footer className="bg-[#2E2624] text-white py-16 px-8 mt-20 border-t border-[#483C32]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div className="space-y-4">
+            <h3 className="text-lg font-serif tracking-wide">RIZK FASHION</h3>
+            <p className="text-xs text-gray-300 leading-relaxed">
+              Curated elegance and timeless wardrobe essentials. Proudly serving Lebanon with premium boutique fashion.
+            </p>
           </div>
-          <div className="space-y-3 text-xs tracking-wider text-[#6B5F5A]">
-            <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#2E2624]">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-              </svg>
-              <a href="tel:+96176380819" className="hover:text-[#2E2624] transition-colors">+961 76 380 819</a>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#2E2624]">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-              </svg>
-              <a href="mailto:rizkfashion82@gmail.com" className="hover:text-[#2E2624] transition-colors">rizkfashion82@gmail.com</a>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#2E2624]">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-              </svg>
-              <span>Lebanon — Online Only</span>
-            </div>
+
+          <div className="space-y-3 text-xs tracking-widest uppercase">
+            <p className="text-[#D98C7A] font-bold mb-1">Customer Care</p>
+            <Link href="/shop" className="block text-gray-300 hover:text-white transition-colors">Shipping & Delivery</Link>
+            <Link href="/shop" className="block text-gray-300 hover:text-white transition-colors">Payment Methods</Link>
+            <Link href="/shop" className="block text-gray-300 hover:text-white transition-colors">Returns & Exchanges</Link>
           </div>
-          <div className="text-right text-xs tracking-widest text-[#6B5F5A]">
-            <p>© 2026 RIZK FASHION</p>
-            <p className="mt-1">All Rights Reserved.</p>
+
+          <div className="space-y-3 text-xs tracking-widest uppercase">
+            <p className="text-[#D98C7A] font-bold mb-1">Contact Info</p>
+            <a href="tel:+96176380819" className="block text-gray-300 hover:text-white transition-colors">+961 76 380 819</a>
+            <a href="mailto:rizkfashion82@gmail.com" className="block text-gray-300 hover:text-white transition-colors">rizkfashion82@gmail.com</a>
+            <p className="text-gray-400 normal-case">Lebanon — Online Only</p>
           </div>
+
+          <div className="space-y-3 text-xs tracking-widest uppercase">
+            <p className="text-[#D98C7A] font-bold mb-1">Connect</p>
+            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="block text-gray-300 hover:text-white transition-colors">Instagram</a>
+            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="block text-gray-300 hover:text-white transition-colors">Facebook</a>
+            <a href="https://wa.me/96176380819" target="_blank" rel="noreferrer" className="block text-gray-300 hover:text-white transition-colors">WhatsApp</a>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto border-t border-gray-700 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-xs tracking-widest text-gray-400">
+          <p>© 2026 RIZK FASHION. All Rights Reserved.</p>
+          <p className="mt-2 md:mt-0">Online Boutique Experience</p>
         </div>
       </footer>
     </main>
