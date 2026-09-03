@@ -20,10 +20,10 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Main Navigation Bar */}
+        {/* Main Single Navigation Bar */}
         <nav className="flex justify-between items-center px-6 md:px-8 py-4 bg-white">
           
-          {/* Left Section: Hamburger Menu + Logo */}
+          {/* Left: Hamburger + Single Logo */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMenuOpen(true)}
@@ -40,7 +40,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Right Section: Links & Cart */}
+          {/* Right: Links & Cart */}
           <div className="flex gap-6 items-center text-xs tracking-widest uppercase text-[#6B5F5A]">
             <Link href="/shop" className="hover:text-[#2E2624] hidden sm:inline">Shop</Link>
             <Link href="/wishlist" className="hover:text-[#2E2624]">Wishlist</Link>
@@ -57,13 +57,11 @@ export default function Navbar() {
       {/* Full-Screen Overlay Slide-out Menu Drawer */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
           <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
             onClick={() => setMenuOpen(false)} 
           />
 
-          {/* Drawer Content */}
           <div className="relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10">
             <div>
               <div className="flex justify-between items-center mb-12">

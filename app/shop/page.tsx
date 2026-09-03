@@ -28,19 +28,12 @@ export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
-  const [scrolled, setScrolled] = useState(false);
   
   const { cart, addToCart } = useCart();
 
   useEffect(() => {
     fetchProducts();
     loadWishlist();
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   async function fetchProducts() {
@@ -121,40 +114,8 @@ export default function ShopPage() {
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20 relative">
       
-      {/* Floating Transparent-to-White Header & Ticker Container */}
-      <div className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-[#F3D9CE]" : "bg-transparent"}`}>
-        
-        {/* Animated Marquee Ticker */}
-        <div className="bg-[#D98C7A] text-white py-1.5 overflow-hidden whitespace-nowrap text-[10px] md:text-xs">
-          <div className="inline-block animate-[marquee_15s_linear_infinite] tracking-widest uppercase">
-            Express Delivery Across Lebanon &nbsp; • &nbsp; Whish Money & Cash on Delivery &nbsp; • &nbsp; Signature Packaging Included &nbsp; • &nbsp; Express Delivery Across Lebanon &nbsp; • &nbsp; Whish Money & Cash on Delivery
-          </div>
-        </div>
-
-        {/* Navigation Bar */}
-        <nav className="flex justify-between items-center px-6 md:px-8 py-4">
-          <Link href="/" className="block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 shadow-sm border border-[#F3D9CE] hover:opacity-80 transition-opacity bg-white">
-            <img 
-              src="/logo.png" 
-              alt="Rizk" 
-              className="h-full w-full object-cover scale-[1.15]" 
-            />
-          </Link>
-
-          <div className={`flex gap-6 items-center text-xs md:text-sm tracking-widest uppercase transition-colors ${scrolled ? "text-[#6B5F5A]" : "text-white drop-shadow-md"}`}>
-            <Link href="/wishlist" className="hover:opacity-70 transition-opacity">Wishlist</Link>
-            <Link href="/cart" className="flex items-center gap-1.5 font-bold hover:opacity-70 transition-opacity">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-              </svg>
-              <span>({cart.length})</span>
-            </Link>
-          </div>
-        </nav>
-      </div>
-
-      {/* Editorial Full-Screen Hero (Pushed slightly up to sit beautifully under the floating header) */}
-      <header className="relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden mb-16 pt-20">
+      {/* Editorial Full-Screen Hero */}
+      <header className="relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden mb-16">
         <img 
           src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" 
           alt="Rizk Fashion Editorial" 
