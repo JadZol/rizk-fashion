@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useCart } from "../../context/CartContext";
 
 type Product = {
   id: string;
@@ -23,21 +24,15 @@ type Product = {
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { addToCart, cart } = useCart();
+  
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [activeImage, setActiveImage] = useState("");
-
-  const deliveryFee = 4.00;
-  const momWhatsAppNumber = process.env.NEXT_PUBLIC_MOM_WHATSAPP || "96176380819";
-  const momWhishNumber = process.env.NEXT_PUBLIC_MOM_WHISH || "96176380819";
 
   useEffect(() => {
     async function fetchProduct() {
@@ -67,7 +62,7 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [params.id, router]);
 
-  if (loading) return <p className="p-20 text-center text-[#6B5F5A]">Loading piece...</p>;
+  if (loading) return <p className="p-20 text-center text-[#6B5F5A] text-xs uppercase tracking-widest">Loading piece...</p>;
   if (!product) return null;
 
   const sizeList = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
@@ -77,7 +72,6 @@ export default function ProductDetailPage() {
     : product.image_url ? [product.image_url] : [];
   
   const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
-  const totalPrice = effectivePrice + deliveryFee;
 
   function toggleWishlist() {
     if (!product) return;
@@ -94,40 +88,26 @@ export default function ProductDetailPage() {
     localStorage.setItem("rizk_wishlist", JSON.stringify(currentWishlist));
   }
 
-  function getOrderMessageText() {
-    if (!product) return "";
-    const paymentDetails = paymentMethod === "Whish Money" 
-      ? `Payment Method: Whish Money\nStatus: Transfer sent to +${momWhishNumber}`
-      : `Payment Method: Cash on Delivery`;
-
-    const pageUrl = typeof window !== "undefined" ? window.location.href : "";
-
-    return (
-      `Hello Rizk Fashion! I would like to place an order:\n\n` +
-      `Product Name: ${product.name}\n` +
-      `Category: ${product.category || "Collection"}\n` +
-      `Size: ${selectedSize}\n` +
-      `Color: ${selectedColor}\n\n` +
-      `Customer Phone: ${customerPhone}\n` +
-      `Delivery Address: ${customerAddress}\n\n` +
-      `Total Amount: $${totalPrice.toFixed(2)}\n\n` +
-      `Product Image URL: ${activeImage || product.image_url || "N/A"}\n` +
-      `Page Link: ${pageUrl}\n\n` +
-      `${paymentDetails}`
-    );
-  }
-
-  function handleWhatsAppOrder() {
-    if (!customerPhone || !customerAddress) {
-      alert("Please enter your phone number and delivery address before ordering.");
+  function handleAddToBag() {
+    if (sizeList.length > 0 && !selectedSize) {
+      alert("Please select a size.");
       return;
     }
-    setShowSuccessBanner(true);
-    const message = encodeURIComponent(getOrderMessageText());
-    
-    setTimeout(() => {
-      window.location.href = `https://wa.me/${momWhatsAppNumber}?text=${message}`;
-    }, 400);
+    if (colorList.length > 0 && !selectedColor) {
+      alert("Please select a color.");
+      return;
+    }
+
+    // Combine size and color into a single string for the cart summary
+    const combinedOptions = [selectedSize, selectedColor].filter(Boolean).join(" / ");
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: effectivePrice,
+      image_url: activeImage || product.image_url,
+      size: combinedOptions || "One Size"
+    });
   }
 
   return (
@@ -136,15 +116,14 @@ export default function ProductDetailPage() {
         Express Delivery Across Lebanon • Secure Checkout
       </div>
 
-      {showSuccessBanner && (
-        <div className="bg-[#2E2624] text-white text-center py-3 text-xs uppercase shadow-md">
-          ✓ Redirecting to WhatsApp...
-        </div>
-      )}
-
       <nav className="flex justify-between items-center px-6 md:px-8 py-6 border-b border-[#F3D9CE]">
         <h1 className="text-xl font-serif">RIZK FASHION</h1>
-        <Link href="/" className="text-xs uppercase tracking-widest text-[#6B5F5A]">← Back to Shop</Link>
+        <div className="flex gap-6 items-center">
+          <Link href="/" className="text-xs uppercase tracking-widest text-[#6B5F5A] hover:text-[#2E2624]">← Shop</Link>
+          <Link href="/cart" className="text-xs font-bold tracking-widest uppercase text-[#D98C7A]">
+            Bag ({cart.length})
+          </Link>
+        </div>
       </nav>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
@@ -152,7 +131,7 @@ export default function ProductDetailPage() {
           
           <button 
             onClick={toggleWishlist}
-            className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-[#F3D9CE]"
+            className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-[#F3D9CE] shadow-sm transition-transform hover:scale-105"
           >
             <span className={`text-lg ${isWishlisted ? "text-red-500" : "text-[#6B5F5A]"}`}>
               {isWishlisted ? "♥" : "♡"}
@@ -168,7 +147,7 @@ export default function ProductDetailPage() {
             {galleryList.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {galleryList.map((imgUrl, idx) => (
-                  <button key={idx} onClick={() => setActiveImage(imgUrl)} className="w-16 h-20 flex-shrink-0 border">
+                  <button key={idx} onClick={() => setActiveImage(imgUrl)} className={`w-16 h-20 flex-shrink-0 border ${activeImage === imgUrl ? 'border-[#2E2624]' : 'border-[#F3D9CE]'}`}>
                     <img src={imgUrl} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
@@ -180,8 +159,19 @@ export default function ProductDetailPage() {
             <div>
               <span className="text-xs uppercase tracking-widest text-[#D98C7A]">{product.category || "Collection"}</span>
               <h1 className="text-2xl md:text-3xl font-serif mt-1 mb-2">{product.name}</h1>
-              <p className="text-xl font-bold text-[#D98C7A] mb-4">${effectivePrice.toFixed(2)}</p>
-              <p className="text-sm text-[#6B5F5A] mb-6">{product.description || "Crafted for the modern wardrobe."}</p>
+              
+              <div className="text-xl font-bold text-[#D98C7A] mb-4">
+                {product.sale_price && product.sale_price > 0 ? (
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-400 line-through text-sm">${product.price.toFixed(2)}</span>
+                    <span>${effectivePrice.toFixed(2)}</span>
+                  </div>
+                ) : (
+                  <span>${product.price.toFixed(2)}</span>
+                )}
+              </div>
+              
+              <p className="text-sm text-[#6B5F5A] mb-6 leading-relaxed">{product.description || "Crafted for the modern wardrobe."}</p>
 
               {colorList.length > 0 && (
                 <div className="mb-4">
@@ -191,7 +181,7 @@ export default function ProductDetailPage() {
                       <button
                         key={color}
                         onClick={() => setSelectedColor(color)}
-                        className={`px-3 py-2 text-xs uppercase border ${selectedColor === color ? "bg-[#2E2624] text-white" : "bg-white"}`}
+                        className={`px-3 py-2 text-xs uppercase border transition-colors ${selectedColor === color ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white border-[#F3D9CE] hover:border-[#D98C7A]"}`}
                       >
                         {color}
                       </button>
@@ -208,7 +198,7 @@ export default function ProductDetailPage() {
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
-                        className={`w-10 h-10 text-xs font-medium border ${selectedSize === size ? "bg-[#2E2624] text-white" : "bg-white"}`}
+                        className={`w-10 h-10 text-xs font-medium border transition-colors ${selectedSize === size ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white border-[#F3D9CE] hover:border-[#D98C7A]"}`}
                       >
                         {size}
                       </button>
@@ -216,58 +206,13 @@ export default function ProductDetailPage() {
                   </div>
                 </div>
               )}
-
-              <div className="space-y-3 pt-4 border-t border-[#F3D9CE]">
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-1">Phone Number *</label>
-                  <input 
-                    type="tel"
-                    required
-                    placeholder="e.g. 70123456"
-                    value={customerPhone}
-                    onChange={e => setCustomerPhone(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-[#F3D9CE] text-sm focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-1">Delivery Address *</label>
-                  <input 
-                    type="text"
-                    required
-                    placeholder="e.g. Beirut, Hamra"
-                    value={customerAddress}
-                    onChange={e => setCustomerAddress(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-[#F3D9CE] text-sm focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Payment Method</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("Cash on Delivery")}
-                    className={`p-2.5 text-xs uppercase border ${paymentMethod === "Cash on Delivery" ? "bg-[#2E2624] text-white" : "bg-white"}`}
-                  >
-                    Cash on Delivery
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("Whish Money")}
-                    className={`p-2.5 text-xs uppercase border ${paymentMethod === "Whish Money" ? "bg-[#2E2624] text-white" : "bg-white"}`}
-                  >
-                    Whish Money
-                  </button>
-                </div>
-              </div>
             </div>
 
             <button 
-              onClick={handleWhatsAppOrder}
-              className="w-full bg-[#25D366] text-white py-4 uppercase tracking-widest text-sm font-medium shadow-sm active:bg-[#20ba5a]"
+              onClick={handleAddToBag}
+              className="w-full bg-[#2E2624] text-white py-4 uppercase tracking-widest text-xs font-bold shadow-sm hover:bg-[#D98C7A] transition-colors"
             >
-              Complete Order via WhatsApp
+              Add to Bag
             </button>
           </div>
         </div>
