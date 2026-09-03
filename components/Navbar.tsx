@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50">
+      <header className="sticky top-0 z-40 bg-white border-b border-[#F3D9CE]">
         {/* Scrolling Announcement Ticker */}
         <div className="bg-[#D98C7A] text-white py-2 overflow-hidden whitespace-nowrap">
           <div className="animate-marquee text-xs tracking-widest uppercase">
@@ -21,9 +21,9 @@ export default function Navbar() {
         </div>
 
         {/* Main Navigation Bar */}
-        <nav className="flex justify-between items-center px-6 md:px-8 py-4 bg-white/95 backdrop-blur-md border-b border-[#F3D9CE]">
+        <nav className="flex justify-between items-center px-6 md:px-8 py-4 bg-white">
           
-          {/* Left Section: Hamburger Menu + Logo side by side with proper gap */}
+          {/* Left Section: Hamburger Menu + Logo */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMenuOpen(true)}
@@ -54,32 +54,44 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* Slide-out Mobile Menu Drawer */}
+      {/* Full-Screen Overlay Slide-out Menu Drawer */}
       {menuOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-start transition-opacity">
-          <div className="bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE]">
+        <div className="fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
+            onClick={() => setMenuOpen(false)} 
+          />
+
+          {/* Drawer Content */}
+          <div className="relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10">
             <div>
               <div className="flex justify-between items-center mb-12">
                 <span className="text-xs uppercase tracking-[0.2em] font-serif font-bold text-[#2E2624]">Rizk Fashion — RZK</span>
-                <button onClick={() => setMenuOpen(false)} className="text-[#2E2624] p-2">
+                <button 
+                  onClick={() => setMenuOpen(false)} 
+                  className="text-[#2E2624] p-2 hover:opacity-70 transition-opacity"
+                  aria-label="Close Menu"
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
+
               <div className="space-y-6 text-lg font-serif tracking-wide text-[#2E2624]">
-                <Link href="/" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Home</Link>
-                <Link href="/shop" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Shop Collection</Link>
-                <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Wishlist</Link>
-                <Link href="/cart" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Shopping Bag ({cart.length})</Link>
+                <Link href="/" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Home</Link>
+                <Link href="/shop" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Shop Collection</Link>
+                <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Wishlist</Link>
+                <Link href="/cart" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A] transition-colors">Shopping Bag ({cart.length})</Link>
               </div>
             </div>
+
             <div className="pt-8 border-t border-[#F3D9CE] space-y-2 text-xs text-[#6B5F5A]">
               <p>rizkfashion82@gmail.com</p>
               <p>+961 76 380 819</p>
             </div>
           </div>
-          <div className="flex-1" onClick={() => setMenuOpen(false)} />
         </div>
       )}
     </>
