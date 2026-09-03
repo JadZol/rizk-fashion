@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateItemSize, cartTotal } = useCart();
+  const { cart, removeFromCart, updateItemSize, updateItemColor, cartTotal } = useCart();
   
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,7 +29,7 @@ export default function CartPage() {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
     cart.forEach((item, index) => {
-      message += `${index + 1}. ${item.name} (Size: ${item.size}) - $${item.price.toFixed(2)}\n`;
+      message += `${index + 1}. ${item.name} (Color: ${item.color || "Standard"}, Size: ${item.size}) - $${item.price.toFixed(2)}\n`;
       message += `    Link: ${baseUrl}/product/${item.id}\n`;
     });
 
@@ -68,18 +68,33 @@ export default function CartPage() {
                         {item.name}
                       </Link>
                       
-                      {/* Interactive Size Change directly in cart */}
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
-                        <select 
-                          value={item.size} 
-                          onChange={(e) => updateItemSize(item.id, item.size, e.target.value)}
-                          className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
-                        >
-                          {["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
+                      {/* Interactive Size & Color Dropdowns */}
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
+                          <select 
+                            value={item.size} 
+                            onChange={(e) => updateItemSize(item.id, item.size, e.target.value)}
+                            className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
+                          >
+                            {["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Color:</span>
+                          <select 
+                            value={item.color || "Black"} 
+                            onChange={(e) => updateItemColor(item.id, item.size, item.color || "", e.target.value)}
+                            className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
+                          >
+                            {["Black", "White", "Cream", "Beige", "Champagne", "Emerald", "Burgundy", "Navy", "Red", "Pink", "Grey"].map(c => (
+                              <option key={c} value={c}>{c}</option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
                     </div>
 

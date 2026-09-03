@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -16,6 +17,8 @@ type Product = {
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchFeatured();
@@ -30,8 +33,16 @@ export default function Home() {
     if (data) setFeaturedProducts(data);
   }
 
+  const handleExploreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsTransitioning(true);
+    setTimeout(() => {
+      router.push("/shop");
+    }, 400); // Matches the 400ms transition duration
+  };
+
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624]">
+    <main className={`min-h-screen bg-[#FBF3EC] text-[#2E2624] transition-opacity duration-500 ${isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
       {/* Hero Section */}
       <header className="relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden">
         <img 
@@ -43,9 +54,13 @@ export default function Home() {
           <p className="text-xs md:text-sm tracking-[0.3em] uppercase">Rizk Fashion — RZK</p>
           <h1 className="text-5xl md:text-8xl font-serif font-light tracking-wide">Timeless Elegance.</h1>
           <div>
-            <Link href="/shop" className="inline-block bg-white text-[#2E2624] px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] hover:text-white transition-all shadow-lg">
+            <a 
+              href="/shop" 
+              onClick={handleExploreClick}
+              className="inline-block bg-white text-[#2E2624] px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] hover:text-white transition-all shadow-lg cursor-pointer"
+            >
               Explore Collection
-            </Link>
+            </a>
           </div>
         </div>
       </header>

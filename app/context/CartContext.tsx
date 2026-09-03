@@ -9,6 +9,7 @@ export type CartItem = {
   price: number;
   image_url: string | null;
   size: string;
+  color?: string; // Optional color property
 };
 
 type CartContextType = {
@@ -16,6 +17,7 @@ type CartContextType = {
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: string, size: string) => void;
   updateItemSize: (id: string, oldSize: string, newSize: string) => void;
+  updateItemColor: (id: string, size: string, oldColor: string, newColor: string) => void;
   clearCart: () => void;
   cartTotal: number;
 };
@@ -25,7 +27,6 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Load cart from local storage when the site opens
   useEffect(() => {
     const savedCart = localStorage.getItem("rzk_cart");
     if (savedCart) {
@@ -33,7 +34,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Save cart to local storage whenever it changes
   useEffect(() => {
     localStorage.setItem("rzk_cart", JSON.stringify(cart));
   }, [cart]);
@@ -58,12 +58,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const updateItemColor = (id: string, size: string, oldColor: string, newColor: string) => {
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item.id === id && item.size === size && (item.color === oldColor || !item.color)) {
+          return { ...item, color: newColor };
+        }
+        return item;
+      })
+    );
+  };
+
   const clearCart = () => setCart([]);
 
   const cartTotal = cart.reduce((total, item) => total + item.price, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateItemSize, clearCart, cartTotal }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateItemSize, updateItemColor, clearCart, cartTotal }}>
       {children}
     </CartContext.Provider>
   );
