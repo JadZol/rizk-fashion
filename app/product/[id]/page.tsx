@@ -61,6 +61,8 @@ const BOUTIQUE_COLOR_MAP: Record<string, string> = {
   lilac: "#C8A2C8"
 };
 
+const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"];
+
 export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
@@ -90,7 +92,12 @@ export default function ProductDetailPage() {
     if (!error && data) {
       setProduct(data);
       if (data.image_url) setSelectedImage(data.image_url);
-      if (data.sizes) setSelectedSize(data.sizes.split(",")[0].trim());
+      if (data.sizes) {
+        const sortedSizes = data.sizes.split(",").map(s => s.trim()).sort((a, b) => {
+          return SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b);
+        });
+        setSelectedSize(sortedSizes[0] || "S");
+      }
       if (data.colors) setSelectedColor(data.colors.split(",")[0].trim());
     }
     setLoading(false);
@@ -114,7 +121,6 @@ export default function ProductDetailPage() {
     if (galleryImages.length > index) {
       setSelectedImage(galleryImages[index]);
     }
-    // Smoothly scroll back to top on mobile so photo is instantly in view
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -159,7 +165,13 @@ export default function ProductDetailPage() {
 
   const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
   const hasSale = product.sale_price !== null && product.sale_price > 0;
-  const sizesList = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
+  
+  // Clean and sort sizes properly (XS, S, M, L, XL)
+  const sizesList = product.sizes 
+    ? product.sizes.split(",").map(s => s.trim()).sort((a, b) => {
+        return SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b);
+      }) 
+    : [];
 
   const whatsappMessage = encodeURIComponent(`Hi Rizk Fashion, I have a question regarding fit/sizing for the "${product.name}" piece.`);
   const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
@@ -188,7 +200,7 @@ export default function ProductDetailPage() {
 
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         
-        {/* Gallery Section - Sticky on Desktop so photo never leaves view */}
+        {/* Gallery Section */}
         <div className="space-y-4 md:sticky md:top-28">
           <div className="w-full h-[500px] md:h-[600px] bg-[#F3D9CE] overflow-hidden relative border border-[#F3D9CE]">
             {selectedImage ? (
@@ -246,6 +258,7 @@ export default function ProductDetailPage() {
             {product.description || "Crafted with signature boutique styling, combining timeless elegance with modern comfort."}
           </p>
 
+          {/* Sorted Size Selection */}
           {sizesList.length > 0 && (
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">Select Size</label>
@@ -325,7 +338,7 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Zara-Style Sticky Mobile Bottom Action Bar */}
+      {/* Sticky Mobile Bottom Action Bar */}
       <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#F3D9CE] p-4 flex gap-3 items-center z-50 md:hidden shadow-lg">
         <button
           onClick={toggleWishlist}
