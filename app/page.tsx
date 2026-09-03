@@ -1,10 +1,9 @@
 // app/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -18,7 +17,7 @@ type Product = {
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const router = useRouter();
+  const collectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     fetchFeatured();
@@ -36,29 +35,36 @@ export default function Home() {
   const handleExploreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsTransitioning(true);
+
+    // After the cinematic zoom/fade effect kicks in, smoothly scroll down to the clothes
     setTimeout(() => {
-      router.push("/shop");
-    }, 700); // Matches the luxury cinematic duration
+      collectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 350);
+
+    // Reset transition effect after scrolling completes
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 900);
   };
 
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] relative overflow-hidden">
       {/* Elite Cinematic Overlay Curtain */}
-      <div className={`fixed inset-0 z-50 bg-[#2E2624] pointer-events-none transition-opacity duration-700 ease-in-out ${isTransitioning ? "opacity-100" : "opacity-0"}`} />
+      <div className={`fixed inset-0 z-50 bg-[#2E2624] pointer-events-none transition-opacity duration-700 ease-in-out ${isTransitioning ? "opacity-75" : "opacity-0"}`} />
 
       {/* Hero Section with Cinematic Zoom */}
-      <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-110" : "scale-100"}`}>
+      <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-105" : "scale-100"}`}>
         <img 
           src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" 
           alt="Rizk Fashion" 
-          className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-125" : "scale-105"}`}
+          className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-115" : "scale-105"}`}
         />
-        <div className={`relative z-10 text-center text-white px-6 space-y-6 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-[-20px]" : "opacity-100 translate-y-0"}`}>
+        <div className={`relative z-10 text-center text-white px-6 space-y-6 transition-all duration-500 ${isTransitioning ? "opacity-80 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}>
           <p className="text-xs md:text-sm tracking-[0.3em] uppercase">Rizk Fashion — RZK</p>
           <h1 className="text-5xl md:text-8xl font-serif font-light tracking-wide">Timeless Elegance.</h1>
           <div>
             <a 
-              href="/shop" 
+              href="#collection" 
               onClick={handleExploreClick}
               className="inline-block bg-white text-[#2E2624] px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] hover:text-white transition-all shadow-lg cursor-pointer"
             >
@@ -68,8 +74,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Featured Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      {/* Clothing Collection Section */}
+      <section ref={collectionRef} id="collection" className="max-w-7xl mx-auto px-6 py-24 scroll-mt-20">
         <div className="flex justify-between items-end mb-12">
           <div>
             <p className="text-xs uppercase tracking-widest text-[#D98C7A] mb-2">Curated Selection</p>
