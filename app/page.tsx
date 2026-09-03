@@ -38,19 +38,22 @@ export default function Home() {
     setIsTransitioning(true);
     setTimeout(() => {
       router.push("/shop");
-    }, 400); // Matches the 400ms transition duration
+    }, 700); // Matches the luxury cinematic duration
   };
 
   return (
-    <main className={`min-h-screen bg-[#FBF3EC] text-[#2E2624] transition-opacity duration-500 ${isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
-      {/* Hero Section */}
-      <header className="relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden">
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] relative overflow-hidden">
+      {/* Elite Cinematic Overlay Curtain */}
+      <div className={`fixed inset-0 z-50 bg-[#2E2624] pointer-events-none transition-opacity duration-700 ease-in-out ${isTransitioning ? "opacity-100" : "opacity-0"}`} />
+
+      {/* Hero Section with Cinematic Zoom */}
+      <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-110" : "scale-100"}`}>
         <img 
           src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" 
           alt="Rizk Fashion" 
-          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105"
+          className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-125" : "scale-105"}`}
         />
-        <div className="relative z-10 text-center text-white px-6 space-y-6">
+        <div className={`relative z-10 text-center text-white px-6 space-y-6 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-[-20px]" : "opacity-100 translate-y-0"}`}>
           <p className="text-xs md:text-sm tracking-[0.3em] uppercase">Rizk Fashion — RZK</p>
           <h1 className="text-5xl md:text-8xl font-serif font-light tracking-wide">Timeless Elegance.</h1>
           <div>
