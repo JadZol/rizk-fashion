@@ -8,10 +8,10 @@ export default function LandingPage() {
       <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl flex flex-col items-center">
-        {/* Your Uploaded Logo - Cropped to a perfect circle */}
+        {/* Fixed Extension: /logo.jpg */}
         <Link href="/">
           <img 
-            src="/logo.png" 
+            src="/logo.jpg" 
             alt="Rizk Fashion Logo" 
             className="h-32 w-32 md:h-48 md:w-48 mb-10 object-cover rounded-full shadow-2xl hover:scale-105 transition-transform duration-500" 
           />
