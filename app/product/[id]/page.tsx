@@ -79,7 +79,7 @@ export default function ProductDetailPage() {
     let currentWishlist: Product[] = saved ? JSON.parse(saved) : [];
 
     if (isWishlisted) {
-      currentWishlist = currentWishlist.filter(item => item.id !== product?.id);
+      currentWishlist = currentWishlist.filter(item => item.id !== product.id);
       setIsWishlisted(false);
     } else {
       currentWishlist.push(product);
@@ -89,6 +89,9 @@ export default function ProductDetailPage() {
   }
 
   function handleAddToBag() {
+    // The TypeScript fix: Guarantee product exists before proceeding
+    if (!product) return;
+
     if (sizeList.length > 0 && !selectedSize) {
       alert("Please select a size.");
       return;
@@ -98,7 +101,6 @@ export default function ProductDetailPage() {
       return;
     }
 
-    // Combine size and color into a single string for the cart summary
     const combinedOptions = [selectedSize, selectedColor].filter(Boolean).join(" / ");
 
     addToCart({
