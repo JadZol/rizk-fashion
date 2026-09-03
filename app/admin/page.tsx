@@ -43,7 +43,7 @@ export default function AdminDashboard() {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L"]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [photoColors, setPhotoColors] = useState<string[]>([]); // Tracks custom typed color per photo index
+  const [photoColors, setPhotoColors] = useState<string[]>([]); // Tracks text input per photo index
   const [uploading, setUploading] = useState(false);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -89,14 +89,12 @@ export default function AdminDashboard() {
 
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
-
-    // Default each photo color input to empty
-    setPhotoColors(files.map(() => ""));
+    setPhotoColors(files.map(() => "")); // Initialize empty text inputs for each photo
   }
 
-  function handlePhotoColorChange(index: number, colorValue: string) {
+  function handlePhotoColorChange(index: number, textValue: string) {
     const updated = [...photoColors];
-    updated[index] = colorValue;
+    updated[index] = textValue;
     setPhotoColors(updated);
   }
 
@@ -119,7 +117,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Collect all typed colors from the photos and filter out empty ones
+    // Collect all typed colors and filter out blanks
     const uniqueColors = Array.from(new Set(photoColors.map(c => c.trim()).filter(Boolean)));
 
     if (uniqueColors.length === 0) {
@@ -242,7 +240,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Type Custom Color Per Photo)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Type Custom Color Per Photo Grid)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -302,11 +300,11 @@ export default function AdminDashboard() {
               <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none" rows={2} />
             </div>
 
-            {/* Product Photos with Custom Text Inputs for Colors */}
+            {/* Product Photos with Custom Text Inputs Grid */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-xs uppercase tracking-wider text-[#6B5F5A]">
-                  Product Gallery Photos & Color Typing <span className="text-[10px] text-[#D98C7A]">(Type the color name for each photo)</span>
+                  Product Gallery Photos & Color Typing Grid <span className="text-[10px] text-[#D98C7A]">(Type color for each photo below)</span>
                 </label>
                 {imageFiles.length > 0 && (
                   <button 
@@ -342,7 +340,7 @@ export default function AdminDashboard() {
                           type="text"
                           value={photoColors[index] || ""}
                           onChange={(e) => handlePhotoColorChange(index, e.target.value)}
-                          placeholder="e.g. Champagne"
+                          placeholder="e.g. Champagne, Green, Black"
                           className="w-full p-2 border border-[#F3D9CE] text-xs bg-white focus:outline-none focus:border-[#D98C7A]"
                         />
                       </div>
