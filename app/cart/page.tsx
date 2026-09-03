@@ -8,7 +8,6 @@ import { useState } from "react";
 export default function CartPage() {
   const { cart, removeFromCart, cartTotal } = useCart();
   
-  // Checkout Form State
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -37,8 +36,8 @@ export default function CartPage() {
 
     const encodedMessage = encodeURIComponent(message);
     
-    // Replace with your actual WhatsApp number (include 961, omit the +)
-    const storePhoneNumber = "96170123456"; 
+    // Connected to the live store number
+    const storePhoneNumber = "96176380819"; 
     window.open(`https://wa.me/${storePhoneNumber}?text=${encodedMessage}`, "_blank");
   };
 
@@ -52,14 +51,13 @@ export default function CartPage() {
       </nav>
 
       <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col md:flex-row gap-12">
-        {/* Cart Items List */}
         <div className="flex-1">
           <h1 className="text-3xl font-serif mb-8">Your Shopping Bag</h1>
           
           {cart.length === 0 ? (
             <div className="text-center py-12 bg-white border border-[#F3D9CE]">
               <p className="text-xs uppercase tracking-widest text-[#6B5F5A] mb-4">Your bag is empty.</p>
-              <Link href="/" className="px-6 py-3 bg-[#2E2624] text-white text-xs uppercase tracking-widest">
+              <Link href="/" className="px-6 py-3 bg-[#2E2624] text-white text-xs uppercase tracking-widest hover:bg-[#D98C7A] transition-colors">
                 Continue Shopping
               </Link>
             </div>
@@ -88,7 +86,6 @@ export default function CartPage() {
           )}
         </div>
 
-        {/* Checkout Form */}
         {cart.length > 0 && (
           <div className="w-full md:w-96 bg-white border border-[#F3D9CE] p-8 h-fit">
             <h2 className="text-lg font-serif mb-6 border-b border-[#F3D9CE] pb-4">Order Summary</h2>
@@ -119,7 +116,7 @@ export default function CartPage() {
               </div>
             </div>
 
-            <button onClick={handleWhatsAppCheckout} className="w-full bg-[#25D366] text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors">
+            <button onClick={handleWhatsAppCheckout} className="w-full bg-[#25D366] text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors shadow-sm">
               Checkout via WhatsApp
             </button>
           </div>
