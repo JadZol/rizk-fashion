@@ -25,11 +25,9 @@ export default function CategoryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Advanced Faceted Filters
   const [maxPrice, setMaxPrice] = useState<number>(100);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   
-  // Extract unique sizes dynamically from loaded products
   const availableSizes = Array.from(new Set(
     products.flatMap(p => p.sizes ? p.sizes.split(",").map(s => s.trim()) : [])
   )).filter(Boolean);
@@ -83,7 +81,6 @@ export default function CategoryPage() {
       </nav>
 
       <div className="max-w-[1400px] mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
-        {/* Left Sidebar Filter (Azadea Style) */}
         <aside className="w-full md:w-64 flex-shrink-0">
           <h2 className="text-2xl font-serif capitalize mb-8">{categoryName}</h2>
           
@@ -122,7 +119,6 @@ export default function CategoryPage() {
           )}
         </aside>
 
-        {/* Product Grid */}
         <div className="flex-1">
           {loading ? (
             <p className="text-xs uppercase tracking-widest text-[#6B5F5A]">Loading collection...</p>
