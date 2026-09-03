@@ -1,0 +1,199 @@
+// app/shop/page.tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { useCart } from "../context/CartContext";
+
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  sale_price: number | null;
+  description: string | null;
+  image_url: string | null;
+  category: string | null;
+  stock_status: string | null;
+};
+
+const CATEGORIES = [
+  "All", "Sale", "Dresses", "Tops & Sweaters", "Shirts", 
+  "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"
+];
+
+export default function ShopPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  
+  const { cart } = useCart();
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  async function fetchProducts() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setProducts(data);
+    }
+    setLoading(false);
+  }
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return matchesSearch;
+  }).sort((a, b) => {
+    const priceA = a.sale_price ?? a.price;
+    const priceB = b.sale_price ?? b.price;
+    if (sortBy === "price-low") return priceA - priceB;
+    if (sortBy === "price-high") return priceB - priceA;
+    return 0;
+  });
+
+  return (
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20">
+      {/* Animated Marquee Ticker */}
+      <div className="bg-[#D98C7A] text-white py-2 overflow-hidden whitespace-nowrap">
+        <div className="inline-block animate-[marquee_15s_linear_infinite] text-xs tracking-widest uppercase">
+          Express Delivery Across Lebanon &nbsp; • &nbsp; Whish Money & Cash on Delivery &nbsp; • &nbsp; Signature Packaging Included &nbsp; • &nbsp; Express Delivery Across Lebanon &nbsp; • &nbsp; Whish Money & Cash on Delivery
+        </div>
+      </div>
+
+      <nav className="flex justify-between items-center px-6 md:px-8 py-6 bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#F3D9CE]">
+        {/* Small Circular Logo Image routing back to the Landing Page */}
+        <Link href="/">
+          <img 
+            src="/logo.png" 
+            alt="Rizk Fashion" 
+            className="h-10 w-10 md:h-12 md:w-12 object-cover rounded-full shadow-sm border border-[#F3D9CE] hover:opacity-80 transition-opacity" 
+          />
+        </Link>
+
+        <div className="flex gap-6 items-center text-xs md:text-sm tracking-widest uppercase text-[#6B5F5A]">
+          <Link href="/wishlist" className="hover:text-[#2E2624] transition-colors">Wishlist</Link>
+          <Link href="/cart" className="flex items-center gap-1.5 font-bold text-[#D98C7A] hover:text-[#2E2624] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+            <span>({cart.length})</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Editorial Full-Screen Hero */}
+      <header className="relative w-full h-[75vh] bg-[#2E2624] flex items-center justify-center overflow-hidden mb-16">
+        <img 
+          src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" 
+          alt="Rizk Fashion Editorial" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105"
+        />
+        <div className="relative z-10 text-center text-white px-6">
+          <p className="text-xs md:text-sm tracking-[0.3em] uppercase mb-6 drop-shadow-md">The New Standard</p>
+          <h2 className="text-5xl md:text-7xl font-serif font-light tracking-wide mb-10 drop-shadow-lg">
+            Curated Elegance.
+          </h2>
+        </div>
+      </header>
+
+      {/* Filter Section */}
+      <div className="max-w-7xl mx-auto px-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <input 
+          type="text"
+          placeholder="Search pieces..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="w-full md:w-96 px-4 py-3 bg-white border border-[#F3D9CE] text-sm focus:outline-none focus:border-[#D98C7A]"
+        />
+        <select 
+          value={sortBy} 
+          onChange={e => setSortBy(e.target.value)}
+          className="w-full md:w-auto px-4 py-3 bg-white border border-[#F3D9CE] text-xs uppercase tracking-wider focus:outline-none"
+        >
+          <option value="newest">Newest Arrivals</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+        </select>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 mb-16 flex flex-wrap gap-2 justify-center">
+        {CATEGORIES.map(category => {
+          const slug = category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
+          return (
+            <Link
+              key={category}
+              href={`/category/${slug}`}
+              className="px-5 py-2.5 text-xs uppercase tracking-widest border border-[#F3D9CE] bg-white text-[#2E2624] hover:border-[#2E2624] hover:bg-[#2E2624] hover:text-white transition-all duration-300"
+            >
+              {category}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Products Grid */}
+      <div className="max-w-7xl mx-auto px-6">
+        {loading ? (
+          <p className="text-center py-20 text-[#6B5F5A] text-xs uppercase tracking-widest">Loading Collection...</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-center py-20 text-[#6B5F5A] text-xs uppercase tracking-widest">No pieces found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredProducts.map(product => {
+              const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
+              const hasSale = product.sale_price !== null && product.sale_price > 0;
+              
+              return (
+                <Link 
+                  key={product.id} 
+                  href={`/product/${product.id}`}
+                  className="bg-white border border-[#F3D9CE] block touch-manipulation group"
+                >
+                  <div className="w-full h-[400px] bg-[#F3D9CE] relative overflow-hidden">
+                    {product.image_url ? (
+                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xs text-[#6B5F5A]">No image</div>
+                    )}
+                    {hasSale && (
+                      <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase px-3 py-1.5 font-medium z-10 shadow-sm">
+                        Sale
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-5 flex justify-between items-start bg-white">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-[#D98C7A] mb-1.5">{product.category || "Collection"}</p>
+                      <h3 className="text-sm font-medium text-[#2E2624]">{product.name}</h3>
+                    </div>
+                    <div className="text-right pl-4">
+                      {hasSale ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-gray-400 line-through">${product.price.toFixed(2)}</span>
+                          <span className="text-sm font-bold text-red-600">${effectivePrice.toFixed(2)}</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm font-bold text-[#2E2624]">${effectivePrice.toFixed(2)}</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
