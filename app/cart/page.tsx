@@ -26,13 +26,11 @@ export default function CartPage() {
     message += `*Customer Details:*\nName: ${fullName}\nPhone: ${phone}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
     message += `*Order Details:*\n`;
 
-    // Grab the current website URL (works for localhost and live Vercel link)
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
     cart.forEach((item, index) => {
       message += `${index + 1}. ${item.name} (Size: ${item.size}) - $${item.price.toFixed(2)}\n`;
-      // Send the actual product page link instead of just the image
-      message += `   Link: ${baseUrl}/product/${item.id}\n`;
+      message += `    Link: ${baseUrl}/product/${item.id}\n`;
     });
 
     message += `\nSubtotal: $${cartTotal.toFixed(2)}`;
@@ -45,18 +43,7 @@ export default function CartPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624]">
-      <nav className="flex justify-between items-center px-8 py-6 border-b border-[#F3D9CE] bg-white sticky top-0 z-50">
-        <Link href="/" className="text-xl font-serif tracking-wider">RIZK FASHION</Link>
-        
-        <Link href="/cart" className="flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase text-[#D98C7A] hover:text-[#2E2624] transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-          </svg>
-          <span>({cart.length})</span>
-        </Link>
-      </nav>
-
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pt-8">
       <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col md:flex-row gap-12">
         <div className="flex-1">
           <h1 className="text-3xl font-serif mb-8">Your Shopping Bag</h1>
