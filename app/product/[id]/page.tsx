@@ -21,6 +21,47 @@ type Product = {
   stock_status: string | null;
 };
 
+// Comprehensive Boutique Color Map for accurate rendering of any custom color
+const BOUTIQUE_COLOR_MAP: Record<string, string> = {
+  black: "#000000",
+  white: "#FFFFFF",
+  cream: "#FDFBF7",
+  ivory: "#FFFFF0",
+  beige: "#EEDC82",
+  champagne: "#F7E7CE",
+  nude: "#E3BC9A",
+  taupe: "#483C32",
+  camel: "#C19A6B",
+  brown: "#A52A2A",
+  chocolate: "#3F250B",
+  rose: "#FFC0CB",
+  pink: "#FFB6C1",
+  blush: "#DE5D83",
+  dustyrose: "#DCAE96",
+  red: "#FF0000",
+  burgundy: "#800020",
+  maroon: "#800000",
+  navy: "#000080",
+  blue: "#0000FF",
+  lightblue: "#ADD8E6",
+  royal: "#4169E1",
+  green: "#008000",
+  emerald: "#50C878",
+  olive: "#808000",
+  sage: "#BCB88A",
+  mint: "#98FF98",
+  grey: "#808080",
+  gray: "#808080",
+  charcoal: "#36454F",
+  silver: "#C0C0C0",
+  gold: "#FFD700",
+  yellow: "#FFFF00",
+  mustard: "#FFDB58",
+  purple: "#800080",
+  lavender: "#E6E6FA",
+  lilac: "#C8A2C8"
+};
+
 export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
@@ -229,6 +270,8 @@ export default function ProductDetailPage() {
               </label>
               <div className="flex flex-wrap gap-3">
                 {colorsList.map((colorName, index) => {
+                  const cleanedKey = colorName.toLowerCase().replace(/\s+/g, '');
+                  const hex = BOUTIQUE_COLOR_MAP[cleanedKey] || colorName;
                   const isSelected = selectedColor === colorName;
                   return (
                     <button
@@ -238,10 +281,10 @@ export default function ProductDetailPage() {
                       className={`w-9 h-9 rounded-full border-2 transition-all flex items-center justify-center ${
                         isSelected ? "border-[#2E2624] scale-110 shadow-md ring-2 ring-[#2E2624]/20" : "border-gray-300 hover:border-gray-500"
                       }`}
-                      style={{ backgroundColor: colorName.toLowerCase() }}
+                      style={{ backgroundColor: hex }}
                     >
                       {isSelected && (
-                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver", "gold", "yellow"].includes(colorName.toLowerCase()) ? "text-black" : "text-white"}`}>
+                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver", "gold", "yellow", "ivory", "cream", "champagne"].includes(cleanedKey) ? "text-black" : "text-white"}`}>
                           ✓
                         </span>
                       )}
