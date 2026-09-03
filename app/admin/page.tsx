@@ -20,11 +20,6 @@ type Product = {
 };
 
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL"];
-const AVAILABLE_COLORS = [
-  "Black", "White", "Beige", "Camel", "Rose", "Pink", 
-  "Red", "Burgundy", "Navy", "Blue", "Green", "Grey", "Charcoal", 
-  "Brown", "Olive", "Gold", "Silver"
-];
 const CATEGORIES = ["Dresses", "Tops & Sweaters", "Shirts", "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"];
 const STOCK_OPTIONS = [
   "In Stock — Ready for Express Delivery",
@@ -46,12 +41,9 @@ export default function AdminDashboard() {
   const [description, setDescription] = useState("");
 
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L"]);
-  const [selectedColors, setSelectedColors] = useState<string[]>(["Black", "White", "Beige"]);
-  const [customColors, setCustomColors] = useState("");
-
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [photoColors, setPhotoColors] = useState<string[]>([]); // Tracks color tagged per photo index for mobile
+  const [photoColors, setPhotoColors] = useState<string[]>([]); // Tracks custom typed color per photo index
   const [uploading, setUploading] = useState(false);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -90,12 +82,6 @@ export default function AdminDashboard() {
     );
   }
 
-  function toggleColor(color: string) {
-    setSelectedColors(prev =>
-      prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
-    );
-  }
-
   function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
@@ -104,13 +90,13 @@ export default function AdminDashboard() {
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
 
-    // Default each photo to "Black" initially so you can easily select its actual color
-    setPhotoColors(files.map(() => "Black"));
+    // Default each photo color input to empty
+    setPhotoColors(files.map(() => ""));
   }
 
-  function handlePhotoColorChange(index: number, color: string) {
+  function handlePhotoColorChange(index: number, colorValue: string) {
     const updated = [...photoColors];
-    updated[index] = color;
+    updated[index] = colorValue;
     setPhotoColors(updated);
   }
 
@@ -128,21 +114,16 @@ export default function AdminDashboard() {
       alert("Please select at least one size.");
       return;
     }
-
-    // Combine manual checkboxes, custom typed colors, and photo-tagged colors
-    let allColorsArray = [...selectedColors];
-    if (customColors.trim()) {
-      const typedList = customColors.split(",").map(c => c.trim()).filter(Boolean);
-      allColorsArray = [...allColorsArray, ...typedList];
-    }
-    if (photoColors.length > 0) {
-      allColorsArray = [...allColorsArray, ...photoColors];
+    if (imageFiles.length === 0) {
+      alert("Please upload at least one product photo.");
+      return;
     }
 
-    const uniqueColors = Array.from(new Set(allColorsArray));
+    // Collect all typed colors from the photos and filter out empty ones
+    const uniqueColors = Array.from(new Set(photoColors.map(c => c.trim()).filter(Boolean)));
 
     if (uniqueColors.length === 0) {
-      alert("Please select or type at least one color.");
+      alert("Please type a color name for each uploaded photo.");
       return;
     }
 
@@ -190,12 +171,11 @@ export default function AdminDashboard() {
     if (error) {
       alert("Error adding product: " + error.message);
     } else {
-      alert("Product published successfully with photo color mapping!");
+      alert("Product published successfully with custom photo colors!");
       setName("");
       setPrice("");
       setSalePrice("");
       setDescription("");
-      setCustomColors("");
       setImageFiles([]);
       setImagePreviews([]);
       setPhotoColors([]);
@@ -262,7 +242,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Mobile Photo Color Mapping)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Type Custom Color Per Photo)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -318,43 +298,15 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Additional Colors (Optional)</label>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {AVAILABLE_COLORS.map(color => {
-                  const isSelected = selectedColors.includes(color);
-                  return (
-                    <button
-                      type="button"
-                      key={color}
-                      onClick={() => toggleColor(color)}
-                      className={`px-3 py-1.5 text-xs uppercase tracking-wider border transition-all ${
-                        isSelected ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#6B5F5A] border-[#F3D9CE]"
-                      }`}
-                    >
-                      {color}
-                    </button>
-                  );
-                })}
-              </div>
-              <input 
-                type="text" 
-                value={customColors} 
-                onChange={e => setCustomColors(e.target.value)} 
-                placeholder="Or type custom colors here (e.g. Champagne, Dusty Rose)" 
-                className="w-full px-4 py-2 border border-[#F3D9CE] text-sm focus:outline-none focus:border-[#D98C7A]"
-              />
-            </div>
-
-            <div>
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Description (Optional)</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-[#F3D9CE] focus:outline-none" rows={2} />
             </div>
 
-            {/* Product Photos with Mobile Color Mapping Dropdowns */}
+            {/* Product Photos with Custom Text Inputs for Colors */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-xs uppercase tracking-wider text-[#6B5F5A]">
-                  Product Gallery Photos & Color Mapping <span className="text-[10px] text-[#D98C7A]">(Assign exact color to each photo)</span>
+                  Product Gallery Photos & Color Typing <span className="text-[10px] text-[#D98C7A]">(Type the color name for each photo)</span>
                 </label>
                 {imageFiles.length > 0 && (
                   <button 
@@ -385,14 +337,14 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex-1 space-y-1">
                         <p className="text-[10px] uppercase tracking-wider font-bold text-[#2E2624]">Photo #{index + 1} {index === 0 && "(Cover)"}</p>
-                        <label className="block text-[10px] text-[#6B5F5A] uppercase">Color for this photo:</label>
-                        <select 
-                          value={photoColors[index] || "Black"}
+                        <label className="block text-[10px] text-[#6B5F5A] uppercase">Type Color Name:</label>
+                        <input 
+                          type="text"
+                          value={photoColors[index] || ""}
                           onChange={(e) => handlePhotoColorChange(index, e.target.value)}
-                          className="w-full p-1.5 border border-[#F3D9CE] text-xs bg-white focus:outline-none"
-                        >
-                          {AVAILABLE_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                          placeholder="e.g. Champagne"
+                          className="w-full p-2 border border-[#F3D9CE] text-xs bg-white focus:outline-none focus:border-[#D98C7A]"
+                        />
                       </div>
                     </div>
                   ))}
