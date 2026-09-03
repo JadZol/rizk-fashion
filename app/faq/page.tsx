@@ -59,7 +59,14 @@ export default function FAQPage() {
           </div>
 
           <div className="space-y-2">
-            <h2 className="font-medium text-[#2E2624] text-sm uppercase tracking-wider">5. How will my order be packaged?</h2>
+            <h2 className="font-medium text-[#2E2624] text-sm uppercase tracking-wider">5. What is your cancellation policy?</h2>
+            <p className="text-sm text-[#6B5F5A] leading-relaxed">
+              To ensure rapid processing and delivery, <strong>once an order is confirmed, there is no cancellation</strong>. Please review your cart carefully before completing your order via WhatsApp.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="font-medium text-[#2E2624] text-sm uppercase tracking-wider">6. How will my order be packaged?</h2>
             <p className="text-sm text-[#6B5F5A] leading-relaxed">
               Every order is carefully wrapped in our signature RZK boutique packaging. We designed our bags to reflect our brand identity, featuring a blend of classic floral accents, bold leopard print styling, and the proud Lebanese cedar emblem, ensuring your unboxing experience is as elegant as the pieces inside.
             </p>

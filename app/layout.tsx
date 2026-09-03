@@ -37,6 +37,7 @@ export default function RootLayout({
                   <li><Link href="/faq" className="hover:text-white transition-colors">Shipping & Delivery</Link></li>
                   <li><Link href="/faq" className="hover:text-white transition-colors">Payment Methods</Link></li>
                   <li><Link href="/faq" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
+                  <li><Link href="/faq" className="hover:text-white transition-colors">Order Cancellations</Link></li>
                 </ul>
               </div>
               <div>
@@ -49,8 +50,8 @@ export default function RootLayout({
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-widest mb-4 text-[#D98C7A]">Connect</h4>
                 <ul className="space-y-2 text-xs text-gray-400">
-                  <li><a href="https://instagram.com" target="_blank" className="hover:text-white transition-colors">Instagram</a></li>
-                  <li><a href="https://facebook.com" target="_blank" className="hover:text-white transition-colors">Facebook</a></li>
+                  <li><a href="https://www.instagram.com/rizk_fashion?igsi=MWJqODdwamhjdTAxcA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a></li>
+                  <li><a href="https://www.facebook.com/profile.php?id=61561274979493&mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Facebook</a></li>
                 </ul>
               </div>
             </div>

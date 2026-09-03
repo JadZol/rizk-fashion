@@ -26,11 +26,13 @@ export default function CartPage() {
     message += `*Customer Details:*\nName: ${fullName}\nPhone: ${phone}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
     message += `*Order Details:*\n`;
 
+    // Grab the current website URL (works for localhost and live Vercel link)
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+
     cart.forEach((item, index) => {
       message += `${index + 1}. ${item.name} (Size: ${item.size}) - $${item.price.toFixed(2)}\n`;
-      if (item.image_url) {
-        message += `   Image: ${item.image_url}\n`;
-      }
+      // Send the actual product page link instead of just the image
+      message += `   Link: ${baseUrl}/product/${item.id}\n`;
     });
 
     message += `\nSubtotal: $${cartTotal.toFixed(2)}`;
