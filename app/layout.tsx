@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { CartProvider } from "./context/CartContext";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <CartProvider>
+          <Navbar />
           {children}
           
           <footer className="bg-[#2E2624] text-white pt-16 pb-8 border-t border-[#F3D9CE]">
@@ -30,6 +32,10 @@ export default function RootLayout({
                 <p className="text-xs text-gray-400 leading-relaxed mb-4">
                   Curated elegance and timeless wardrobe essentials. Proudly serving Lebanon with premium boutique fashion.
                 </p>
+                <div className="space-y-1.5 text-xs text-gray-400">
+                  <p><a href="tel:+96176380819" className="hover:text-white transition-colors">+961 76 380 819</a></p>
+                  <p><a href="mailto:rizkfashion82@gmail.com" className="hover:text-white transition-colors">rizkfashion82@gmail.com</a></p>
+                </div>
               </div>
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-widest mb-4 text-[#D98C7A]">Customer Care</h4>
