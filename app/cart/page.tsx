@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function CartPage() {
-  const { cart, removeFromCart, cartTotal } = useCart();
+  const { cart, removeFromCart, updateItemSize, cartTotal } = useCart();
   
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -51,23 +51,39 @@ export default function CartPage() {
           {cart.length === 0 ? (
             <div className="text-center py-12 bg-white border border-[#F3D9CE]">
               <p className="text-xs uppercase tracking-widest text-[#6B5F5A] mb-4">Your bag is empty.</p>
-              <Link href="/" className="px-6 py-3 bg-[#2E2624] text-white text-xs uppercase tracking-widest hover:bg-[#D98C7A] transition-colors">
+              <Link href="/shop" className="px-6 py-3 bg-[#2E2624] text-white text-xs uppercase tracking-widest hover:bg-[#D98C7A] transition-colors">
                 Continue Shopping
               </Link>
             </div>
           ) : (
             <div className="space-y-6">
               {cart.map((item, index) => (
-                <div key={`${item.id}-${index}`} className="flex gap-6 bg-white p-4 border border-[#F3D9CE]">
-                  <div className="w-24 h-32 bg-[#F3D9CE] flex-shrink-0">
-                    {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />}
-                  </div>
-                  <div className="flex-1 flex flex-col justify-between">
+                <div key={`${item.id}-${index}`} className="flex gap-6 bg-white p-4 border border-[#F3D9CE] items-center">
+                  <Link href={`/product/${item.id}`} className="w-24 h-32 bg-[#F3D9CE] flex-shrink-0 block relative group">
+                    {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />}
+                  </Link>
+                  <div className="flex-1 flex flex-col justify-between py-1">
                     <div>
-                      <h3 className="font-medium text-sm">{item.name}</h3>
-                      <p className="text-xs text-[#6B5F5A] mt-1 uppercase tracking-wider">Size: {item.size}</p>
+                      <Link href={`/product/${item.id}`} className="font-medium text-sm hover:text-[#D98C7A] transition-colors block">
+                        {item.name}
+                      </Link>
+                      
+                      {/* Interactive Size Change directly in cart */}
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
+                        <select 
+                          value={item.size} 
+                          onChange={(e) => updateItemSize(item.id, item.size, e.target.value)}
+                          className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
+                        >
+                          {["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center">
+
+                    <div className="flex justify-between items-center mt-4">
                       <span className="font-bold text-[#D98C7A]">${item.price.toFixed(2)}</span>
                       <button onClick={() => removeFromCart(item.id, item.size)} className="text-xs text-red-600 uppercase tracking-widest hover:underline">
                         Remove
