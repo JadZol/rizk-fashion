@@ -20,7 +20,11 @@ type Product = {
 };
 
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL"];
-const AVAILABLE_COLORS = ["Black", "White", "Beige", "Rose", "Red", "Navy", "Grey", "Brown"];
+const AVAILABLE_COLORS = [
+  "Black", "White", "Beige", "Camel", "Rose", "Pink", 
+  "Red", "Burgundy", "Navy", "Blue", "Grey", "Charcoal", 
+  "Brown", "Olive", "Gold", "Silver"
+];
 const CATEGORIES = ["Dresses", "Tops & Sweaters", "Shirts", "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts"];
 const STOCK_OPTIONS = [
   "In Stock — Ready for Express Delivery",
@@ -42,7 +46,7 @@ export default function AdminDashboard() {
   const [description, setDescription] = useState("");
 
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L"]);
-  const [selectedColors, setSelectedColors] = useState<string[]>(["Black", "White", "Rose"]);
+  const [selectedColors, setSelectedColors] = useState<string[]>(["Black", "White", "Beige"]);
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -145,7 +149,7 @@ export default function AdminDashboard() {
     if (error) {
       alert("Error adding product: " + error.message);
     } else {
-      alert("Product published successfully with gallery, sizes, and colors!");
+      alert("Product published successfully with extended colors & gallery!");
       setName("");
       setPrice("");
       setSalePrice("");
@@ -214,7 +218,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Multi-Photo Gallery & Colors)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Extended Colors & Gallery)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -276,7 +280,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Colors</label>
+              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Colors (Extended)</label>
               <div className="flex flex-wrap gap-2">
                 {AVAILABLE_COLORS.map(color => {
                   const isSelected = selectedColors.includes(color);
@@ -285,7 +289,7 @@ export default function AdminDashboard() {
                       type="button"
                       key={color}
                       onClick={() => toggleColor(color)}
-                      className={`px-4 py-2 text-xs uppercase tracking-wider border transition-all ${
+                      className={`px-3 py-1.5 text-xs uppercase tracking-wider border transition-all ${
                         isSelected
                           ? "bg-[#2E2624] text-white border-[#2E2624]"
                           : "bg-white text-[#6B5F5A] border-[#F3D9CE] hover:border-[#D98C7A]"
@@ -304,7 +308,9 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Product Photos (Select multiple for gallery)</label>
+              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">
+                Product Photos <span className="text-[10px] text-[#D98C7A]">(Tip: Upload photos in the exact order of your colors so clicking a color switches to that photo!)</span>
+              </label>
               <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#F3D9CE] cursor-pointer bg-[#FAFAFA] hover:bg-[#F3D9CE]/20 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
                   <svg className="w-8 h-8 mb-2 text-[#6B5F5A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

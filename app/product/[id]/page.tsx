@@ -21,19 +21,22 @@ type Product = {
   stock_status: string | null;
 };
 
-// Helper mapping for color codes
+// Extended Helper mapping for color codes
 const COLOR_MAP: Record<string, string> = {
   black: "#000000",
   white: "#FFFFFF",
   beige: "#EEDC82",
+  camel: "#C19A6B",
   rose: "#FFC0CB",
+  pink: "#FFB6C1",
   red: "#FF0000",
+  burgundy: "#800020",
   navy: "#000080",
-  grey: "#808080",
-  brown: "#A52A2A",
-  pink: "#FFC0CB",
   blue: "#0000FF",
-  green: "#008000",
+  grey: "#808080",
+  charcoal: "#36454F",
+  brown: "#A52A2A",
+  olive: "#808000",
   gold: "#FFD700",
   silver: "#C0C0C0"
 };
@@ -79,6 +82,18 @@ export default function ProductDetailPage() {
       }
     }
     setLoading(false);
+  }
+
+  // Automatically switch the main image when clicking a color swatch based on its index position
+  function handleColorSelect(colorName: string, index: number) {
+    setSelectedColor(colorName);
+    const gallery = product?.image_urls 
+      ? product.image_urls.split(",").map(u => u.trim()).filter(Boolean)
+      : product?.image_url ? [product.image_url] : [];
+
+    if (gallery.length > index) {
+      setSelectedImage(gallery[index]);
+    }
   }
 
   function handleAddToCart() {
@@ -162,7 +177,7 @@ export default function ProductDetailPage() {
         <div className="space-y-4">
           <div className="w-full h-[600px] bg-[#F3D9CE] overflow-hidden relative border border-[#F3D9CE]">
             {selectedImage ? (
-              <img src={selectedImage} alt={product.name} className="w-full h-full object-cover" />
+              <img src={selectedImage} alt={product.name} className="w-full h-full object-cover transition-all duration-500" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-[#6B5F5A]">No image available</div>
             )}
@@ -239,20 +254,20 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Color Selection Swatches */}
+          {/* Color Selection Swatches (Linked to photo gallery index) */}
           {colorsList.length > 0 && (
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">
                 Select Color: <span className="font-normal text-[#D98C7A]">{selectedColor}</span>
               </label>
               <div className="flex flex-wrap gap-3">
-                {colorsList.map(colorName => {
+                {colorsList.map((colorName, index) => {
                   const hex = COLOR_MAP[colorName.toLowerCase()] || "#CCCCCC";
                   const isSelected = selectedColor === colorName;
                   return (
                     <button
                       key={colorName}
-                      onClick={() => setSelectedColor(colorName)}
+                      onClick={() => handleColorSelect(colorName, index)}
                       title={colorName}
                       className={`w-9 h-9 rounded-full border-2 transition-all flex items-center justify-center ${
                         isSelected ? "border-[#2E2624] scale-110 shadow-md" : "border-gray-300 hover:border-gray-500"
@@ -260,7 +275,7 @@ export default function ProductDetailPage() {
                       style={{ backgroundColor: hex }}
                     >
                       {isSelected && (
-                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver"].includes(colorName.toLowerCase()) ? "text-black" : "text-white"}`}>
+                        <span className={`text-[10px] font-bold ${["white", "rose", "beige", "silver", "gold"].includes(colorName.toLowerCase()) ? "text-black" : "text-white"}`}>
                           ✓
                         </span>
                       )}
