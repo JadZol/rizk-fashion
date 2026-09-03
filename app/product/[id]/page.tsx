@@ -21,7 +21,6 @@ type Product = {
   stock_status: string | null;
 };
 
-// Extended Helper mapping for color codes
 const COLOR_MAP: Record<string, string> = {
   black: "#000000",
   white: "#FFFFFF",
@@ -69,22 +68,13 @@ export default function ProductDetailPage() {
 
     if (!error && data) {
       setProduct(data);
-      if (data.image_url) {
-        setSelectedImage(data.image_url);
-      }
-      if (data.sizes) {
-        const firstSize = data.sizes.split(",")[0].trim();
-        setSelectedSize(firstSize);
-      }
-      if (data.colors) {
-        const firstColor = data.colors.split(",")[0].trim();
-        setSelectedColor(firstColor);
-      }
+      if (data.image_url) setSelectedImage(data.image_url);
+      if (data.sizes) setSelectedSize(data.sizes.split(",")[0].trim());
+      if (data.colors) setSelectedColor(data.colors.split(",")[0].trim());
     }
     setLoading(false);
   }
 
-  // Automatically switch the main image when clicking a color swatch based on its index position
   function handleColorSelect(colorName: string, index: number) {
     setSelectedColor(colorName);
     const gallery = product?.image_urls 
@@ -141,13 +131,16 @@ export default function ProductDetailPage() {
   const sizesList = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
   const colorsList = product.colors ? product.colors.split(",").map(c => c.trim()) : [];
   
-  // Extract all gallery images if available
   const galleryImages = product.image_urls 
     ? product.image_urls.split(",").map(url => url.trim()).filter(Boolean)
     : product.image_url ? [product.image_url] : [];
 
+  // WhatsApp Concierge custom message linking to this exact item
+  const whatsappMessage = encodeURIComponent(`Hi Rizk Fashion, I have a question regarding fit/sizing for the "${product.name}" piece.`);
+  const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
+
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20">
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-20 relative">
       {/* Top Announcement Bar */}
       <div className="bg-[#D98C7A] text-white text-center py-2 text-xs tracking-widest uppercase">
         Express Delivery Across Lebanon • Whish Money & Cash on Delivery
@@ -207,11 +200,11 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product Info & Options */}
-        <div className="space-y-8 bg-white p-8 border border-[#F3D9CE] shadow-sm">
+        <div className="space-y-8 bg-white p-8 border border-[#F3D9CE] shadow-sm relative">
           <div>
             <p className="text-xs uppercase tracking-widest text-[#D98C7A] mb-2">{product.category || "Collection"}</p>
             <h1 className="text-3xl font-serif font-light text-[#2E2624] mb-4">{product.name}</h1>
-            <div className="flex items-center gap-4 mb-2">
+            <div className="flex items-center gap-4 mb-3">
               {hasSale ? (
                 <>
                   <span className="text-lg text-gray-400 line-through">${product.price.toFixed(2)}</span>
@@ -221,10 +214,12 @@ export default function ProductDetailPage() {
                 <span className="text-2xl font-bold text-[#2E2624]">${effectivePrice.toFixed(2)}</span>
               )}
             </div>
+            
+            {/* Elite Touch: Dynamic Stock Status Badge */}
             {product.stock_status && (
-              <p className="text-xs font-medium text-emerald-700 bg-emerald-50 inline-block px-2.5 py-1 border border-emerald-200">
-                {product.stock_status}
-              </p>
+              <div className="inline-block bg-[#FBF3EC] border border-[#D98C7A]/40 px-3 py-1 text-[11px] uppercase tracking-wider text-[#2E2624] font-medium">
+                ⚡ {product.stock_status}
+              </div>
             )}
           </div>
 
@@ -235,7 +230,10 @@ export default function ProductDetailPage() {
           {/* Size Selection */}
           {sizesList.length > 0 && (
             <div>
-              <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">Select Size</label>
+              <div className="flex justify-between items-center mb-3">
+                <label className="text-xs uppercase tracking-widest font-bold text-[#2E2624]">Select Size</label>
+                <span className="text-[10px] text-[#6B5F5A] italic">Standard Turkish / European Fit</span>
+              </div>
               <div className="flex flex-wrap gap-3">
                 {sizesList.map(size => (
                   <button
@@ -254,7 +252,7 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Color Selection Swatches (Linked to photo gallery index) */}
+          {/* Color Selection Swatches */}
           {colorsList.length > 0 && (
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">
@@ -300,6 +298,22 @@ export default function ProductDetailPage() {
             >
               Save to Wishlist
             </button>
+          </div>
+
+          {/* Elite Tier Addition: In-Context Stylist Support */}
+          <div className="bg-[#FBF3EC] p-4 border border-[#F3D9CE] flex items-center justify-between">
+            <div className="space-y-0.5">
+              <p className="text-[11px] uppercase tracking-wider font-bold text-[#2E2624]">Need Fit Advice?</p>
+              <p className="text-[10px] text-[#6B5F5A]">Chat directly with our boutique stylist about measurements.</p>
+            </div>
+            <a 
+              href={whatsappUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-[#2E2624] text-white px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors flex items-center gap-1.5 flex-shrink-0"
+            >
+              Ask Stylist
+            </a>
           </div>
 
           {addedNotification && (

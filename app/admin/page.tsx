@@ -47,6 +47,7 @@ export default function AdminDashboard() {
 
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L"]);
   const [selectedColors, setSelectedColors] = useState<string[]>(["Black", "White", "Beige"]);
+  const [customColors, setCustomColors] = useState(""); // New state for custom typed colors
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -99,8 +100,16 @@ export default function AdminDashboard() {
       alert("Please select at least one size.");
       return;
     }
-    if (selectedColors.length === 0) {
-      alert("Please select at least one color.");
+
+    // Combine checkbox colors and custom typed colors smoothly
+    let allColorsArray = [...selectedColors];
+    if (customColors.trim()) {
+      const typedList = customColors.split(",").map(c => c.trim()).filter(Boolean);
+      allColorsArray = [...allColorsArray, ...typedList];
+    }
+
+    if (allColorsArray.length === 0) {
+      alert("Please select or type at least one color.");
       return;
     }
 
@@ -138,7 +147,7 @@ export default function AdminDashboard() {
         stock_status: stockStatus,
         description: description || null,
         sizes: selectedSizes.join(", "),
-        colors: selectedColors.join(", "),
+        colors: allColorsArray.join(", "),
         image_url: mainImageUrl,
         image_urls: allImageUrlsString,
       },
@@ -149,11 +158,12 @@ export default function AdminDashboard() {
     if (error) {
       alert("Error adding product: " + error.message);
     } else {
-      alert("Product published successfully with extended colors & gallery!");
+      alert("Product published successfully with custom colors!");
       setName("");
       setPrice("");
       setSalePrice("");
       setDescription("");
+      setCustomColors("");
       setImageFiles([]);
       fetchInventory();
     }
@@ -218,7 +228,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white p-8 border border-[#F3D9CE] shadow-sm">
-          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Extended Colors & Gallery)</h2>
+          <h2 className="text-xl text-[#2E2624] mb-6 font-medium">Add New Clothing Item (Custom Color Support)</h2>
           <form onSubmit={handleAddProduct} className="space-y-6">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -280,8 +290,8 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Colors (Extended)</label>
-              <div className="flex flex-wrap gap-2">
+              <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">Select Available Colors</label>
+              <div className="flex flex-wrap gap-2 mb-3">
                 {AVAILABLE_COLORS.map(color => {
                   const isSelected = selectedColors.includes(color);
                   return (
@@ -300,6 +310,18 @@ export default function AdminDashboard() {
                   );
                 })}
               </div>
+              
+              {/* Custom Typed Color Input */}
+              <div>
+                <label className="block text-[10px] uppercase tracking-wider text-[#D98C7A] mb-1 font-semibold">Or Type Custom Colors (Comma Separated)</label>
+                <input 
+                  type="text" 
+                  value={customColors} 
+                  onChange={e => setCustomColors(e.target.value)} 
+                  placeholder="e.g. Champagne, Dusty Rose, Emerald" 
+                  className="w-full px-4 py-2 border border-[#F3D9CE] text-sm focus:outline-none focus:border-[#D98C7A]"
+                />
+              </div>
             </div>
 
             <div>
@@ -311,24 +333,13 @@ export default function AdminDashboard() {
               <label className="block text-xs uppercase tracking-wider text-[#6B5F5A] mb-2">
                 Product Photos <span className="text-[10px] text-[#D98C7A]">(Tip: Upload photos in the exact order of your colors so clicking a color switches to that photo!)</span>
               </label>
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#F3D9CE] cursor-pointer bg-[#FAFAFA] hover:bg-[#F3D9CE]/20 transition-colors">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
-                  <svg className="w-8 h-8 mb-2 text-[#6B5F5A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                  </svg>
-                  <p className="text-sm text-[#2E2624] font-medium">
-                    {imageFiles.length > 0 ? `${imageFiles.length} photo(s) selected` : "Click to select multiple product photos"}
-                  </p>
-                  <p className="text-xs text-[#6B5F5A] mt-1">First photo will be the main display cover</p>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={e => { if (e.target.files) setImageFiles(Array.from(e.target.files)); }}
-                />
-              </label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={e => { if (e.target.files) setImageFiles(Array.from(e.target.files)); }}
+                className="w-full p-2 border border-[#F3D9CE] text-sm bg-white"
+              />
             </div>
 
             <button
@@ -360,7 +371,7 @@ export default function AdminDashboard() {
                         </div>
                         <div className="flex space-x-2">
                           <input value={editSizes} onChange={e => setEditSizes(e.target.value)} placeholder="Sizes (e.g. S, M, L)" className="px-2 py-1 border border-[#F3D9CE] text-xs w-48" />
-                          <input value={editColors} onChange={e => setEditColors(e.target.value)} placeholder="Colors (e.g. Black, Rose)" className="px-2 py-1 border border-[#F3D9CE] text-xs w-48" />
+                          <input value={editColors} onChange={e => setEditColors(e.target.value)} placeholder="Colors (e.g. Black, Rose, Champagne)" className="px-2 py-1 border border-[#F3D9CE] text-xs w-48" />
                         </div>
                       </div>
                     ) : (
