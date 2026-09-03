@@ -25,7 +25,6 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
@@ -51,9 +50,7 @@ export default function Home() {
       (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    if (selectedCategory === "All") return matchesSearch;
-    if (selectedCategory === "Sale") return matchesSearch && product.sale_price !== null && product.sale_price > 0;
-    return matchesSearch && product.category === selectedCategory;
+    return matchesSearch;
   }).sort((a, b) => {
     const priceA = a.sale_price ?? a.price;
     const priceB = b.sale_price ?? b.price;
@@ -72,7 +69,7 @@ export default function Home() {
         <h1 className="text-xl md:text-2xl font-serif tracking-wider">RIZK FASHION</h1>
         <div className="space-x-4 md:space-x-6 text-xs md:text-sm tracking-widest uppercase text-[#6B5F5A]">
           <Link href="/wishlist" className="hover:text-[#2E2624]">Wishlist</Link>
-          {/* Admin link removed from public view */}
+          {/* Admin link safely removed from public view */}
         </div>
       </nav>
 
@@ -103,19 +100,19 @@ export default function Home() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-wrap gap-2 justify-center">
-        {CATEGORIES.map(category => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-3 py-2 text-xs uppercase tracking-widest border transition-all ${
-              selectedCategory === category 
-                ? "border-[#2E2624] bg-[#2E2624] text-white" 
-                : "border-[#F3D9CE] bg-white text-[#2E2624]"
-            }`}
-          >
-            {category}
-          </button>
-        ))}
+        {CATEGORIES.map(category => {
+          // Format category text into a clean URL slug (e.g., "Tops & Sweaters" -> "tops-sweaters")
+          const slug = category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
+          return (
+            <Link
+              key={category}
+              href={`/category/${slug}`}
+              className="px-4 py-2 text-xs uppercase tracking-widest border border-[#F3D9CE] bg-white text-[#2E2624] hover:border-[#2E2624] hover:bg-[#2E2624] hover:text-white transition-all"
+            >
+              {category}
+            </Link>
+          );
+        })}
       </div>
 
       <div className="max-w-7xl mx-auto px-6">
