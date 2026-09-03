@@ -73,6 +73,7 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("S");
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
   const [addedNotification, setAddedNotification] = useState(false);
 
   const { cart, addToCart } = useCart();
@@ -128,13 +129,16 @@ export default function ProductDetailPage() {
     if (!product) return;
     const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
     
-    addToCart({
-      id: product.id,
-      name: `${product.name} (${selectedColor || "Standard"} / ${selectedSize})`,
-      price: effectivePrice,
-      image_url: selectedImage || product.image_url,
-      size: selectedSize
-    });
+    // Add item to cart matching the selected quantity
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        id: product.id,
+        name: `${product.name} (${selectedColor || "Standard"} / ${selectedSize})`,
+        price: effectivePrice,
+        image_url: selectedImage || product.image_url,
+        size: selectedSize
+      });
+    }
 
     setAddedNotification(true);
     setTimeout(() => setAddedNotification(false), 3000);
@@ -323,10 +327,32 @@ export default function ProductDetailPage() {
             </div>
           )}
 
+          {/* Quantity Selector */}
+          <div>
+            <label className="block text-xs uppercase tracking-widest font-bold mb-3 text-[#2E2624]">Quantity</label>
+            <div className="inline-flex items-center border border-[#F3D9CE] bg-white">
+              <button
+                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                className="px-4 py-2 text-sm text-[#6B5F5A] hover:bg-[#FBF3EC] transition-colors"
+              >
+                −
+              </button>
+              <span className="px-6 py-2 text-xs uppercase tracking-widest font-bold text-[#2E2624] min-w-[3rem] text-center">
+                {quantity}
+              </span>
+              <button
+                onClick={() => setQuantity(prev => prev + 1)}
+                className="px-4 py-2 text-sm text-[#6B5F5A] hover:bg-[#FBF3EC] transition-colors"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
           {/* Action Buttons (Desktop view) */}
           <div className="space-y-3 pt-4 border-t border-[#F3D9CE] hidden md:block">
             <button onClick={handleAddToCart} className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm">
-              Add to Bag
+              Add to Bag — ${(effectivePrice * quantity).toFixed(2)}
             </button>
             <div className="grid grid-cols-2 gap-3">
               <button onClick={toggleWishlist} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors">
@@ -353,7 +379,7 @@ export default function ProductDetailPage() {
 
           {addedNotification && (
             <div className="bg-[#D98C7A]/10 border border-[#D98C7A] text-[#2E2624] p-3 text-center text-xs tracking-wider uppercase">
-              Added to your bag with {selectedColor} / {selectedSize}!
+              Added {quantity} piece(s) to your bag with {selectedColor} / {selectedSize}!
             </div>
           )}
         </div>
@@ -383,7 +409,7 @@ export default function ProductDetailPage() {
           onClick={handleAddToCart}
           className="flex-1 bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm"
         >
-          Add to Bag — ${effectivePrice.toFixed(2)}
+          Add to Bag — ${(effectivePrice * quantity).toFixed(2)}
         </button>
       </div>
     </main>
