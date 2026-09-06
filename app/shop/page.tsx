@@ -130,7 +130,7 @@ export default function ShopPage() {
       </header>
 
       {/* Filter Section */}
-      <div className="max-w-7xl mx-auto px-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div id="catalog" className="scroll-mt-24 max-w-7xl mx-auto px-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <input 
           type="text"
           placeholder="Search pieces..."

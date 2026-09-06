@@ -38,9 +38,9 @@ export default function Home() {
     e.preventDefault();
     setIsTransitioning(true);
 
-    // After the cinematic zoom/fade effect kicks in, navigate to the full shop page!
+    // After the cinematic zoom/fade effect kicks in, navigate to the shop page AND jump to the catalog anchor!
     setTimeout(() => {
-      router.push("/shop");
+      router.push("/shop#catalog");
     }, 400);
   };
 
@@ -61,7 +61,7 @@ export default function Home() {
           <h1 className="text-5xl md:text-8xl font-serif font-light tracking-wide">Timeless Elegance.</h1>
           <div>
             <a 
-              href="/shop" 
+              href="/shop#catalog" 
               onClick={handleExploreClick}
               className="inline-block bg-white text-[#2E2624] px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] hover:text-white transition-all shadow-lg cursor-pointer"
             >
