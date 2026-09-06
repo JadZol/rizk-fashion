@@ -197,7 +197,13 @@ export default function ProductDetailPage() {
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-16 relative">
       <div className="max-w-7xl mx-auto px-6 pt-6">
         <button
-          onClick={() => router.back()}
+          onClick={() => {
+            if (window.history.length > 2) {
+              router.back();
+            } else {
+              router.push("/shop");
+            }
+          }}
           className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#6B5F5A] hover:text-[#2E2624] transition-colors cursor-pointer group"
         >
           <span className="transform group-hover:-translate-x-1 transition-transform">←</span> Back to Collection

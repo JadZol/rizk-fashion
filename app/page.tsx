@@ -119,7 +119,7 @@ export default function Home() {
             <p className="text-xs uppercase tracking-widest text-[#D98C7A] mb-2">Curated Selection</p>
             <h2 className="text-3xl font-serif">Shop by Category</h2>
           </div>
-          <Link href="/shop" className="text-xs uppercase tracking-widest underline text-[#6B5F5A] hover:text-[#2E2624]">
+          <Link href="/shop" className="text-xs uppercase tracking-widest underline text-[#6B5F5A] hover:text-[#2E2624] cursor-pointer">
             View All Collection →
           </Link>
         </div>
@@ -127,7 +127,8 @@ export default function Home() {
         <div className="relative group">
           <button 
             onClick={scrollLeft}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white cursor-pointer"
+            aria-label="Scroll left"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -143,7 +144,7 @@ export default function Home() {
               <Link
                 key={category.slug}
                 href={`/category/${category.slug}`}
-                className="min-w-[280px] md:min-w-[320px] h-[400px] flex-1 snap-start group/card relative block overflow-hidden bg-[#F3D9CE] border border-[#F3D9CE]"
+                className="min-w-[280px] md:min-w-[320px] h-[400px] flex-1 snap-start group/card relative block overflow-hidden bg-[#F3D9CE] border border-[#F3D9CE] cursor-pointer"
               >
                 <img
                   src={category.image}
@@ -162,7 +163,8 @@ export default function Home() {
 
           <button 
             onClick={scrollRight}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white cursor-pointer"
+            aria-label="Scroll right"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />

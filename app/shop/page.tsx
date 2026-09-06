@@ -141,7 +141,7 @@ export default function ShopPage() {
         <select 
           value={sortBy} 
           onChange={e => setSortBy(e.target.value)}
-          className="w-full md:w-auto px-4 py-3 bg-white border border-[#F3D9CE] text-xs uppercase tracking-wider focus:outline-none"
+          className="w-full md:w-auto px-4 py-3 bg-white border border-[#F3D9CE] text-xs uppercase tracking-wider focus:outline-none cursor-pointer"
         >
           <option value="newest">Newest Arrivals</option>
           <option value="price-low">Price: Low to High</option>
@@ -149,6 +149,7 @@ export default function ShopPage() {
         </select>
       </div>
 
+      {/* Category Buttons with Explicit Cursor Pointers */}
       <div className="max-w-7xl mx-auto px-6 mb-16 flex flex-wrap gap-2 justify-center">
         {CATEGORIES.map(category => {
           const slug = category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
@@ -156,7 +157,7 @@ export default function ShopPage() {
             <Link
               key={category}
               href={`/category/${slug}`}
-              className="px-5 py-2.5 text-xs uppercase tracking-widest border border-[#F3D9CE] bg-white text-[#2E2624] hover:border-[#2E2624] hover:bg-[#2E2624] hover:text-white transition-all duration-300"
+              className="px-5 py-2.5 text-xs uppercase tracking-widest border border-[#F3D9CE] bg-white text-[#2E2624] hover:border-[#2E2624] hover:bg-[#2E2624] hover:text-white transition-all duration-300 cursor-pointer"
             >
               {category}
             </Link>
@@ -181,7 +182,7 @@ export default function ShopPage() {
                 <Link 
                   key={product.id} 
                   href={`/product/${product.id}`}
-                  className="bg-white border border-[#F3D9CE] block touch-manipulation group relative overflow-hidden"
+                  className="bg-white border border-[#F3D9CE] block touch-manipulation group relative overflow-hidden cursor-pointer"
                 >
                   <div className="w-full h-[400px] bg-[#F3D9CE] relative overflow-hidden">
                     {product.image_url ? (
@@ -199,7 +200,7 @@ export default function ShopPage() {
                     {/* Interactive Wishlist Heart Button */}
                     <button
                       onClick={(e) => toggleWishlist(e, product)}
-                      className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm border border-[#F3D9CE] flex items-center justify-center hover:bg-white transition-all z-20 shadow-sm"
+                      className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm border border-[#F3D9CE] flex items-center justify-center hover:bg-white transition-all z-20 shadow-sm cursor-pointer"
                       title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
                     >
                       <svg 
@@ -218,7 +219,7 @@ export default function ShopPage() {
                     <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm z-20">
                       <button 
                         onClick={(e) => handleQuickAdd(e, product)}
-                        className="w-full bg-[#2E2624] text-white py-3 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors"
+                        className="w-full bg-[#2E2624] text-white py-3 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors cursor-pointer"
                       >
                         + Quick Add to Bag
                       </button>
