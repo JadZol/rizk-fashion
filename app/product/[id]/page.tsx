@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "../../../app/context/CartContext";
+import { useToast } from "@/app/context/ToastContext";
 
 type Product = {
   id: string;
@@ -73,9 +74,9 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState<string>("S");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const [addedNotification, setAddedNotification] = useState(false);
 
   const { cart, addToCart } = useCart();
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (id) fetchProduct();
@@ -138,8 +139,7 @@ export default function ProductDetailPage() {
       });
     }
 
-    setAddedNotification(true);
-    setTimeout(() => setAddedNotification(false), 3000);
+    showToast(`Added ${quantity} piece(s) to bag`, "/cart", "View Bag");
   }
 
   function toggleWishlist() {
@@ -150,11 +150,12 @@ export default function ProductDetailPage() {
     const exists = wishlist.some((item: Product) => item.id === product.id);
     if (exists) {
       wishlist = wishlist.filter((item: Product) => item.id !== product.id);
+      showToast("Removed from your wishlist");
     } else {
       wishlist.push(product);
+      showToast("Saved to your wishlist", "/wishlist", "View Wishlist");
     }
     localStorage.setItem("rizk_wishlist", JSON.stringify(wishlist));
-    alert(exists ? "Removed from wishlist" : "Added to wishlist!");
   }
 
   function handleShare() {
@@ -166,7 +167,7 @@ export default function ProductDetailPage() {
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(currentUrl);
-      alert("Product link copied to clipboard!");
+      showToast("Product link copied to clipboard");
     }
   }
 
@@ -354,16 +355,10 @@ export default function ProductDetailPage() {
               Ask Stylist
             </a>
           </div>
-
-          {addedNotification && (
-            <div className="bg-[#D98C7A]/10 border border-[#D98C7A] text-[#2E2624] p-3 text-center text-xs tracking-wider uppercase">
-              Added {quantity} piece(s) to your bag with {selectedColor} / {selectedSize}!
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Sticky Mobile Bottom Action Bar (Stops at bottom boundary before footer) */}
+      {/* Sticky Mobile Bottom Action Bar */}
       <div className="sticky bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#F3D9CE] p-4 flex gap-3 items-center z-30 md:hidden shadow-lg mt-12">
         <button
           onClick={toggleWishlist}
