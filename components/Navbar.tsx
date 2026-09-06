@@ -1,20 +1,13 @@
 // components/Navbar.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../app/context/CartContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const { cart } = useCart();
-
-  useEffect(() => {
-    if (menuOpen) {
-      setMounted(true);
-    }
-  }, [menuOpen]);
 
   const handleClose = () => {
     setMenuOpen(false);
@@ -36,7 +29,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMenuOpen(true)}
-              className="text-[#2E2624] hover:opacity-75 transition-opacity p-1.5 flex items-center justify-center"
+              className="text-[#2E2624] hover:opacity-75 transition-opacity p-1.5 flex items-center justify-center cursor-pointer"
               aria-label="Open Menu"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -44,7 +37,7 @@ export default function Navbar() {
               </svg>
             </button>
 
-            <Link href="/" className="block rounded-full overflow-hidden h-10 w-10 md:h-12 md:w-12 shadow-sm border border-[#F3D9CE] flex-shrink-0">
+            <Link href="/" className="block rounded-full overflow-hidden h-10 w-10 md:h-12 md:w-12 shadow-sm border border-[#F3D9CE] flex-shrink-0 cursor-pointer">
               <img src="/logo.png" alt="Rizk" className="h-full w-full object-cover scale-[1.15]" />
             </Link>
           </div>
@@ -63,45 +56,43 @@ export default function Navbar() {
       </header>
 
       {/* Smooth Left Slide-in Menu Drawer */}
-      {mounted && (
-        <div className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-          {/* Backdrop Fade */}
-          <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm" 
-            onClick={handleClose} 
-          />
+      <div className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        {/* Backdrop Fade */}
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm" 
+          onClick={handleClose} 
+        />
 
-          {/* Sliding Panel from Left */}
-          <div className={`relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10 transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-            <div>
-              <div className="flex justify-between items-center mb-12">
-                <span className="text-xs uppercase tracking-[0.2em] font-serif font-bold text-[#2E2624]">Rizk Fashion — RZK</span>
-                <button 
-                  onClick={handleClose} 
-                  className="text-[#2E2624] p-2 hover:opacity-70 transition-opacity"
-                  aria-label="Close Menu"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="space-y-6 text-lg font-serif tracking-wide text-[#2E2624]">
-                <Link href="/" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Home</Link>
-                <Link href="/shop" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Shop Collection</Link>
-                <Link href="/wishlist" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Wishlist</Link>
-                <Link href="/cart" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Shopping Bag ({cart.length})</Link>
-              </div>
+        {/* Sliding Panel from Left */}
+        <div className={`relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10 transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div>
+            <div className="flex justify-between items-center mb-12">
+              <span className="text-xs uppercase tracking-[0.2em] font-serif font-bold text-[#2E2624]">Rizk Fashion — RZK</span>
+              <button 
+                onClick={handleClose} 
+                className="text-[#2E2624] p-2 hover:opacity-70 transition-opacity cursor-pointer"
+                aria-label="Close Menu"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
 
-            <div className="pt-8 border-t border-[#F3D9CE] space-y-2 text-xs text-[#6B5F5A]">
-              <p>rizkfashion82@gmail.com</p>
-              <p>+961 76 380 819</p>
+            <div className="space-y-6 text-lg font-serif tracking-wide text-[#2E2624]">
+              <Link href="/" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Home</Link>
+              <Link href="/shop" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Shop Collection</Link>
+              <Link href="/wishlist" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Wishlist</Link>
+              <Link href="/cart" onClick={handleClose} className="block hover:text-[#D98C7A] transition-colors">Shopping Bag ({cart.length})</Link>
             </div>
           </div>
+
+          <div className="pt-8 border-t border-[#F3D9CE] space-y-2 text-xs text-[#6B5F5A]">
+            <p>rizkfashion82@gmail.com</p>
+            <p>+961 76 380 819</p>
+          </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
