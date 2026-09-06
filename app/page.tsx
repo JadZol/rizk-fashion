@@ -38,7 +38,6 @@ export default function Home() {
     e.preventDefault();
     setIsTransitioning(true);
 
-    // After the cinematic zoom/fade effect kicks in, navigate to the shop page AND jump to the catalog anchor!
     setTimeout(() => {
       router.push("/shop#catalog");
     }, 400);
@@ -52,16 +51,16 @@ export default function Home() {
       {/* Hero Section with Cinematic Zoom and Background Video */}
       <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-105" : "scale-100"}`}>
         
-        {/* Background Video */}
+        {/* Working Fashion Background Video */}
         <video 
           autoPlay 
           loop 
           muted 
           playsInline
+          poster="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
           className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-115" : "scale-105"}`}
         >
-          {/* Note: To use your own video, put your video file in the "public" folder of your project (e.g., name it "hero.mp4") and change the src below to src="/hero.mp4" */}
-          <source src="https://videos.pexels.com/video-files/7671112/7671112-uhd_2160_4096_25fps.mp4" type="video/mp4" />
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-a-woman-in-a-fashion-shoot-with-a-white-outfit-42641-large.mp4" type="video/mp4" />
         </video>
 
         <div className={`relative z-10 text-center text-white px-6 space-y-6 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}>
