@@ -192,7 +192,7 @@ export default function ProductDetailPage() {
   const whatsappUrl = `https://wa.me/96176380819?text=${whatsappMessage}`;
 
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-28 relative">
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-16 relative">
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         
         {/* Gallery Section */}
@@ -338,7 +338,7 @@ export default function ProductDetailPage() {
               </button>
               <button onClick={handleShare} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors flex items-center justify-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 00-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 00-3.933 2.185Z" />
                 </svg>
                 Share Piece
               </button>
@@ -363,8 +363,8 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Sticky Mobile Bottom Action Bar */}
-      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#F3D9CE] p-4 flex gap-3 items-center z-50 md:hidden shadow-lg">
+      {/* Sticky Mobile Bottom Action Bar (Stops at bottom boundary before footer) */}
+      <div className="sticky bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#F3D9CE] p-4 flex gap-3 items-center z-30 md:hidden shadow-lg mt-12">
         <button
           onClick={toggleWishlist}
           className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0"
@@ -380,7 +380,7 @@ export default function ProductDetailPage() {
           title="Share Piece"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186...Z" />
           </svg>
         </button>
         <button
