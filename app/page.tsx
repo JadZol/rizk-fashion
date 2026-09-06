@@ -1,38 +1,44 @@
 // app/page.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  sale_price: number | null;
-  image_url: string | null;
-  category: string | null;
-};
+// Define your featured categories for the homepage carousel
+const FEATURED_CATEGORIES = [
+  {
+    name: "Dresses",
+    slug: "dresses",
+    // Replace with your own image URL later
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1983&auto=format&fit=crop",
+  },
+  {
+    name: "Sets",
+    slug: "sets",
+    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=1974&auto=format&fit=crop",
+  },
+  {
+    name: "Shirts",
+    slug: "shirts",
+    image: "https://images.unsplash.com/photo-1596755094514-f87e32f85e23?q=80&w=1987&auto=format&fit=crop",
+  },
+  {
+    name: "Shorts",
+    slug: "shorts",
+    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=1974&auto=format&fit=crop",
+  },
+  {
+    name: "Coats & Jackets",
+    slug: "coats-&-jackets",
+    image: "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?q=80&w=1974&auto=format&fit=crop",
+  }
+];
 
 export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const collectionRef = useRef<HTMLElement>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    fetchFeatured();
-  }, []);
-
-  async function fetchFeatured() {
-    const { data } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(4);
-    if (data) setFeaturedProducts(data);
-  }
 
   const handleExploreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -60,7 +66,6 @@ export default function Home() {
           poster="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
           className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-115" : "scale-105"}`}
         >
-          {/* This points directly to the video inside your public folder */}
           <source src="/hero.mp4" type="video/mp4" />
         </video>
 
@@ -79,38 +84,43 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Clothing Collection Section */}
+      {/* Shop By Category Carousel Section */}
       <section ref={collectionRef} id="collection" className="max-w-7xl mx-auto px-6 py-24 scroll-mt-20">
         <div className="flex justify-between items-end mb-12">
           <div>
             <p className="text-xs uppercase tracking-widest text-[#D98C7A] mb-2">Curated Selection</p>
-            <h2 className="text-3xl font-serif">Latest Arrivals</h2>
+            <h2 className="text-3xl font-serif">Shop by Category</h2>
           </div>
           <Link href="/shop" className="text-xs uppercase tracking-widest underline text-[#6B5F5A] hover:text-[#2E2624]">
             View All Collection →
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredProducts.map(product => {
-            const price = product.sale_price ?? product.price;
-            return (
-              <Link key={product.id} href={`/product/${product.id}`} className="bg-white border border-[#F3D9CE] group block overflow-hidden">
-                <div className="w-full h-80 bg-[#F3D9CE] overflow-hidden relative">
-                  {product.image_url && (
-                    <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  )}
-                </div>
-                <div className="p-4 flex justify-between items-center">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-[#D98C7A]">{product.category || "Collection"}</p>
-                    <h3 className="text-sm font-medium text-[#2E2624]">{product.name}</h3>
-                  </div>
-                  <span className="text-sm font-bold text-[#2E2624]">${price.toFixed(2)}</span>
-                </div>
-              </Link>
-            );
-          })}
+        {/* Horizontal Scrollable Carousel */}
+        <div 
+          className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {FEATURED_CATEGORIES.map((category) => (
+            <Link
+              key={category.slug}
+              href={`/category/${category.slug}`}
+              className="min-w-[280px] md:min-w-[320px] h-[400px] flex-1 snap-start group relative block overflow-hidden bg-[#F3D9CE] border border-[#F3D9CE]"
+            >
+              <img
+                src={category.image}
+                alt={category.name}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {/* Dark gradient overlay so the text is always readable */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6 transition-opacity duration-300">
+                <h3 className="text-white text-2xl font-serif tracking-wide mb-1">{category.name}</h3>
+                <span className="text-white text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
+                  Explore →
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
     </main>
