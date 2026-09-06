@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Completely replaced Unsplash with stable Pexels images (100% women's fashion)
+// Fully verified Pexels images (No shoes, no close-ups, just women's fashion)
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
@@ -15,12 +15,14 @@ const FEATURED_CATEGORIES = [
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    image: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Fixed: Woman wearing a cozy sweater
+    image: "https://images.pexels.com/photos/4598205/pexels-photo-4598205.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Fixed: Woman wearing a white button-up shirt
+    image: "https://images.pexels.com/photos/428338/pexels-photo-428338.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Coats & Jackets",
@@ -35,7 +37,8 @@ const FEATURED_CATEGORIES = [
   {
     name: "Pants",
     slug: "pants",
-    image: "https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Fixed: Woman wearing stylish trousers (no sneakers)
+    image: "https://images.pexels.com/photos/2085739/pexels-photo-2085739.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Skirts",
