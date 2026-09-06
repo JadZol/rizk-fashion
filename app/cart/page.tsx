@@ -10,40 +10,32 @@ type Country = {
   code: string;
   dial: string;
   flag: string;
+  minDigits: number;
+  maxDigits: number;
+  example: string;
 };
 
 const COUNTRIES: Country[] = [
-  { name: "Lebanon", code: "LB", dial: "+961", flag: "🇱🇧" },
-  { name: "United Arab Emirates", code: "AE", dial: "+971", flag: "🇦🇪" },
-  { name: "Saudi Arabia", code: "SA", dial: "+966", flag: "🇸🇦" },
-  { name: "Qatar", code: "QA", dial: "+974", flag: "🇶🇦" },
-  { name: "Kuwait", code: "KW", dial: "+965", flag: "🇰🇼" },
-  { name: "Bahrain", code: "BH", dial: "+973", flag: "🇧🇭" },
-  { name: "Oman", code: "OM", dial: "+968", flag: "🇴🇲" },
-  { name: "Jordan", code: "JO", dial: "+962", flag: "🇯🇴" },
-  { name: "Egypt", code: "EG", dial: "+20", flag: "🇪🇬" },
-  { name: "Iraq", code: "IQ", dial: "+964", flag: "🇮🇶" },
-  { name: "Palestine", code: "PS", dial: "+970", flag: "🇵🇸" },
-  { name: "Syria", code: "SY", dial: "+963", flag: "🇸🇾" },
-  { name: "United States", code: "US", dial: "+1", flag: "🇺🇸" },
-  { name: "United Kingdom", code: "GB", dial: "+44", flag: "🇬🇧" },
-  { name: "France", code: "FR", dial: "+33", flag: "🇫🇷" },
-  { name: "Germany", code: "DE", dial: "+49", flag: "🇩🇪" },
-  { name: "Canada", code: "CA", dial: "+1", flag: "🇨🇦" },
-  { name: "Australia", code: "AU", dial: "+61", flag: "🇦🇺" },
-  { name: "Italy", code: "IT", dial: "+39", flag: "🇮🇹" },
-  { name: "Spain", code: "ES", dial: "+34", flag: "🇪🇸" },
-  { name: "Turkey", code: "TR", dial: "+90", flag: "🇹🇷" },
-  { name: "Switzerland", code: "CH", dial: "+41", flag: "🇨🇭" },
-  { name: "Sweden", code: "SE", dial: "+46", flag: "🇸🇪" },
-  { name: "Netherlands", code: "NL", dial: "+31", flag: "🇳🇱" },
-  { name: "Belgium", code: "BE", dial: "+32", flag: "🇧🇪" },
-  { name: "Austria", code: "AT", dial: "+43", flag: "🇦🇹" },
-  { name: "Brazil", code: "BR", dial: "+55", flag: "🇧🇷" },
-  { name: "India", code: "IN", dial: "+91", flag: "🇮🇳" },
-  { name: "Japan", code: "JP", dial: "+81", flag: "🇯🇵" },
-  { name: "South Korea", code: "KR", dial: "+82", flag: "🇰🇷" },
-  { name: "China", code: "CN", dial: "+86", flag: "🇨🇳" },
+  { name: "Lebanon", code: "LB", dial: "+961", flag: "🇱🇧", minDigits: 7, maxDigits: 8, example: "70123456" },
+  { name: "Italy", code: "IT", dial: "+39", flag: "🇮🇹", minDigits: 9, maxDigits: 10, example: "3123456789" },
+  { name: "United Arab Emirates", code: "AE", dial: "+971", flag: "🇦🇪", minDigits: 9, maxDigits: 9, example: "501234567" },
+  { name: "Saudi Arabia", code: "SA", dial: "+966", flag: "🇸🇦", minDigits: 9, maxDigits: 9, example: "501234567" },
+  { name: "Qatar", code: "QA", dial: "+974", flag: "🇶🇦", minDigits: 8, maxDigits: 8, example: "55123456" },
+  { name: "Kuwait", code: "KW", dial: "+965", flag: "🇰🇼", minDigits: 8, maxDigits: 8, example: "99123456" },
+  { name: "Bahrain", code: "BH", dial: "+973", flag: "🇧🇭", minDigits: 8, maxDigits: 8, example: "39123456" },
+  { name: "Oman", code: "OM", dial: "+968", flag: "🇴🇲", minDigits: 8, maxDigits: 8, example: "91234567" },
+  { name: "Jordan", code: "JO", dial: "+962", flag: "🇯🇴", minDigits: 9, maxDigits: 9, example: "791234567" },
+  { name: "Egypt", code: "EG", dial: "+20", flag: "🇪🇬", minDigits: 10, maxDigits: 10, example: "1012345678" },
+  { name: "Iraq", code: "IQ", dial: "+964", flag: "🇮🇶", minDigits: 10, maxDigits: 10, example: "7912345678" },
+  { name: "Palestine", code: "PS", dial: "+970", flag: "🇵🇸", minDigits: 9, maxDigits: 9, example: "591234567" },
+  { name: "Syria", code: "SY", dial: "+963", flag: "🇸🇾", minDigits: 9, maxDigits: 9, example: "941234567" },
+  { name: "United States", code: "US", dial: "+1", flag: "🇺🇸", minDigits: 10, maxDigits: 10, example: "4155552671" },
+  { name: "United Kingdom", code: "GB", dial: "+44", flag: "🇬🇧", minDigits: 10, maxDigits: 10, example: "7911123456" },
+  { name: "France", code: "FR", dial: "+33", flag: "🇫🇷", minDigits: 9, maxDigits: 9, example: "612345678" },
+  { name: "Germany", code: "DE", dial: "+49", flag: "🇩🇪", minDigits: 10, maxDigits: 11, example: "15123456789" },
+  { name: "Canada", code: "CA", dial: "+1", flag: "🇨🇦", minDigits: 10, maxDigits: 10, example: "4165552671" },
+  { name: "Australia", code: "AU", dial: "+61", flag: "🇦🇺", minDigits: 9, maxDigits: 9, example: "412345678" },
+  { name: "Turkey", code: "TR", dial: "+90", flag: "🇹🇷", minDigits: 10, maxDigits: 10, example: "5123456789" },
 ];
 
 export default function CartPage() {
@@ -55,7 +47,6 @@ export default function CartPage() {
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
 
-  // Searchable Dropdown States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -63,7 +54,6 @@ export default function CartPage() {
   const deliveryFee = 4.00;
   const finalTotal = cartTotal + deliveryFee;
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -86,10 +76,12 @@ export default function CartPage() {
       return;
     }
 
+    // Clean phone number of spaces, dashes, parentheses, and leading zeros
     const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "").replace(/^0+/, "");
 
-    if (cleanedPhone.length < 6) {
-      alert("Please enter a valid phone number.");
+    // Validate digit length against selected country rules
+    if (cleanedPhone.length < selectedCountry.minDigits || cleanedPhone.length > selectedCountry.maxDigits) {
+      alert(`Invalid phone number for ${selectedCountry.name}. Expected length between ${selectedCountry.minDigits} and ${selectedCountry.maxDigits} digits (e.g. ${selectedCountry.example}).`);
       return;
     }
 
@@ -191,9 +183,8 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              {/* Searchable Country Code & Phone Input */}
+              {/* Searchable Country Code & Phone Input with strict length check */}
               <div className="flex border border-[#F3D9CE] focus-within:border-[#D98C7A] bg-white relative" ref={dropdownRef}>
-                {/* Trigger Button */}
                 <button
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -204,7 +195,6 @@ export default function CartPage() {
                   <span className="text-[10px]">▼</span>
                 </button>
 
-                {/* Searchable Dropdown Popup */}
                 {isDropdownOpen && (
                   <div className="absolute left-0 top-full mt-1 w-72 bg-white border border-[#F3D9CE] shadow-xl z-50 max-h-64 flex flex-col">
                     <div className="p-2 border-b border-[#F3D9CE] bg-[#FBF3EC]">
@@ -246,7 +236,7 @@ export default function CartPage() {
 
                 <input 
                   type="tel" 
-                  placeholder="70 123 456" 
+                  placeholder={selectedCountry.example} 
                   value={phone} 
                   onChange={(e) => setPhone(e.target.value)} 
                   className="w-full p-3 text-sm focus:outline-none bg-transparent" 
