@@ -58,7 +58,7 @@ const BOUTIQUE_COLOR_MAP: Record<string, string> = {
   mustard: "#FFDB58",
   purple: "#800080",
   lavender: "#E6E6FA",
-  lilac:="#C8A2C8"
+  lilac: "#C8A2C8"
 };
 
 const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"];
