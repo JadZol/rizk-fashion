@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/app/context/CartContext";
-import { useToast } from "@/app/context/ToastContext";
+import { useToast } from "../../context/ToastContext";
 
 type Product = {
   id: string;
