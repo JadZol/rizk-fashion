@@ -58,7 +58,7 @@ export default function CartPage() {
           ) : (
             <div className="space-y-6">
               {cart.map((item, index) => (
-                <div key={`${item.id}-${index}`} className="flex gap-6 bg-white p-4 border border-[#F3D9CE] items-center">
+                <div key={index} className="flex gap-6 bg-white p-4 border border-[#F3D9CE] items-center">
                   <Link href={`/product/${item.id}`} className="w-24 h-32 bg-[#F3D9CE] flex-shrink-0 block relative group">
                     {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />}
                   </Link>
@@ -68,13 +68,13 @@ export default function CartPage() {
                         {item.name}
                       </Link>
                       
-                      {/* Interactive Size & Color Dropdowns */}
+                      {/* Interactive Size & Color Dropdowns using index */}
                       <div className="flex flex-wrap items-center gap-4 mt-2">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
                           <select 
                             value={item.size} 
-                            onChange={(e) => updateItemSize(item.id, item.size, e.target.value)}
+                            onChange={(e) => updateItemSize(index, e.target.value)}
                             className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
                           >
                             {["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => (
@@ -87,7 +87,7 @@ export default function CartPage() {
                           <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Color:</span>
                           <select 
                             value={item.color || "Black"} 
-                            onChange={(e) => updateItemColor(item.id, item.size, item.color || "", e.target.value)}
+                            onChange={(e) => updateItemColor(index, e.target.value)}
                             className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
                           >
                             {["Black", "White", "Cream", "Beige", "Champagne", "Emerald", "Burgundy", "Navy", "Red", "Pink", "Grey"].map(c => (
@@ -100,7 +100,7 @@ export default function CartPage() {
 
                     <div className="flex justify-between items-center mt-4">
                       <span className="font-bold text-[#D98C7A]">${item.price.toFixed(2)}</span>
-                      <button onClick={() => removeFromCart(item.id, item.size)} className="text-xs text-red-600 uppercase tracking-widest hover:underline">
+                      <button onClick={() => removeFromCart(index)} className="text-xs text-red-600 uppercase tracking-widest hover:underline">
                         Remove
                       </button>
                     </div>

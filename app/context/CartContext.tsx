@@ -15,9 +15,9 @@ export type CartItem = {
 type CartContextType = {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: string, size: string) => void;
-  updateItemSize: (id: string, oldSize: string, newSize: string) => void;
-  updateItemColor: (id: string, size: string, oldColor: string, newColor: string) => void;
+  removeFromCart: (index: number) => void;
+  updateItemSize: (index: number, newSize: string) => void;
+  updateItemColor: (index: number, newColor: string) => void;
   clearCart: () => void;
   cartTotal: number;
 };
@@ -40,17 +40,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => [...prev, item]);
-    alert(`${item.name} added to your bag!`);
+    // Alert popup removed completely so you can add items smoothly without interruptions!
   };
 
-  const removeFromCart = (id: string, size: string) => {
-    setCart((prev) => prev.filter((item) => !(item.id === id && item.size === size)));
+  const removeFromCart = (indexToRemove: number) => {
+    // Removes strictly the specific item at this exact list index
+    setCart((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  const updateItemSize = (id: string, oldSize: string, newSize: string) => {
+  const updateItemSize = (indexToUpdate: number, newSize: string) => {
     setCart((prev) =>
-      prev.map((item) => {
-        if (item.id === id && item.size === oldSize) {
+      prev.map((item, index) => {
+        if (index === indexToUpdate) {
           return { ...item, size: newSize };
         }
         return item;
@@ -58,10 +59,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const updateItemColor = (id: string, size: string, oldColor: string, newColor: string) => {
+  const updateItemColor = (indexToUpdate: number, newColor: string) => {
     setCart((prev) =>
-      prev.map((item) => {
-        if (item.id === id && item.size === size && (item.color === oldColor || !item.color)) {
+      prev.map((item, index) => {
+        if (index === indexToUpdate) {
           return { ...item, color: newColor };
         }
         return item;
