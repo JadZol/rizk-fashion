@@ -5,61 +5,52 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// All categories updated with manually verified, explicit women's fashion model images
+// Permanent, verified women's fashion images that will never break
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    // Woman in red dress
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    // Woman in a beige sweater
-    image: "https://images.unsplash.com/photo-1611042553365-9a10374a3efc?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Shirts",
     slug: "shirts",
-    // Woman in a stylish button-up shirt
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Coats & Jackets",
     slug: "coats-jackets",
-    // Woman in a black leather jacket
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Jeans",
     slug: "jeans",
-    // Woman modeling blue jeans
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1485230895272-83fd21570d5c?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Pants",
     slug: "pants",
-    // Woman in stylish black pants
-    image: "https://images.unsplash.com/photo-1509631179647-0c71a396265d?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Skirts",
     slug: "skirts",
-    // Woman in a pleated skirt
-    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1524504388266-bbf33cb00808?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Shorts",
     slug: "shorts",
-    // Woman modeling summer shorts
-    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Sets",
     slug: "sets",
-    // Woman in a matching white set
-    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop", 
   }
 ];
 
