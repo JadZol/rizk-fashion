@@ -17,7 +17,7 @@ type Country = {
 
 const COUNTRIES: Country[] = [
   { name: "Lebanon", code: "LB", dial: "+961", flag: "🇱🇧", minDigits: 7, maxDigits: 8, example: "70123456" },
-  { name: "Italy", code: "IT", dial: "+39", flag: "🇮🇹", minDigits: 9, maxDigits: 10, example: "3123456789" },
+  { name: "Italy", code: "IT", dial: "+39", flag: "🇮🇹", minDigits: 9, maxDigits: 11, example: "3123456789" },
   { name: "United Arab Emirates", code: "AE", dial: "+971", flag: "🇦🇪", minDigits: 9, maxDigits: 9, example: "501234567" },
   { name: "Saudi Arabia", code: "SA", dial: "+966", flag: "🇸🇦", minDigits: 9, maxDigits: 9, example: "501234567" },
   { name: "Qatar", code: "QA", dial: "+974", flag: "🇶🇦", minDigits: 8, maxDigits: 8, example: "55123456" },
@@ -42,7 +42,7 @@ export default function CartPage() {
   const { cart, removeFromCart, updateItemSize, updateItemColor, cartTotal } = useCart();
   
   const [fullName, setFullName] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]); // Default to Lebanon
+  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
@@ -70,21 +70,8 @@ export default function CartPage() {
     c.code.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleWhatsAppCheckout = () => {
-    if (!fullName || !phone || !address) {
-      alert("Please fill in your name, phone number, and address.");
-      return;
-    }
-
-    // Clean phone number of spaces, dashes, parentheses, and leading zeros
+  const generateWhatsAppUrl = () => {
     const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "").replace(/^0+/, "");
-
-    // Validate digit length against selected country rules
-    if (cleanedPhone.length < selectedCountry.minDigits || cleanedPhone.length > selectedCountry.maxDigits) {
-      alert(`Invalid phone number for ${selectedCountry.name}. Expected length between ${selectedCountry.minDigits} and ${selectedCountry.maxDigits} digits (e.g. ${selectedCountry.example}).`);
-      return;
-    }
-
     const fullPhoneNumber = `${selectedCountry.dial} ${cleanedPhone}`;
 
     let message = `Hello Rizk Fashion! I would like to place an order.\n\n`;
@@ -102,9 +89,23 @@ export default function CartPage() {
     message += `\nDelivery: $${deliveryFee.toFixed(2)}`;
     message += `\n*Total: $${finalTotal.toFixed(2)}*\n\nPlease confirm my order!`;
 
-    const encodedMessage = encodeURIComponent(message);
-    const storePhoneNumber = "96176380819"; 
-    window.open(`https://wa.me/${storePhoneNumber}?text=${encodedMessage}`, "_blank");
+    return `https://wa.me/96176380819?text=${encodeURIComponent(message)}`;
+  };
+
+  const handleCheckoutClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!fullName || !phone || !address) {
+      e.preventDefault();
+      alert("Please fill in your name, phone number, and address.");
+      return;
+    }
+
+    const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "").replace(/^0+/, "");
+
+    if (cleanedPhone.length < selectedCountry.minDigits || cleanedPhone.length > selectedCountry.maxDigits) {
+      e.preventDefault();
+      alert(`Invalid phone number for ${selectedCountry.name}. Expected length between ${selectedCountry.minDigits} and ${selectedCountry.maxDigits} digits (e.g. ${selectedCountry.example}).`);
+      return;
+    }
   };
 
   return (
@@ -133,7 +134,6 @@ export default function CartPage() {
                         {item.name}
                       </Link>
                       
-                      {/* Interactive Size & Color Dropdowns using index */}
                       <div className="flex flex-wrap items-center gap-4 mt-2">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
@@ -183,7 +183,6 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              {/* Searchable Country Code & Phone Input with strict length check */}
               <div className="flex border border-[#F3D9CE] focus-within:border-[#D98C7A] bg-white relative" ref={dropdownRef}>
                 <button
                   type="button"
@@ -245,7 +244,6 @@ export default function CartPage() {
 
               <input type="text" placeholder="Delivery Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              {/* Payment Method Selector */}
               <div className="relative">
                 <select 
                   value={paymentMethod} 
@@ -278,9 +276,15 @@ export default function CartPage() {
               </div>
             </div>
 
-            <button onClick={handleWhatsAppCheckout} className="w-full bg-[#25D366] text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors shadow-sm">
+            <a 
+              href={generateWhatsAppUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleCheckoutClick}
+              className="block text-center w-full bg-[#25D366] text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors shadow-sm"
+            >
               Checkout via WhatsApp
-            </button>
+            </a>
           </div>
         )}
       </div>
