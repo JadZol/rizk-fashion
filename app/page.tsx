@@ -5,17 +5,17 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Featured categories mixed with your custom local images and stable fallback images
+// Featured categories using your custom local photos and stable Pexels fallbacks
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    image: "https://images.pexels.com/photos/291762/pexels-photo-291762.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Pointing directly to your local file in the public folder
+    image: "/dresses img.jpg", 
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    // Pointing directly to your local file in the public folder
     image: "/tops and sweaters.webp", 
   },
   {
@@ -36,7 +36,6 @@ const FEATURED_CATEGORIES = [
   {
     name: "Pants",
     slug: "pants",
-    // Pointing directly to your local file in the public folder
     image: "/pants img.jpg", 
   },
   {
@@ -52,7 +51,6 @@ const FEATURED_CATEGORIES = [
   {
     name: "Sets",
     slug: "sets",
-    // Pointing directly to your local file in the public folder
     image: "/sets img.jpg", 
   }
 ];
