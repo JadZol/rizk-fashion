@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Fully verified Pexels images (No shoes, no close-ups, just women's fashion)
+// Featured categories mixed with your custom local images and stable fallback images
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
@@ -15,14 +15,13 @@ const FEATURED_CATEGORIES = [
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    // Fixed: Woman wearing a cozy sweater
-    image: "https://images.pexels.com/photos/4598205/pexels-photo-4598205.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Pointing directly to your local file in the public folder
+    image: "/tops and sweaters.webp", 
   },
   {
     name: "Shirts",
     slug: "shirts",
-    // Fixed: Woman wearing a white button-up shirt
-    image: "https://images.pexels.com/photos/428338/pexels-photo-428338.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    image: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Coats & Jackets",
@@ -37,8 +36,8 @@ const FEATURED_CATEGORIES = [
   {
     name: "Pants",
     slug: "pants",
-    // Fixed: Woman wearing stylish trousers (no sneakers)
-    image: "https://images.pexels.com/photos/2085739/pexels-photo-2085739.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Pointing directly to your local file in the public folder
+    image: "/pants img.jpg", 
   },
   {
     name: "Skirts",
@@ -53,7 +52,8 @@ const FEATURED_CATEGORIES = [
   {
     name: "Sets",
     slug: "sets",
-    image: "https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=800", 
+    // Pointing directly to your local file in the public folder
+    image: "/sets img.jpg", 
   }
 ];
 
