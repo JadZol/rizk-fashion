@@ -3,34 +3,82 @@
 
 import { useCart } from "../context/CartContext";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
-const COUNTRY_CODES = [
-  { code: "+961", country: "LB", label: "🇱🇧 +961" },
-  { code: "+971", country: "AE", label: "🇦🇪 +971" },
-  { code: "+966", country: "SA", label: "🇸🇦 +966" },
-  { code: "+974", country: "QA", label: "🇶🇦 +974" },
-  { code: "+965", country: "KW", label: "🇰🇼 +965" },
-  { code: "+973", country: "BH", label: "🇧🇭 +973" },
-  { code: "+968", country: "OM", label: "🇴🇲 +968" },
-  { code: "+20", country: "EG", label: "🇪🇬 +20" },
-  { code: "+1", country: "US", label: "🇺🇸 +1" },
-  { code: "+44", country: "GB", label: "🇬🇧 +44" },
-  { code: "+33", country: "FR", label: "🇫🇷 +33" },
-  { code: "+49", country: "DE", label: "🇩🇪 +49" },
+type Country = {
+  name: string;
+  code: string;
+  dial: string;
+  flag: string;
+};
+
+const COUNTRIES: Country[] = [
+  { name: "Lebanon", code: "LB", dial: "+961", flag: "🇱🇧" },
+  { name: "United Arab Emirates", code: "AE", dial: "+971", flag: "🇦🇪" },
+  { name: "Saudi Arabia", code: "SA", dial: "+966", flag: "🇸🇦" },
+  { name: "Qatar", code: "QA", dial: "+974", flag: "🇶🇦" },
+  { name: "Kuwait", code: "KW", dial: "+965", flag: "🇰🇼" },
+  { name: "Bahrain", code: "BH", dial: "+973", flag: "🇧🇭" },
+  { name: "Oman", code: "OM", dial: "+968", flag: "🇴🇲" },
+  { name: "Jordan", code: "JO", dial: "+962", flag: "🇯🇴" },
+  { name: "Egypt", code: "EG", dial: "+20", flag: "🇪🇬" },
+  { name: "Iraq", code: "IQ", dial: "+964", flag: "🇮🇶" },
+  { name: "Palestine", code: "PS", dial: "+970", flag: "🇵🇸" },
+  { name: "Syria", code: "SY", dial: "+963", flag: "🇸🇾" },
+  { name: "United States", code: "US", dial: "+1", flag: "🇺🇸" },
+  { name: "United Kingdom", code: "GB", dial: "+44", flag: "🇬🇧" },
+  { name: "France", code: "FR", dial: "+33", flag: "🇫🇷" },
+  { name: "Germany", code: "DE", dial: "+49", flag: "🇩🇪" },
+  { name: "Canada", code: "CA", dial: "+1", flag: "🇨🇦" },
+  { name: "Australia", code: "AU", dial: "+61", flag: "🇦🇺" },
+  { name: "Italy", code: "IT", dial: "+39", flag: "🇮🇹" },
+  { name: "Spain", code: "ES", dial: "+34", flag: "🇪🇸" },
+  { name: "Turkey", code: "TR", dial: "+90", flag: "🇹🇷" },
+  { name: "Switzerland", code: "CH", dial: "+41", flag: "🇨🇭" },
+  { name: "Sweden", code: "SE", dial: "+46", flag: "🇸🇪" },
+  { name: "Netherlands", code: "NL", dial: "+31", flag: "🇳🇱" },
+  { name: "Belgium", code: "BE", dial: "+32", flag: "🇧🇪" },
+  { name: "Austria", code: "AT", dial: "+43", flag: "🇦🇹" },
+  { name: "Brazil", code: "BR", dial: "+55", flag: "🇧🇷" },
+  { name: "India", code: "IN", dial: "+91", flag: "🇮🇳" },
+  { name: "Japan", code: "JP", dial: "+81", flag: "🇯🇵" },
+  { name: "South Korea", code: "KR", dial: "+82", flag: "🇰🇷" },
+  { name: "China", code: "CN", dial: "+86", flag: "🇨🇳" },
 ];
 
 export default function CartPage() {
   const { cart, removeFromCart, updateItemSize, updateItemColor, cartTotal } = useCart();
   
   const [fullName, setFullName] = useState("");
-  const [countryCode, setCountryCode] = useState("+961");
+  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]); // Default to Lebanon
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
 
+  // Searchable Dropdown States
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const deliveryFee = 4.00;
   const finalTotal = cartTotal + deliveryFee;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredCountries = COUNTRIES.filter(c => 
+    c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.dial.includes(searchQuery) ||
+    c.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleWhatsAppCheckout = () => {
     if (!fullName || !phone || !address) {
@@ -45,7 +93,7 @@ export default function CartPage() {
       return;
     }
 
-    const fullPhoneNumber = `${countryCode} ${cleanedPhone}`;
+    const fullPhoneNumber = `${selectedCountry.dial} ${cleanedPhone}`;
 
     let message = `Hello Rizk Fashion! I would like to place an order.\n\n`;
     message += `*Customer Details:*\nName: ${fullName}\nPhone: ${fullPhoneNumber}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
@@ -143,17 +191,59 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              {/* Phone Number with Prefix Selector Dropdown */}
-              <div className="flex border border-[#F3D9CE] focus-within:border-[#D98C7A] bg-white">
-                <select 
-                  value={countryCode} 
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  className="bg-[#FBF3EC] text-[#2E2624] px-2 py-3 text-xs border-r border-[#F3D9CE] focus:outline-none cursor-pointer"
+              {/* Searchable Country Code & Phone Input */}
+              <div className="flex border border-[#F3D9CE] focus-within:border-[#D98C7A] bg-white relative" ref={dropdownRef}>
+                {/* Trigger Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="bg-[#FBF3EC] text-[#2E2624] px-3 py-3 text-xs border-r border-[#F3D9CE] flex items-center gap-1.5 focus:outline-none cursor-pointer flex-shrink-0"
                 >
-                  {COUNTRY_CODES.map(c => (
-                    <option key={c.code} value={c.code}>{c.label}</option>
-                  ))}
-                </select>
+                  <span>{selectedCountry.flag}</span>
+                  <span className="font-semibold">{selectedCountry.dial}</span>
+                  <span className="text-[10px]">▼</span>
+                </button>
+
+                {/* Searchable Dropdown Popup */}
+                {isDropdownOpen && (
+                  <div className="absolute left-0 top-full mt-1 w-72 bg-white border border-[#F3D9CE] shadow-xl z-50 max-h-64 flex flex-col">
+                    <div className="p-2 border-b border-[#F3D9CE] bg-[#FBF3EC]">
+                      <input 
+                        type="text" 
+                        placeholder="Search country or code..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full p-2 text-xs border border-[#F3D9CE] bg-white focus:outline-none"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="overflow-y-auto flex-1">
+                      {filteredCountries.length === 0 ? (
+                        <div className="p-3 text-xs text-gray-500 text-center">No country found</div>
+                      ) : (
+                        filteredCountries.map((c) => (
+                          <button
+                            key={c.code}
+                            type="button"
+                            onClick={() => {
+                              setSelectedCountry(c);
+                              setIsDropdownOpen(false);
+                              setSearchQuery("");
+                            }}
+                            className="w-full text-left px-3 py-2 text-xs hover:bg-[#FBF3EC] flex items-center justify-between transition-colors border-b border-gray-50"
+                          >
+                            <span className="flex items-center gap-2">
+                              <span>{c.flag}</span>
+                              <span className="font-medium text-[#2E2624]">{c.name}</span>
+                            </span>
+                            <span className="text-[#6B5F5A] font-mono">{c.dial}</span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <input 
                   type="tel" 
                   placeholder="70 123 456" 
