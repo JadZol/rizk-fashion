@@ -2,10 +2,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { useCart } from "../../../app/context/CartContext";
-import { useToast } from "../../../app/context/ToastContext";
+import { useCart } from "@/app/context/CartContext";
+import { useToast } from "@/app/context/ToastContext";
 
 type Product = {
   id: string;
@@ -58,13 +58,14 @@ const BOUTIQUE_COLOR_MAP: Record<string, string> = {
   mustard: "#FFDB58",
   purple: "#800080",
   lavender: "#E6E6FA",
-  lilac: "#C8A2C8"
+  lilac:="#C8A2C8"
 };
 
 const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"];
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params?.id as string;
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -194,7 +195,16 @@ export default function ProductDetailPage() {
 
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pb-16 relative">
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <div className="max-w-7xl mx-auto px-6 pt-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#6B5F5A] hover:text-[#2E2624] transition-colors cursor-pointer group"
+        >
+          <span className="transform group-hover:-translate-x-1 transition-transform">←</span> Back to Collection
+        </button>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         
         {/* Gallery Section */}
         <div className="space-y-4 md:sticky md:top-28">
