@@ -5,52 +5,52 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// All categories with reliable, women's fashion specific placeholder images
+// All categories updated with verified, women-exclusive fashion model images
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1515347619362-672ce1faa860?w=800&auto=format&fit=crop", // Woman in flowy dress
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    image: "https://images.unsplash.com/photo-1434389678369-e840b5220c3a?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop", // Woman in knit sweater
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1596783048924-ce33a01090cb?w=800&auto=format&fit=crop", // Woman in button-up shirt
   },
   {
     name: "Coats & Jackets",
     slug: "coats-jackets",
-    image: "https://images.unsplash.com/photo-1520975867597-0af37a22e31e?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800&auto=format&fit=crop", // Woman in trench coat
   },
   {
     name: "Jeans",
     slug: "jeans",
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1584273143981-41c073dfe8f8?w=800&auto=format&fit=crop", // Woman in denim jeans
   },
   {
     name: "Pants",
     slug: "pants",
-    image: "https://images.unsplash.com/photo-1509631179647-0c71a396265d?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&auto=format&fit=crop", // Woman in stylish pants
   },
   {
     name: "Skirts",
     slug: "skirts",
-    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1582142407894-ec85a1260a46?w=800&auto=format&fit=crop", // Woman in skirt
   },
   {
     name: "Shorts",
     slug: "shorts",
-    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?w=800&auto=format&fit=crop", // Woman in shorts
   },
   {
     name: "Sets",
     slug: "sets",
-    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=1000&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1593032465175-481ac7f401a0?w=800&auto=format&fit=crop", // Woman in matching suit set
   }
 ];
 
