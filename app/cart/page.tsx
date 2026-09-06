@@ -22,6 +22,18 @@ export default function CartPage() {
       return;
     }
 
+    // Clean the phone number of spaces, dashes, or parentheses
+    const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "");
+
+    // Lebanese phone validation regex:
+    // Accepts formats like: +961XXXXXXXX, 961XXXXXXXX, or local 8-digit numbers starting with 3, 70, 71, 76, 78, 79, 81, etc.
+    const lebanesePhoneRegex = /^(?:\+?961)?(?:3|70|71|76|78|79|81|1|4|5|6|7|8|9)\d{7}$/;
+
+    if (!lebanesePhoneRegex.test(cleanedPhone)) {
+      alert("Please enter a valid Lebanese phone number (e.g. 70123456 or +96170123456).");
+      return;
+    }
+
     let message = `Hello Rizk Fashion! I would like to place an order.\n\n`;
     message += `*Customer Details:*\nName: ${fullName}\nPhone: ${phone}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
     message += `*Order Details:*\n`;
