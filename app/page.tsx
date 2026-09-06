@@ -5,33 +5,52 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Define your featured categories for the homepage carousel
+// All categories with reliable, high-quality fashion placeholder images
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    // Replace with your own image URL later
     image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1983&auto=format&fit=crop",
   },
   {
-    name: "Sets",
-    slug: "sets",
-    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=1974&auto=format&fit=crop",
+    name: "Tops & Sweaters",
+    slug: "tops-sweaters",
+    image: "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?q=80&w=1972&auto=format&fit=crop",
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.unsplash.com/photo-1596755094514-f87e32f85e23?q=80&w=1987&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1598032895397-b9472444bf93?q=80&w=2080&auto=format&fit=crop",
+  },
+  {
+    name: "Coats & Jackets",
+    slug: "coats-jackets",
+    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1935&auto=format&fit=crop",
+  },
+  {
+    name: "Jeans",
+    slug: "jeans",
+    image: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1926&auto=format&fit=crop",
+  },
+  {
+    name: "Pants",
+    slug: "pants",
+    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1974&auto=format&fit=crop",
+  },
+  {
+    name: "Skirts",
+    slug: "skirts",
+    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=1974&auto=format&fit=crop",
   },
   {
     name: "Shorts",
     slug: "shorts",
-    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=1974&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1582552938357-32b906df40cb?q=80&w=1935&auto=format&fit=crop",
   },
   {
-    name: "Coats & Jackets",
-    slug: "coats-&-jackets",
-    image: "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?q=80&w=1974&auto=format&fit=crop",
+    name: "Sets",
+    slug: "sets",
+    image: "https://images.unsplash.com/photo-1593030103066-0093718efeb9?q=80&w=2080&auto=format&fit=crop",
   }
 ];
 
