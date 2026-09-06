@@ -5,13 +5,12 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Featured categories using your custom local photos and stable Pexels fallbacks
+// Featured categories using your clean local file paths
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    // Pointing directly to your local file in the public folder
-    image: "/dresses img.jpg", 
+    image: "/dresses.jpg", 
   },
   {
     name: "Tops & Sweaters",
