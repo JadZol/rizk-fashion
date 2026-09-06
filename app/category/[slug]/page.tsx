@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
@@ -18,7 +18,20 @@ type Product = {
   colors: string | null;
 };
 
-// Map URL slugs to clean display names, including "Sets"
+const CATEGORIES = [
+  { name: "All", slug: "all" },
+  { name: "Sale", slug: "sale" },
+  { name: "Dresses", slug: "dresses" },
+  { name: "Tops & Sweaters", slug: "tops-sweaters" },
+  { name: "Shirts", slug: "shirts" },
+  { name: "Coats & Jackets", slug: "coats-jackets" },
+  { name: "Jeans", slug: "jeans" },
+  { name: "Pants", slug: "pants" },
+  { name: "Skirts", slug: "skirts" },
+  { name: "Shorts", slug: "shorts" },
+  { name: "Sets", slug: "sets" }
+];
+
 const CATEGORY_TITLE_MAP: Record<string, string> = {
   "tops-sweaters": "Tops & Sweaters",
   "coats-jackets": "Coats & Jackets",
@@ -35,6 +48,7 @@ const CATEGORY_TITLE_MAP: Record<string, string> = {
 
 export default function CategoryPage() {
   const params = useParams();
+  const router = useRouter();
   const rawSlug = typeof params?.slug === 'string' ? params.slug.toLowerCase() : "";
   
   const categoryName = CATEGORY_TITLE_MAP[rawSlug] || decodeURIComponent(rawSlug).replace(/-/g, " ");
@@ -92,8 +106,39 @@ export default function CategoryPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pt-8">
-      <div className="max-w-[1400px] mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
+    <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] pt-6 pb-20">
+      
+      {/* Navigation & Back Controls */}
+      <div className="max-w-[1400px] mx-auto px-6 mb-8 flex flex-col gap-6">
+        <button
+          onClick={() => router.push("/shop")}
+          className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#6B5F5A] hover:text-[#2E2624] transition-colors cursor-pointer group w-fit"
+        >
+          <span className="transform group-hover:-translate-x-1 transition-transform">←</span> Back to Shop
+        </button>
+
+        {/* Horizontal Category Switcher Bar */}
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-[#F3D9CE]">
+          {CATEGORIES.map(cat => {
+            const isActive = rawSlug === cat.slug;
+            return (
+              <Link
+                key={cat.slug}
+                href={`/category/${cat.slug}`}
+                className={`px-4 py-2 text-[11px] uppercase tracking-widest border transition-all duration-300 cursor-pointer ${
+                  isActive 
+                    ? "bg-[#2E2624] text-white border-[#2E2624]" 
+                    : "bg-white text-[#2E2624] border-[#F3D9CE] hover:border-[#2E2624] hover:bg-[#2E2624] hover:text-white"
+                }`}
+              >
+                {cat.name}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row gap-10">
         <aside className="w-full md:w-64 flex-shrink-0">
           <h2 className="text-2xl font-serif capitalize mb-8">{categoryName}</h2>
           
@@ -106,7 +151,7 @@ export default function CategoryPage() {
                 max="150" 
                 value={maxPrice} 
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full accent-[#2E2624]"
+                className="w-full accent-[#2E2624] cursor-pointer"
               />
             </div>
             <p className="text-xs text-[#6B5F5A] mt-2">Up to ${maxPrice}</p>
@@ -122,7 +167,7 @@ export default function CategoryPage() {
                       type="checkbox" 
                       checked={selectedSizes.includes(size)}
                       onChange={() => toggleSize(size)}
-                      className="w-4 h-4 accent-[#2E2624]"
+                      className="w-4 h-4 accent-[#2E2624] cursor-pointer"
                     />
                     {size}
                   </label>
@@ -144,7 +189,7 @@ export default function CategoryPage() {
                 const hasSale = product.sale_price !== null && product.sale_price > 0;
                 
                 return (
-                  <Link key={product.id} href={`/product/${product.id}`} className="block group bg-white border border-[#F3D9CE]">
+                  <Link key={product.id} href={`/product/${product.id}`} className="block group bg-white border border-[#F3D9CE] cursor-pointer">
                     <div className="w-full h-96 bg-[#F3D9CE] relative overflow-hidden">
                       {product.image_url && (
                         <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
