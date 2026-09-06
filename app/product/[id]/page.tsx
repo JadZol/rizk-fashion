@@ -216,7 +216,7 @@ export default function ProductDetailPage() {
                 <button
                   key={index}
                   onClick={() => handleThumbnailClick(imgUrl, index)}
-                  className={`w-20 h-24 flex-shrink-0 border-2 overflow-hidden transition-all ${
+                  className={`w-20 h-24 flex-shrink-0 border-2 overflow-hidden transition-all cursor-pointer ${
                     selectedImage === imgUrl ? "border-[#2E2624] scale-105" : "border-[#F3D9CE] opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -262,8 +262,8 @@ export default function ProductDetailPage() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`w-12 h-12 text-xs tracking-wider border transition-all font-medium ${
-                      selectedSize === size ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#2E2624] border-[#F3D9CE]"
+                    className={`w-12 h-12 text-xs tracking-wider border transition-all font-medium cursor-pointer ${
+                      selectedSize === size ? "bg-[#2E2624] text-white border-[#2E2624]" : "bg-white text-[#2E2624] border-[#F3D9CE] hover:border-[#2E2624]"
                     }`}
                   >
                     {size}
@@ -288,7 +288,7 @@ export default function ProductDetailPage() {
                       key={colorName}
                       onClick={() => handleColorSelect(colorName, index)}
                       title={colorName}
-                      className={`w-9 h-9 rounded-full border-2 transition-all flex items-center justify-center ${
+                      className={`w-9 h-9 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer ${
                         isSelected ? "border-[#2E2624] scale-110 shadow-md ring-2 ring-[#2E2624]/20" : "border-gray-300 hover:border-gray-500"
                       }`}
                       style={{ backgroundColor: hex }}
@@ -311,7 +311,7 @@ export default function ProductDetailPage() {
             <div className="inline-flex items-center border border-[#F3D9CE] bg-white">
               <button
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                className="px-4 py-2 text-sm text-[#6B5F5A] hover:bg-[#FBF3EC] transition-colors"
+                className="px-4 py-2 text-sm text-[#6B5F5A] hover:bg-[#FBF3EC] transition-colors cursor-pointer"
               >
                 −
               </button>
@@ -320,7 +320,7 @@ export default function ProductDetailPage() {
               </span>
               <button
                 onClick={() => setQuantity(prev => prev + 1)}
-                className="px-4 py-2 text-sm text-[#6B5F5A] hover:bg-[#FBF3EC] transition-colors"
+                className="px-4 py-2 text-sm text-[#6B5F5A] hover:bg-[#FBF3EC] transition-colors cursor-pointer"
               >
                 +
               </button>
@@ -329,14 +329,14 @@ export default function ProductDetailPage() {
 
           {/* Action Buttons (Desktop view) */}
           <div className="space-y-3 pt-4 border-t border-[#F3D9CE] hidden md:block">
-            <button onClick={handleAddToCart} className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm">
+            <button onClick={handleAddToCart} className="w-full bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm cursor-pointer">
               Add to Bag — ${(effectivePrice * quantity).toFixed(2)}
             </button>
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={toggleWishlist} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors">
+              <button onClick={toggleWishlist} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors cursor-pointer">
                 Save to Wishlist
               </button>
-              <button onClick={handleShare} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors flex items-center justify-center gap-1.5">
+              <button onClick={handleShare} className="w-full border border-[#2E2624] text-[#2E2624] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F3D9CE]/30 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 00-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 00-3.933 2.185Z" />
                 </svg>
@@ -350,7 +350,7 @@ export default function ProductDetailPage() {
               <p className="text-[11px] uppercase tracking-wider font-bold text-[#2E2624]">Need Fit Advice?</p>
               <p className="text-[10px] text-[#6B5F5A]">Chat directly with our boutique stylist about measurements.</p>
             </div>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="bg-[#2E2624] text-white px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors flex items-center gap-1.5 flex-shrink-0">
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="bg-[#2E2624] text-white px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
               Ask Stylist
             </a>
           </div>
@@ -367,7 +367,7 @@ export default function ProductDetailPage() {
       <div className="sticky bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#F3D9CE] p-4 flex gap-3 items-center z-30 md:hidden shadow-lg mt-12">
         <button
           onClick={toggleWishlist}
-          className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0"
+          className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0 cursor-pointer"
           title="Save to Wishlist"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -376,7 +376,7 @@ export default function ProductDetailPage() {
         </button>
         <button
           onClick={handleShare}
-          className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0"
+          className="p-3 border border-[#2E2624] text-[#2E2624] flex items-center justify-center hover:bg-[#F3D9CE]/30 transition-colors flex-shrink-0 cursor-pointer"
           title="Share Piece"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -385,7 +385,7 @@ export default function ProductDetailPage() {
         </button>
         <button
           onClick={handleAddToCart}
-          className="flex-1 bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm"
+          className="flex-1 bg-[#2E2624] text-white py-4 text-xs uppercase tracking-widest font-bold hover:bg-[#D98C7A] transition-colors shadow-sm cursor-pointer"
         >
           Add to Bag — ${(effectivePrice * quantity).toFixed(2)}
         </button>
