@@ -43,9 +43,9 @@ export default function Navbar() {
           </div>
 
           <div className="flex gap-6 items-center text-xs tracking-widest uppercase text-[#6B5F5A]">
-            <Link href="/shop" className="hover:text-[#2E2624] transition-colors hidden sm:inline">Shop</Link>
-            <Link href="/wishlist" className="hover:text-[#2E2624] transition-colors">Wishlist</Link>
-            <Link href="/cart" className="flex items-center gap-1.5 font-bold text-[#D98C7A] hover:text-[#2E2624] transition-colors">
+            <Link href="/shop" className="hover:text-[#2E2624] transition-colors hidden sm:inline cursor-pointer">Shop</Link>
+            <Link href="/wishlist" className="hover:text-[#2E2624] transition-colors cursor-pointer">Wishlist</Link>
+            <Link href="/cart" className="flex items-center gap-1.5 font-bold text-[#D98C7A] hover:text-[#2E2624] transition-colors cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
@@ -87,9 +87,27 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-[#F3D9CE] space-y-2 text-xs text-[#6B5F5A]">
-            <p>rizkfashion82@gmail.com</p>
-            <p>+961 76 380 819</p>
+          {/* Elite Concierge Contact Footer */}
+          <div className="pt-8 border-t border-[#F3D9CE] space-y-3">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-[#D98C7A] font-bold">Client Concierge</p>
+            <div className="space-y-2 text-xs text-[#6B5F5A]">
+              <a 
+                href="mailto:rizkfashion82@gmail.com" 
+                className="flex items-center gap-2.5 hover:text-[#2E2624] transition-colors cursor-pointer group"
+              >
+                <span className="w-5 h-5 rounded-full bg-[#F3D9CE]/50 flex items-center justify-center text-[10px] group-hover:bg-[#2E2624] group-hover:text-white transition-colors">✉</span>
+                <span>rizkfashion82@gmail.com</span>
+              </a>
+              <a 
+                href="https://wa.me/96176380819" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2.5 hover:text-[#2E2624] transition-colors cursor-pointer group"
+              >
+                <span className="w-5 h-5 rounded-full bg-[#F3D9CE]/50 flex items-center justify-center text-[10px] group-hover:bg-[#2E2624] group-hover:text-white transition-colors">💬</span>
+                <span>+961 76 380 819</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
