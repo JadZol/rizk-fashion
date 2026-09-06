@@ -49,16 +49,24 @@ export default function Home() {
       {/* Elite Cinematic Overlay Curtain */}
       <div className={`fixed inset-0 z-50 bg-[#2E2624] pointer-events-none transition-opacity duration-700 ease-in-out ${isTransitioning ? "opacity-100" : "opacity-0"}`} />
 
-      {/* Hero Section with Cinematic Zoom */}
+      {/* Hero Section with Cinematic Zoom and Background Video */}
       <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-105" : "scale-100"}`}>
-        <img 
-          src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" 
-          alt="Rizk Fashion" 
+        
+        {/* Background Video */}
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
           className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-115" : "scale-105"}`}
-        />
+        >
+          {/* Note: To use your own video, put your video file in the "public" folder of your project (e.g., name it "hero.mp4") and change the src below to src="/hero.mp4" */}
+          <source src="https://videos.pexels.com/video-files/7671112/7671112-uhd_2160_4096_25fps.mp4" type="video/mp4" />
+        </video>
+
         <div className={`relative z-10 text-center text-white px-6 space-y-6 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}>
-          <p className="text-xs md:text-sm tracking-[0.3em] uppercase">Rizk Fashion — RZK</p>
-          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-wide">Timeless Elegance.</h1>
+          <p className="text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-md">Rizk Fashion — RZK</p>
+          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-wide drop-shadow-lg">Timeless Elegance.</h1>
           <div>
             <a 
               href="/shop#catalog" 
