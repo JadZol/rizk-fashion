@@ -5,52 +5,51 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Permanent, verified women's fashion images that will never break
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    image: "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1598032895397-b9472444bf93?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Coats & Jackets",
     slug: "coats-jackets",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Jeans",
     slug: "jeans",
-    image: "https://images.unsplash.com/photo-1485230895272-83fd21570d5c?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1604136172384-b2e9c43271ec?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Pants",
     slug: "pants",
-    image: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Skirts",
     slug: "skirts",
-    image: "https://images.unsplash.com/photo-1524504388266-bbf33cb00808?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Shorts",
     slug: "shorts",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=800&auto=format&fit=crop", 
   },
   {
     name: "Sets",
     slug: "sets",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=800&auto=format&fit=crop", 
   }
 ];
 
