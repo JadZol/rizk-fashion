@@ -25,12 +25,12 @@ export default function CartPage() {
     // Clean the phone number of spaces, dashes, or parentheses
     const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "");
 
-    // Lebanese phone validation regex:
-    // Accepts formats like: +961XXXXXXXX, 961XXXXXXXX, or local 8-digit numbers starting with 3, 70, 71, 76, 78, 79, 81, etc.
-    const lebanesePhoneRegex = /^(?:\+?961)?(?:3|70|71|76|78|79|81|1|4|5|6|7|8|9)\d{7}$/;
+    // Updated Lebanese phone validation regex:
+    // Allows optional +961 or 961, optional leading 0 (like 03, 070, etc.), followed by valid mobile/landline prefixes and total digit length check
+    const lebanesePhoneRegex = /^(?:\+?961)?(?:0)?(3|70|71|76|78|79|81|1|4|5|6|7|8|9)\d{7}$/;
 
     if (!lebanesePhoneRegex.test(cleanedPhone)) {
-      alert("Please enter a valid Lebanese phone number (e.g. 70123456 or +96170123456).");
+      alert("Please enter a valid Lebanese phone number (e.g. 03452122 or 70123456).");
       return;
     }
 
@@ -129,7 +129,7 @@ export default function CartPage() {
             
             <div className="space-y-4 mb-8">
               <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
-              <input type="tel" placeholder="Phone Number (e.g. 70 123 456)" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
+              <input type="tel" placeholder="Phone Number (e.g. 03 452 122)" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               <input type="text" placeholder="Delivery Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
               {/* Payment Method Selector with Custom Dropdown Arrow for Mobile */}
