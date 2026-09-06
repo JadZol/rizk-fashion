@@ -5,52 +5,61 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// All categories updated with verified, women-exclusive fashion model images
+// All categories updated with manually verified, explicit women's fashion model images
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    image: "https://images.unsplash.com/photo-1515347619362-672ce1faa860?w=800&auto=format&fit=crop", // Woman in flowy dress
+    // Woman in red dress
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop", // Woman in knit sweater
+    // Woman in a beige sweater
+    image: "https://images.unsplash.com/photo-1611042553365-9a10374a3efc?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.unsplash.com/photo-1596783048924-ce33a01090cb?w=800&auto=format&fit=crop", // Woman in button-up shirt
+    // Woman in a stylish button-up shirt
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Coats & Jackets",
     slug: "coats-jackets",
-    image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800&auto=format&fit=crop", // Woman in trench coat
+    // Woman in a black leather jacket
+    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Jeans",
     slug: "jeans",
-    image: "https://images.unsplash.com/photo-1584273143981-41c073dfe8f8?w=800&auto=format&fit=crop", // Woman in denim jeans
+    // Woman modeling blue jeans
+    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Pants",
     slug: "pants",
-    image: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800&auto=format&fit=crop", // Woman in stylish pants
+    // Woman in stylish black pants
+    image: "https://images.unsplash.com/photo-1509631179647-0c71a396265d?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Skirts",
     slug: "skirts",
-    image: "https://images.unsplash.com/photo-1582142407894-ec85a1260a46?w=800&auto=format&fit=crop", // Woman in skirt
+    // Woman in a pleated skirt
+    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Shorts",
     slug: "shorts",
-    image: "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?w=800&auto=format&fit=crop", // Woman in shorts
+    // Woman modeling summer shorts
+    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=800&auto=format&fit=crop",
   },
   {
     name: "Sets",
     slug: "sets",
-    image: "https://images.unsplash.com/photo-1593032465175-481ac7f401a0?w=800&auto=format&fit=crop", // Woman in matching suit set
+    // Woman in a matching white set
+    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=800&auto=format&fit=crop",
   }
 ];
 
@@ -69,7 +78,6 @@ export default function Home() {
     }, 400);
   };
 
-  // Scroll functions for PC users
   const scrollLeft = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({ left: -340, behavior: "smooth" });
@@ -84,13 +92,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#FBF3EC] text-[#2E2624] relative overflow-hidden">
-      {/* Elite Cinematic Overlay Curtain */}
       <div className={`fixed inset-0 z-50 bg-[#2E2624] pointer-events-none transition-opacity duration-700 ease-in-out ${isTransitioning ? "opacity-100" : "opacity-0"}`} />
 
-      {/* Hero Section with Cinematic Zoom and Background Video */}
       <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-105" : "scale-100"}`}>
         
-        {/* Local Background Video */}
         <video 
           autoPlay 
           loop 
@@ -117,7 +122,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Shop By Category Carousel Section */}
       <section ref={collectionRef} id="collection" className="max-w-7xl mx-auto px-6 py-24 scroll-mt-20">
         <div className="flex justify-between items-end mb-12">
           <div>
@@ -129,10 +133,7 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Carousel Container with Navigation Arrows */}
         <div className="relative group">
-          
-          {/* Left Navigation Arrow (hidden on mobile, appears on hover on PC) */}
           <button 
             onClick={scrollLeft}
             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white"
@@ -142,7 +143,6 @@ export default function Home() {
             </svg>
           </button>
 
-          {/* Horizontal Scrollable Carousel */}
           <div 
             ref={carouselRef}
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8"
@@ -159,7 +159,6 @@ export default function Home() {
                   alt={category.name}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
                 />
-                {/* Dark gradient overlay so the text is always readable */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 transition-opacity duration-300">
                   <h3 className="text-white text-2xl font-serif tracking-wide mb-1">{category.name}</h3>
                   <span className="text-white text-xs uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 translate-y-2 group-hover/card:translate-y-0">
@@ -170,7 +169,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Right Navigation Arrow (hidden on mobile, appears on hover on PC) */}
           <button 
             onClick={scrollRight}
             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white"
