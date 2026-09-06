@@ -5,51 +5,52 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+// Completely replaced Unsplash with stable Pexels images (100% women's fashion)
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.pexels.com/photos/291762/pexels-photo-291762.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    image: "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.unsplash.com/photo-1598032895397-b9472444bf93?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Coats & Jackets",
     slug: "coats-jackets",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/1126993/pexels-photo-1126993.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Jeans",
     slug: "jeans",
-    image: "https://images.unsplash.com/photo-1604136172384-b2e9c43271ec?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/1082528/pexels-photo-1082528.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Pants",
     slug: "pants",
-    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Skirts",
     slug: "skirts",
-    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/1007018/pexels-photo-1007018.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Shorts",
     slug: "shorts",
-    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/1381556/pexels-photo-1381556.jpeg?auto=compress&cs=tinysrgb&w=800", 
   },
   {
     name: "Sets",
     slug: "sets",
-    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=800", 
   }
 ];
 
@@ -91,7 +92,7 @@ export default function Home() {
           loop 
           muted 
           playsInline
-          poster="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
+          poster="https://images.pexels.com/photos/291762/pexels-photo-291762.jpeg?auto=compress&cs=tinysrgb&w=2070"
           className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-115" : "scale-105"}`}
         >
           <source src="/hero.mp4" type="video/mp4" />
