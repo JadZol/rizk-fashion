@@ -120,10 +120,22 @@ export default function CartPage() {
               <input type="tel" placeholder="Phone Number (e.g. 70 123 456)" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               <input type="text" placeholder="Delivery Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm text-[#6B5F5A] focus:outline-none">
-                <option value="Cash on Delivery">Cash on Delivery</option>
-                <option value="Whish Money">Whish Money</option>
-              </select>
+              {/* Payment Method Selector with Custom Dropdown Arrow for Mobile */}
+              <div className="relative">
+                <select 
+                  value={paymentMethod} 
+                  onChange={(e) => setPaymentMethod(e.target.value)} 
+                  className="w-full border border-[#F3D9CE] p-3 pr-10 text-sm bg-white text-[#2E2624] focus:outline-none appearance-none rounded-none cursor-pointer"
+                >
+                  <option value="Cash on Delivery">Cash on Delivery</option>
+                  <option value="Whish Money">Whish Money</option>
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#6B5F5A]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <div className="border-t border-[#F3D9CE] pt-4 space-y-2 mb-6">
