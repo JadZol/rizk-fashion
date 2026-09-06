@@ -5,58 +5,59 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// All categories with reliable, high-quality fashion placeholder images
+// All categories with reliable, women's fashion specific placeholder images
 const FEATURED_CATEGORIES = [
   {
     name: "Dresses",
     slug: "dresses",
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1983&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Tops & Sweaters",
     slug: "tops-sweaters",
-    image: "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?q=80&w=1972&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1434389678369-e840b5220c3a?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Shirts",
     slug: "shirts",
-    image: "https://images.unsplash.com/photo-1598032895397-b9472444bf93?q=80&w=2080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Coats & Jackets",
     slug: "coats-jackets",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1935&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1520975867597-0af37a22e31e?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Jeans",
     slug: "jeans",
-    image: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1926&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Pants",
     slug: "pants",
-    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1974&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1509631179647-0c71a396265d?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Skirts",
     slug: "skirts",
-    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=1974&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1583496924844-1188361b96e5?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Shorts",
     slug: "shorts",
-    image: "https://images.unsplash.com/photo-1582552938357-32b906df40cb?q=80&w=1935&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1591369822096-bbc142d1eb1c?q=80&w=1000&auto=format&fit=crop",
   },
   {
     name: "Sets",
     slug: "sets",
-    image: "https://images.unsplash.com/photo-1593030103066-0093718efeb9?q=80&w=2080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=1000&auto=format&fit=crop",
   }
 ];
 
 export default function Home() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const collectionRef = useRef<HTMLElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const handleExploreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -66,6 +67,19 @@ export default function Home() {
     setTimeout(() => {
       router.push("/shop#catalog");
     }, 400);
+  };
+
+  // Scroll functions for PC users
+  const scrollLeft = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: -340, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: 340, behavior: "smooth" });
+    }
   };
 
   return (
@@ -115,31 +129,56 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Horizontal Scrollable Carousel */}
-        <div 
-          className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {FEATURED_CATEGORIES.map((category) => (
-            <Link
-              key={category.slug}
-              href={`/category/${category.slug}`}
-              className="min-w-[280px] md:min-w-[320px] h-[400px] flex-1 snap-start group relative block overflow-hidden bg-[#F3D9CE] border border-[#F3D9CE]"
-            >
-              <img
-                src={category.image}
-                alt={category.name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              {/* Dark gradient overlay so the text is always readable */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6 transition-opacity duration-300">
-                <h3 className="text-white text-2xl font-serif tracking-wide mb-1">{category.name}</h3>
-                <span className="text-white text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
-                  Explore →
-                </span>
-              </div>
-            </Link>
-          ))}
+        {/* Carousel Container with Navigation Arrows */}
+        <div className="relative group">
+          
+          {/* Left Navigation Arrow (hidden on mobile, appears on hover on PC) */}
+          <button 
+            onClick={scrollLeft}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+
+          {/* Horizontal Scrollable Carousel */}
+          <div 
+            ref={carouselRef}
+            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {FEATURED_CATEGORIES.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/category/${category.slug}`}
+                className="min-w-[280px] md:min-w-[320px] h-[400px] flex-1 snap-start group/card relative block overflow-hidden bg-[#F3D9CE] border border-[#F3D9CE]"
+              >
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                />
+                {/* Dark gradient overlay so the text is always readable */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 transition-opacity duration-300">
+                  <h3 className="text-white text-2xl font-serif tracking-wide mb-1">{category.name}</h3>
+                  <span className="text-white text-xs uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 translate-y-2 group-hover/card:translate-y-0">
+                    Explore →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Right Navigation Arrow (hidden on mobile, appears on hover on PC) */}
+          <button 
+            onClick={scrollRight}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border border-[#F3D9CE] rounded-full flex items-center justify-center text-[#2E2624] shadow-md opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#2E2624] hover:text-white"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
         </div>
       </section>
     </main>
