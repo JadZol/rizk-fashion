@@ -5,10 +5,26 @@ import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import { useState } from "react";
 
+const COUNTRY_CODES = [
+  { code: "+961", country: "LB", label: "🇱🇧 +961" },
+  { code: "+971", country: "AE", label: "🇦🇪 +971" },
+  { code: "+966", country: "SA", label: "🇸🇦 +966" },
+  { code: "+974", country: "QA", label: "🇶🇦 +974" },
+  { code: "+965", country: "KW", label: "🇰🇼 +965" },
+  { code: "+973", country: "BH", label: "🇧🇭 +973" },
+  { code: "+968", country: "OM", label: "🇴🇲 +968" },
+  { code: "+20", country: "EG", label: "🇪🇬 +20" },
+  { code: "+1", country: "US", label: "🇺🇸 +1" },
+  { code: "+44", country: "GB", label: "🇬🇧 +44" },
+  { code: "+33", country: "FR", label: "🇫🇷 +33" },
+  { code: "+49", country: "DE", label: "🇩🇪 +49" },
+];
+
 export default function CartPage() {
   const { cart, removeFromCart, updateItemSize, updateItemColor, cartTotal } = useCart();
   
   const [fullName, setFullName] = useState("");
+  const [countryCode, setCountryCode] = useState("+961");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
@@ -22,20 +38,17 @@ export default function CartPage() {
       return;
     }
 
-    // Clean the phone number of spaces, dashes, or parentheses
-    const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "");
+    const cleanedPhone = phone.replace(/[\s\-\(\)]/g, "").replace(/^0+/, "");
 
-    // Updated Lebanese phone validation regex:
-    // Allows optional +961 or 961, optional leading 0 (like 03, 070, etc.), followed by valid mobile/landline prefixes and total digit length check
-    const lebanesePhoneRegex = /^(?:\+?961)?(?:0)?(3|70|71|76|78|79|81|1|4|5|6|7|8|9)\d{7}$/;
-
-    if (!lebanesePhoneRegex.test(cleanedPhone)) {
-      alert("Please enter a valid Lebanese phone number (e.g. 03452122 or 70123456).");
+    if (cleanedPhone.length < 6) {
+      alert("Please enter a valid phone number.");
       return;
     }
 
+    const fullPhoneNumber = `${countryCode} ${cleanedPhone}`;
+
     let message = `Hello Rizk Fashion! I would like to place an order.\n\n`;
-    message += `*Customer Details:*\nName: ${fullName}\nPhone: ${phone}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
+    message += `*Customer Details:*\nName: ${fullName}\nPhone: ${fullPhoneNumber}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
     message += `*Order Details:*\n`;
 
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -129,10 +142,30 @@ export default function CartPage() {
             
             <div className="space-y-4 mb-8">
               <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
-              <input type="tel" placeholder="Phone Number (e.g. 03 452 122)" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
+              
+              {/* Phone Number with Prefix Selector Dropdown */}
+              <div className="flex border border-[#F3D9CE] focus-within:border-[#D98C7A] bg-white">
+                <select 
+                  value={countryCode} 
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  className="bg-[#FBF3EC] text-[#2E2624] px-2 py-3 text-xs border-r border-[#F3D9CE] focus:outline-none cursor-pointer"
+                >
+                  {COUNTRY_CODES.map(c => (
+                    <option key={c.code} value={c.code}>{c.label}</option>
+                  ))}
+                </select>
+                <input 
+                  type="tel" 
+                  placeholder="70 123 456" 
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)} 
+                  className="w-full p-3 text-sm focus:outline-none bg-transparent" 
+                />
+              </div>
+
               <input type="text" placeholder="Delivery Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              {/* Payment Method Selector with Custom Dropdown Arrow for Mobile */}
+              {/* Payment Method Selector */}
               <div className="relative">
                 <select 
                   value={paymentMethod} 
