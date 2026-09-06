@@ -51,7 +51,7 @@ export default function Home() {
       {/* Hero Section with Cinematic Zoom and Background Video */}
       <header className={`relative w-full h-[85vh] bg-[#2E2624] flex items-center justify-center overflow-hidden transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-105" : "scale-100"}`}>
         
-        {/* Working Fashion Background Video */}
+        {/* Local Background Video */}
         <video 
           autoPlay 
           loop 
@@ -60,7 +60,8 @@ export default function Home() {
           poster="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
           className={`absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-700 ease-in-out ${isTransitioning ? "scale-115" : "scale-105"}`}
         >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-a-woman-in-a-fashion-shoot-with-a-white-outfit-42641-large.mp4" type="video/mp4" />
+          {/* This points directly to the video inside your public folder */}
+          <source src="/hero.mp4" type="video/mp4" />
         </video>
 
         <div className={`relative z-10 text-center text-white px-6 space-y-6 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}>
@@ -78,7 +79,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Clothing Collection Section (Latest Arrivals preview) */}
+      {/* Clothing Collection Section */}
       <section ref={collectionRef} id="collection" className="max-w-7xl mx-auto px-6 py-24 scroll-mt-20">
         <div className="flex justify-between items-end mb-12">
           <div>
