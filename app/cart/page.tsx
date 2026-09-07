@@ -39,12 +39,40 @@ const COUNTRIES: Country[] = [
   { name: "Turkey", code: "TR", dial: "+90", flag: "🇹🇷", minDigits: 10, maxDigits: 10, example: "5123456789" },
 ];
 
+const sizeOptions = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => ({ value: s, label: s }));
+const colorOptions = ["Black", "White", "Cream", "Beige", "Champagne", "Emerald", "Burgundy", "Navy", "Red", "Pink", "Grey", "Standard"].map(c => ({ value: c, label: c }));
 const paymentOptions = [
   { value: "Cash on Delivery", label: "Cash on Delivery" },
   { value: "Whish Money", label: "Whish Money" }
 ];
 
+const inlineSelectStyles = {
+  control: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: '#FBF3EC',
+    borderColor: state.isFocused ? '#D98C7A' : '#F3D9CE',
+    boxShadow: 'none',
+    borderRadius: '0',
+    minHeight: '28px',
+    cursor: 'pointer',
+    fontSize: '11px',
+    '&:hover': { borderColor: '#D98C7A' }
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: state.isSelected ? '#2E2624' : state.isFocused ? '#FBF3EC' : 'white',
+    color: state.isSelected ? 'white' : '#2E2624',
+    cursor: 'pointer',
+    fontSize: '11px',
+    '&:active': { backgroundColor: '#D98C7A' }
+  }),
+  menu: (base: any) => ({ ...base, borderRadius: '0', marginTop: '2px', zIndex: 50 }),
+  dropdownIndicator: (base: any) => ({ ...base, color: '#6B5F5A', padding: '2px', '&:hover': { color: '#2E2624' } }),
+  indicatorSeparator: () => ({ display: 'none' })
+};
+
 const paymentSelectStyles = {
+  ...inlineSelectStyles,
   control: (base: any, state: any) => ({
     ...base,
     backgroundColor: 'white',
@@ -65,13 +93,10 @@ const paymentSelectStyles = {
     fontSize: '13px',
     '&:active': { backgroundColor: '#D98C7A' }
   }),
-  menu: (base: any) => ({ ...base, borderRadius: '0', marginTop: '2px', zIndex: 50 }),
-  dropdownIndicator: (base: any) => ({ ...base, color: '#6B5F5A', padding: '2px', '&:hover': { color: '#2E2624' } }),
-  indicatorSeparator: () => ({ display: 'none' })
 };
 
 export default function CartPage() {
-  const { cart, removeFromCart, cartTotal } = useCart();
+  const { cart, removeFromCart, updateItemSize, updateItemColor, cartTotal } = useCart();
   
   const [fullName, setFullName] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
@@ -166,11 +191,35 @@ export default function CartPage() {
                         {item.name}
                       </Link>
                       
-                      <p className="text-[10px] uppercase text-[#6B5F5A] tracking-wider mt-2">
-                        Size: <span className="font-bold text-[#2E2624]">{item.size}</span> 
-                        <span className="mx-2">|</span> 
-                        Color: <span className="font-bold text-[#2E2624]">{item.color || "Standard"}</span>
-                      </p>
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        <div className="flex items-center gap-2 min-w-[120px]">
+                          <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
+                          <div className="flex-1">
+                            <Select 
+                              value={{ value: item.size, label: item.size }}
+                              onChange={(opt: any) => updateItemSize(index, opt.value)}
+                              options={sizeOptions}
+                              styles={inlineSelectStyles}
+                              isSearchable={false}
+                              instanceId={`size-${index}`}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 min-w-[120px]">
+                          <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Color:</span>
+                          <div className="flex-1">
+                            <Select 
+                              value={{ value: item.color || "Standard", label: item.color || "Standard" }}
+                              onChange={(opt: any) => updateItemColor(index, opt.value)}
+                              options={colorOptions}
+                              styles={inlineSelectStyles}
+                              isSearchable={false}
+                              instanceId={`color-${index}`}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex justify-between items-center mt-4">
