@@ -83,14 +83,14 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* Cart Drawer Overlay */}
+      {/* Cart Drawer Overlay (GPU Accelerated & No Blur for Performance) */}
       <div className={`fixed inset-0 z-[60] flex justify-end transition-opacity duration-300 ${cartOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setCartOpen(false)} />
-        <div className={`relative bg-[#FBF3EC] w-full max-w-md h-full shadow-2xl flex flex-col z-10 transition-transform duration-300 ease-out ${cartOpen ? "translate-x-0" : "translate-x-full"}`}>
+        <div className="fixed inset-0 bg-black/60" onClick={() => setCartOpen(false)} />
+        <div className={`relative bg-[#FBF3EC] w-full max-w-md h-full shadow-2xl flex flex-col z-10 transform-gpu will-change-transform transition-transform duration-300 ease-in-out ${cartOpen ? "translate-x-0" : "translate-x-full"}`}>
           
           <div className="p-6 border-b border-[#F3D9CE] flex justify-between items-center bg-white">
             <h2 className="text-xl font-serif text-[#2E2624]">Shopping Bag</h2>
-            <button onClick={() => setCartOpen(false)} className="text-[#6B5F5A] hover:text-[#2E2624] p-2">✕</button>
+            <button onClick={() => setCartOpen(false)} className="text-[#6B5F5A] hover:text-[#2E2624] p-2 text-xl font-bold cursor-pointer">✕</button>
           </div>
 
           <div className="p-6 bg-white border-b border-[#F3D9CE] space-y-2">
@@ -113,9 +113,9 @@ export default function Navbar() {
                     </div>
                     <div className="flex justify-between items-center mt-3">
                       <div className="flex items-center border border-[#F3D9CE] bg-[#FBF3EC]">
-                        <button onClick={() => handleRemoveOne(item)} className="px-3 py-1 text-[#6B5F5A] hover:text-[#2E2624] font-bold">−</button>
+                        <button onClick={() => handleRemoveOne(item)} className="px-3 py-1 text-[#6B5F5A] hover:text-[#2E2624] font-bold cursor-pointer">−</button>
                         <span className="px-3 text-xs font-bold text-[#2E2624] min-w-[2rem] text-center">{item.quantity}</span>
-                        <button onClick={() => addToCart(item)} className="px-3 py-1 text-[#6B5F5A] hover:text-[#2E2624] font-bold">+</button>
+                        <button onClick={() => addToCart(item)} className="px-3 py-1 text-[#6B5F5A] hover:text-[#2E2624] font-bold cursor-pointer">+</button>
                       </div>
                       <span className="text-sm font-bold text-[#D98C7A]">${(item.price * item.quantity).toFixed(2)}</span>
                     </div>
@@ -133,14 +133,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Sidebar Navigation */}
+      {/* Mobile Sidebar Navigation (GPU Accelerated & No Blur) */}
       <div className={`fixed inset-0 z-50 flex transition-opacity duration-300 md:hidden ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-        <div className={`relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10 transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className="fixed inset-0 bg-black/60" onClick={() => setMenuOpen(false)} />
+        <div className={`relative bg-[#FBF3EC] w-4/5 max-w-sm h-full shadow-2xl p-8 flex flex-col justify-between border-r border-[#F3D9CE] z-10 transform-gpu will-change-transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div>
             <div className="flex justify-between items-center mb-12">
               <span className="text-xs uppercase tracking-[0.2em] font-serif font-bold text-[#2E2624]">Rizk Fashion — RZK</span>
-              <button onClick={() => setMenuOpen(false)} className="text-[#2E2624] p-2 hover:opacity-70">
+              <button onClick={() => setMenuOpen(false)} className="text-[#2E2624] p-2 hover:opacity-70 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
               </button>
             </div>
