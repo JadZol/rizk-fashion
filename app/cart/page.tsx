@@ -5,6 +5,7 @@ import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import Select from "react-select";
+import { supabase } from "@/lib/supabase";
 
 type Country = {
   name: string;
@@ -39,8 +40,6 @@ const COUNTRIES: Country[] = [
   { name: "Turkey", code: "TR", dial: "+90", flag: "🇹🇷", minDigits: 10, maxDigits: 10, example: "5123456789" },
 ];
 
-const sizeOptions = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => ({ value: s, label: s }));
-const colorOptions = ["Black", "White", "Cream", "Beige", "Champagne", "Emerald", "Burgundy", "Navy", "Red", "Pink", "Grey", "Standard"].map(c => ({ value: c, label: c }));
 const paymentOptions = [
   { value: "Cash on Delivery", label: "Cash on Delivery" },
   { value: "Whish Money", label: "Whish Money" }
@@ -108,8 +107,30 @@ export default function CartPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Store fetched product details from Supabase to get exact sizes and colors
+  const [dbProducts, setDbProducts] = useState<Record<string, any>>({});
+
   const deliveryFee = 4.00;
   const finalTotal = cartTotal > 0 ? cartTotal + deliveryFee : 0;
+
+  // Fetch real-time available sizes for the exact items in the cart
+  useEffect(() => {
+    async function fetchCartProductsData() {
+      const uniqueIds = Array.from(new Set(cart.map(item => item.id)));
+      if (uniqueIds.length === 0) return;
+      
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .in("id", uniqueIds);
+        
+      if (!error && data) {
+        const mapping = data.reduce((acc, p) => ({ ...acc, [p.id]: p }), {});
+        setDbProducts(mapping);
+      }
+    }
+    fetchCartProductsData();
+  }, [cart]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -180,57 +201,74 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="space-y-6">
-              {cart.map((item, index) => (
-                <div key={index} className="flex gap-6 bg-white p-4 border border-[#F3D9CE] items-center">
-                  <Link href={`/product/${item.id}`} className="w-24 h-32 bg-[#F3D9CE] flex-shrink-0 block relative group">
-                    {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />}
-                  </Link>
-                  <div className="flex-1 flex flex-col justify-between py-1">
-                    <div>
-                      <Link href={`/product/${item.id}`} className="font-medium text-sm hover:text-[#D98C7A] transition-colors block mb-1">
-                        {item.name}
-                      </Link>
-                      
-                      <div className="flex flex-wrap items-center gap-4 mt-2">
-                        <div className="flex items-center gap-2 min-w-[120px]">
-                          <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
-                          <div className="flex-1">
-                            <Select 
-                              value={{ value: item.size, label: item.size }}
-                              onChange={(opt: any) => updateItemSize(index, opt.value)}
-                              options={sizeOptions}
-                              styles={inlineSelectStyles}
-                              isSearchable={false}
-                              instanceId={`size-${index}`}
-                            />
-                          </div>
-                        </div>
+              {cart.map((item, index) => {
+                const dbProduct = dbProducts[item.id];
+                
+                // Dynamically build the options strictly based on the fetched product data
+                // If it's still loading, it uses the currently selected size/color as a placeholder
+                const availableSizes = dbProduct?.sizes 
+                  ? dbProduct.sizes.split(",").map((s: string) => s.trim()) 
+                  : [item.size];
+                  
+                const availableColors = dbProduct?.colors
+                  ? dbProduct.colors.split(",").map((c: string) => c.trim())
+                  : [item.color || "Standard"];
 
-                        <div className="flex items-center gap-2 min-w-[120px]">
-                          <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Color:</span>
-                          <div className="flex-1">
-                            <Select 
-                              value={{ value: item.color || "Standard", label: item.color || "Standard" }}
-                              onChange={(opt: any) => updateItemColor(index, opt.value)}
-                              options={colorOptions}
-                              styles={inlineSelectStyles}
-                              isSearchable={false}
-                              instanceId={`color-${index}`}
-                            />
+                const itemSizeOptions = availableSizes.map((s: string) => ({ value: s, label: s }));
+                const itemColorOptions = availableColors.map((c: string) => ({ value: c, label: c }));
+
+                return (
+                  <div key={index} className="flex gap-6 bg-white p-4 border border-[#F3D9CE] items-center">
+                    <Link href={`/product/${item.id}`} className="w-24 h-32 bg-[#F3D9CE] flex-shrink-0 block relative group">
+                      {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />}
+                    </Link>
+                    <div className="flex-1 flex flex-col justify-between py-1">
+                      <div>
+                        <Link href={`/product/${item.id}`} className="font-medium text-sm hover:text-[#D98C7A] transition-colors block mb-3">
+                          {item.name}
+                        </Link>
+                        
+                        <div className="flex flex-wrap items-center gap-4">
+                          <div className="flex items-center gap-2 min-w-[120px]">
+                            <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
+                            <div className="flex-1">
+                              <Select 
+                                value={{ value: item.size, label: item.size }}
+                                onChange={(opt: any) => updateItemSize(index, opt.value)}
+                                options={itemSizeOptions}
+                                styles={inlineSelectStyles}
+                                isSearchable={false}
+                                instanceId={`size-${index}`}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 min-w-[120px]">
+                            <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Color:</span>
+                            <div className="flex-1">
+                              <Select 
+                                value={{ value: item.color || "Standard", label: item.color || "Standard" }}
+                                onChange={(opt: any) => updateItemColor(index, opt.value)}
+                                options={itemColorOptions}
+                                styles={inlineSelectStyles}
+                                isSearchable={false}
+                                instanceId={`color-${index}`}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex justify-between items-center mt-4">
-                      <span className="font-bold text-[#D98C7A]">${item.price.toFixed(2)}</span>
-                      <button onClick={() => removeFromCart(index)} className="text-xs text-red-600 uppercase tracking-widest hover:underline cursor-pointer">
-                        Remove
-                      </button>
+                      <div className="flex justify-between items-center mt-4">
+                        <span className="font-bold text-[#D98C7A]">${item.price.toFixed(2)}</span>
+                        <button onClick={() => removeFromCart(index)} className="text-xs text-red-600 uppercase tracking-widest hover:underline cursor-pointer">
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
