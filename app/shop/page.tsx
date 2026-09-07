@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
+import Select from "react-select";
 
 type Product = {
   id: string;
@@ -23,6 +24,57 @@ const CATEGORIES = [
   "Sale", "Dresses", "Tops & Sweaters", "Shirts", 
   "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts", "Sets"
 ];
+
+const sortOptions = [
+  { value: "newest", label: "Newest Arrivals" },
+  { value: "price-low", label: "Price: Low to High" },
+  { value: "price-high", label: "Price: High to Low" }
+];
+
+const boutiqueSelectStyles = {
+  control: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: '#FBF3EC',
+    borderColor: state.isFocused ? '#D98C7A' : '#F3D9CE',
+    boxShadow: 'none',
+    borderRadius: '0',
+    minHeight: '42px',
+    cursor: 'pointer',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    '&:hover': { borderColor: '#D98C7A' }
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: state.isSelected ? '#2E2624' : state.isFocused ? '#FBF3EC' : 'white',
+    color: state.isSelected ? 'white' : '#2E2624',
+    cursor: 'pointer',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    '&:active': { backgroundColor: '#D98C7A' }
+  }),
+  menu: (base: any) => ({
+    ...base,
+    borderRadius: '0',
+    marginTop: '2px',
+    border: '1px solid #F3D9CE',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+    zIndex: 50
+  }),
+  singleValue: (base: any) => ({
+    ...base,
+    color: '#2E2624',
+  }),
+  indicatorSeparator: () => ({ display: 'none' }),
+  dropdownIndicator: (base: any) => ({
+    ...base,
+    color: '#6B5F5A',
+    padding: '4px',
+    '&:hover': { color: '#2E2624' }
+  })
+};
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -179,7 +231,7 @@ export default function ShopPage() {
           
           {/* Search & Sort */}
           <div className="space-y-4">
-            <h3 className="text-xs uppercase tracking-widest font-bold border-b border-[#F3D9CE] pb-2">Search</h3>
+            <h3 className="text-xs uppercase tracking-widest font-bold border-b border-[#F3D9CE] pb-2">Search & Sort</h3>
             <input 
               type="text"
               placeholder="Search pieces..."
@@ -188,15 +240,14 @@ export default function ShopPage() {
               className="w-full px-4 py-3 bg-[#FBF3EC] border border-[#F3D9CE] text-sm focus:outline-none focus:border-[#D98C7A]"
             />
             
-            <select 
-              value={sortBy} 
-              onChange={e => setSortBy(e.target.value)}
-              className="w-full px-4 py-3 bg-[#FBF3EC] border border-[#F3D9CE] text-xs uppercase tracking-wider focus:outline-none cursor-pointer"
-            >
-              <option value="newest">Newest Arrivals</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-            </select>
+            <Select
+              value={sortOptions.find(o => o.value === sortBy)}
+              onChange={(option: any) => setSortBy(option.value)}
+              options={sortOptions}
+              styles={boutiqueSelectStyles}
+              isSearchable={false}
+              instanceId="sort-dropdown"
+            />
           </div>
 
           {/* Categories Filter */}

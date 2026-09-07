@@ -4,6 +4,7 @@
 import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import Select from "react-select";
 
 type Country = {
   name: string;
@@ -38,6 +39,60 @@ const COUNTRIES: Country[] = [
   { name: "Turkey", code: "TR", dial: "+90", flag: "🇹🇷", minDigits: 10, maxDigits: 10, example: "5123456789" },
 ];
 
+const sizeOptions = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => ({ value: s, label: s }));
+const colorOptions = ["Black", "White", "Cream", "Beige", "Champagne", "Emerald", "Burgundy", "Navy", "Red", "Pink", "Grey"].map(c => ({ value: c, label: c }));
+const paymentOptions = [
+  { value: "Cash on Delivery", label: "Cash on Delivery" },
+  { value: "Whish Money", label: "Whish Money" }
+];
+
+const inlineSelectStyles = {
+  control: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: '#FBF3EC',
+    borderColor: state.isFocused ? '#D98C7A' : '#F3D9CE',
+    boxShadow: 'none',
+    borderRadius: '0',
+    minHeight: '28px',
+    cursor: 'pointer',
+    fontSize: '11px',
+    '&:hover': { borderColor: '#D98C7A' }
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: state.isSelected ? '#2E2624' : state.isFocused ? '#FBF3EC' : 'white',
+    color: state.isSelected ? 'white' : '#2E2624',
+    cursor: 'pointer',
+    fontSize: '11px',
+    '&:active': { backgroundColor: '#D98C7A' }
+  }),
+  menu: (base: any) => ({ ...base, borderRadius: '0', marginTop: '2px', zIndex: 50 }),
+  dropdownIndicator: (base: any) => ({ ...base, color: '#6B5F5A', padding: '2px', '&:hover': { color: '#2E2624' } }),
+  indicatorSeparator: () => ({ display: 'none' })
+};
+
+const paymentSelectStyles = {
+  ...inlineSelectStyles,
+  control: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: 'white',
+    borderColor: state.isFocused ? '#D98C7A' : '#F3D9CE',
+    boxShadow: 'none',
+    borderRadius: '0',
+    minHeight: '44px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    paddingLeft: '4px'
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: state.isSelected ? '#2E2624' : state.isFocused ? '#FBF3EC' : 'white',
+    color: state.isSelected ? 'white' : '#2E2624',
+    cursor: 'pointer',
+    fontSize: '13px',
+  })
+};
+
 export default function CartPage() {
   const { cart, removeFromCart, updateItemSize, updateItemColor, cartTotal } = useCart();
   
@@ -45,14 +100,14 @@ export default function CartPage() {
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
+  const [paymentMethod, setPaymentMethod] = useState(paymentOptions[0]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const deliveryFee = 4.00;
-  const finalTotal = cartTotal + deliveryFee;
+  const finalTotal = cartTotal > 0 ? cartTotal + deliveryFee : 0;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -75,7 +130,7 @@ export default function CartPage() {
     const fullPhoneNumber = `${selectedCountry.dial} ${cleanedPhone}`;
 
     let message = `Hello Rizk Fashion! I would like to place an order.\n\n`;
-    message += `*Customer Details:*\nName: ${fullName}\nPhone: ${fullPhoneNumber}\nAddress: ${address}\nPayment: ${paymentMethod}\n\n`;
+    message += `*Customer Details:*\nName: ${fullName}\nPhone: ${fullPhoneNumber}\nAddress: ${address}\nPayment: ${paymentMethod.value}\n\n`;
     message += `*Order Details:*\n`;
 
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -117,7 +172,7 @@ export default function CartPage() {
           {cart.length === 0 ? (
             <div className="text-center py-12 bg-white border border-[#F3D9CE]">
               <p className="text-xs uppercase tracking-widest text-[#6B5F5A] mb-4">Your bag is empty.</p>
-              <Link href="/shop" className="px-6 py-3 bg-[#2E2624] text-white text-xs uppercase tracking-widest hover:bg-[#D98C7A] transition-colors">
+              <Link href="/shop" className="px-6 py-3 bg-[#2E2624] text-white text-xs uppercase tracking-widest hover:bg-[#D98C7A] transition-colors inline-block">
                 Continue Shopping
               </Link>
             </div>
@@ -130,42 +185,44 @@ export default function CartPage() {
                   </Link>
                   <div className="flex-1 flex flex-col justify-between py-1">
                     <div>
-                      <Link href={`/product/${item.id}`} className="font-medium text-sm hover:text-[#D98C7A] transition-colors block">
+                      <Link href={`/product/${item.id}`} className="font-medium text-sm hover:text-[#D98C7A] transition-colors block mb-3">
                         {item.name}
                       </Link>
                       
-                      <div className="flex flex-wrap items-center gap-4 mt-2">
-                        <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2 min-w-[120px]">
                           <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Size:</span>
-                          <select 
-                            value={item.size} 
-                            onChange={(e) => updateItemSize(index, e.target.value)}
-                            className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
-                          >
-                            {["XXS", "XS", "S", "M", "L", "XL", "XXL", "One Size"].map(s => (
-                              <option key={s} value={s}>{s}</option>
-                            ))}
-                          </select>
+                          <div className="flex-1">
+                            <Select 
+                              value={{ value: item.size, label: item.size }}
+                              onChange={(opt: any) => updateItemSize(index, opt.value)}
+                              options={sizeOptions}
+                              styles={inlineSelectStyles}
+                              isSearchable={false}
+                              instanceId={`size-${index}`}
+                            />
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 min-w-[120px]">
                           <span className="text-[10px] text-[#6B5F5A] uppercase tracking-wider">Color:</span>
-                          <select 
-                            value={item.color || "Black"} 
-                            onChange={(e) => updateItemColor(index, e.target.value)}
-                            className="border border-[#F3D9CE] bg-[#FBF3EC] text-xs px-2 py-1 text-[#2E2624] focus:outline-none"
-                          >
-                            {["Black", "White", "Cream", "Beige", "Champagne", "Emerald", "Burgundy", "Navy", "Red", "Pink", "Grey"].map(c => (
-                              <option key={c} value={c}>{c}</option>
-                            ))}
-                          </select>
+                          <div className="flex-1">
+                            <Select 
+                              value={{ value: item.color || "Black", label: item.color || "Black" }}
+                              onChange={(opt: any) => updateItemColor(index, opt.value)}
+                              options={colorOptions}
+                              styles={inlineSelectStyles}
+                              isSearchable={false}
+                              instanceId={`color-${index}`}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex justify-between items-center mt-4">
                       <span className="font-bold text-[#D98C7A]">${item.price.toFixed(2)}</span>
-                      <button onClick={() => removeFromCart(index)} className="text-xs text-red-600 uppercase tracking-widest hover:underline">
+                      <button onClick={() => removeFromCart(index)} className="text-xs text-red-600 uppercase tracking-widest hover:underline cursor-pointer">
                         Remove
                       </button>
                     </div>
@@ -206,7 +263,7 @@ export default function CartPage() {
                         autoFocus
                       />
                     </div>
-                    <div className="overflow-y-auto flex-1">
+                    <div className="overflow-y-auto flex-1 custom-scrollbar">
                       {filteredCountries.length === 0 ? (
                         <div className="p-3 text-xs text-gray-500 text-center">No country found</div>
                       ) : (
@@ -244,20 +301,15 @@ export default function CartPage() {
 
               <input type="text" placeholder="Delivery Address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border border-[#F3D9CE] p-3 text-sm focus:outline-none focus:border-[#D98C7A]" />
               
-              <div className="relative">
-                <select 
-                  value={paymentMethod} 
-                  onChange={(e) => setPaymentMethod(e.target.value)} 
-                  className="w-full border border-[#F3D9CE] p-3 pr-10 text-sm bg-white text-[#2E2624] focus:outline-none appearance-none rounded-none cursor-pointer"
-                >
-                  <option value="Cash on Delivery">Cash on Delivery</option>
-                  <option value="Whish Money">Whish Money</option>
-                </select>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#6B5F5A]">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </div>
+              <div className="relative z-10">
+                <Select
+                  value={paymentMethod}
+                  onChange={(option: any) => setPaymentMethod(option)}
+                  options={paymentOptions}
+                  styles={paymentSelectStyles}
+                  isSearchable={false}
+                  instanceId="payment-dropdown"
+                />
               </div>
             </div>
 
