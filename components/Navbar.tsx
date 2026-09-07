@@ -158,6 +158,30 @@ export default function Navbar() {
               <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="block hover:text-[#D98C7A]">Wishlist</Link>
             </div>
           </div>
+
+          {/* Elite Concierge Contact Footer Restored */}
+          <div className="pt-8 border-t border-[#F3D9CE] space-y-3">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-[#D98C7A] font-bold">Client Concierge</p>
+            <div className="space-y-4 text-xs text-[#6B5F5A]">
+              <a 
+                href="mailto:rizkfashion82@gmail.com" 
+                className="flex items-center gap-3 hover:text-[#2E2624] transition-colors cursor-pointer group"
+              >
+                <span className="w-8 h-8 rounded-full bg-[#F3D9CE] flex items-center justify-center text-sm group-hover:bg-[#2E2624] group-hover:text-white transition-colors">✉</span>
+                <span className="font-medium">rizkfashion82@gmail.com</span>
+              </a>
+              <a 
+                href="https://wa.me/96176380819" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-3 hover:text-[#2E2624] transition-colors cursor-pointer group"
+              >
+                <span className="w-8 h-8 rounded-full bg-[#F3D9CE] flex items-center justify-center text-sm group-hover:bg-[#2E2624] group-hover:text-white transition-colors">💬</span>
+                <span className="font-medium">+961 76 380 819</span>
+              </a>
+            </div>
+          </div>
+
         </div>
       </div>
     </>
