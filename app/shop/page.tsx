@@ -18,8 +18,9 @@ type Product = {
   stock_status: string | null;
 };
 
+// Removed "All" as deselecting everything naturally shows all products
 const CATEGORIES = [
-  "All", "Sale", "Dresses", "Tops & Sweaters", "Shirts", 
+  "Sale", "Dresses", "Tops & Sweaters", "Shirts", 
   "Coats & Jackets", "Jeans", "Pants", "Skirts", "Shorts", "Sets"
 ];
 
@@ -27,10 +28,10 @@ export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Instant Filter States
+  // Instant Filter States (Categories is now an array for multi-select)
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number>(150);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   
@@ -84,6 +85,12 @@ export default function ShopPage() {
     setWishlistIds(wishlist.map(i => i.id));
   };
 
+  const toggleCategory = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
+    );
+  };
+
   const toggleSize = (size: string) => {
     setSelectedSizes(prev => 
       prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
@@ -95,7 +102,7 @@ export default function ShopPage() {
     products.flatMap(p => p.sizes ? p.sizes.split(",").map(s => s.trim()) : [])
   )).filter(Boolean);
 
-  // Master Filter Engine
+  // Master Filter Engine (Handles multi-select instantly)
   const filteredProducts = products.filter(product => {
     const effectivePrice = product.sale_price !== null && product.sale_price > 0 ? product.sale_price : product.price;
     const hasActiveSale = product.sale_price !== null && product.sale_price > 0;
@@ -106,18 +113,19 @@ export default function ShopPage() {
       product.name.toLowerCase().includes(query) ||
       (product.description && product.description.toLowerCase().includes(query));
 
-    // 2. Category Match
+    // 2. Category Match (Multi-Select OR logic)
     let matchesCategory = true;
-    if (selectedCategory === "Sale") {
-      matchesCategory = hasActiveSale;
-    } else if (selectedCategory !== "All") {
-      matchesCategory = product.category?.toLowerCase() === selectedCategory.toLowerCase();
+    if (selectedCategories.length > 0) {
+      matchesCategory = selectedCategories.some(c => {
+        if (c === "Sale") return hasActiveSale;
+        return product.category?.toLowerCase() === c.toLowerCase();
+      });
     }
 
     // 3. Price Match
     const matchesPrice = effectivePrice <= maxPrice;
 
-    // 4. Size Match
+    // 4. Size Match (Multi-Select OR logic)
     let matchesSize = true;
     if (selectedSizes.length > 0) {
       const productSizes = product.sizes ? product.sizes.split(",").map(s => s.trim()) : [];
@@ -163,28 +171,8 @@ export default function ShopPage() {
         </div>
       </header>
 
-      {/* Horizontal Instant Category Switcher */}
-      <div id="catalog" className="scroll-mt-24 max-w-7xl mx-auto px-6 mb-12 flex flex-wrap gap-2 justify-center">
-        {CATEGORIES.map(category => {
-          const isActive = selectedCategory === category;
-          return (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-5 py-2.5 text-xs uppercase tracking-widest border transition-all duration-300 cursor-pointer ${
-                isActive 
-                  ? "bg-[#2E2624] text-white border-[#2E2624]" 
-                  : "bg-white text-[#2E2624] border-[#F3D9CE] hover:border-[#2E2624] hover:bg-[#2E2624] hover:text-white"
-              }`}
-            >
-              {category}
-            </button>
-          );
-        })}
-      </div>
-
       {/* Main Content: Sidebar Filters + Product Grid */}
-      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-10 items-start">
+      <div id="catalog" className="scroll-mt-24 max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-10 items-start">
         
         {/* Left Sidebar Filters */}
         <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-28 space-y-8 bg-white p-6 border border-[#F3D9CE]">
@@ -211,6 +199,24 @@ export default function ShopPage() {
             </select>
           </div>
 
+          {/* Categories Filter */}
+          <div className="space-y-4">
+            <h3 className="text-xs uppercase tracking-widest font-bold border-b border-[#F3D9CE] pb-2">Categories</h3>
+            <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+              {CATEGORIES.map(category => (
+                <label key={category} className="flex items-center gap-3 cursor-pointer text-sm hover:text-[#D98C7A] transition-colors">
+                  <input 
+                    type="checkbox" 
+                    checked={selectedCategories.includes(category)}
+                    onChange={() => toggleCategory(category)}
+                    className="w-4 h-4 accent-[#2E2624] cursor-pointer"
+                  />
+                  {category}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Price Range */}
           <div className="space-y-4">
             <h3 className="text-xs uppercase tracking-widest font-bold border-b border-[#F3D9CE] pb-2">Max Price</h3>
@@ -231,7 +237,7 @@ export default function ShopPage() {
           {availableSizes.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-xs uppercase tracking-widest font-bold border-b border-[#F3D9CE] pb-2">Sizes</h3>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                 {availableSizes.map(size => (
                   <label key={size} className="flex items-center gap-3 cursor-pointer text-sm hover:text-[#D98C7A] transition-colors">
                     <input 
@@ -259,7 +265,7 @@ export default function ShopPage() {
               <button 
                 onClick={() => {
                   setSearchQuery("");
-                  setSelectedCategory("All");
+                  setSelectedCategories([]);
                   setMaxPrice(150);
                   setSelectedSizes([]);
                 }}
