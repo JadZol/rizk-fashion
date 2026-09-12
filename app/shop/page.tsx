@@ -79,7 +79,6 @@ export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Instant Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -92,6 +91,9 @@ export default function ShopPage() {
   const { cart, addToCart } = useCart();
 
   useEffect(() => {
+    // FORCE BROWSER TO START AT THE VERY TOP EVERY TIME
+    window.scrollTo(0, 0);
+    
     fetchProducts();
     loadWishlist();
   }, []);
@@ -214,7 +216,6 @@ export default function ShopPage() {
     });
   };
 
-  // The Filter Form UI extracted so we can use it in both Desktop Sidebar and Mobile Drawer
   const FilterForm = () => (
     <div className="space-y-8">
       <div className="space-y-4">
@@ -349,7 +350,7 @@ export default function ShopPage() {
           </div>
         </div>
 
-        {/* Right Product Grid Area (2 Columns on Mobile, 3 on Desktop) */}
+        {/* Right Product Grid Area */}
         <div id="product-grid" className="flex-1 w-full scroll-mt-[140px]">
           {loading ? (
             <p className="text-center py-20 text-[#6B5F5A] text-xs uppercase tracking-widest">Loading Collection...</p>
@@ -429,7 +430,7 @@ export default function ShopPage() {
                           <span className="text-xs md:text-sm font-bold text-[#2E2624]">${effectivePrice.toFixed(2)}</span>
                         )}
                         
-                        {/* Mobile Quick Add Button (Icon only to save space) */}
+                        {/* Mobile Quick Add Button */}
                         <button 
                           onClick={(e) => handleQuickAdd(e, product)}
                           className="md:hidden w-7 h-7 flex items-center justify-center bg-[#FBF3EC] border border-[#F3D9CE] text-[#2E2624] rounded-full active:bg-[#D98C7A] active:text-white"
