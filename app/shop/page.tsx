@@ -91,11 +91,23 @@ export default function ShopPage() {
   const { cart, addToCart } = useCart();
 
   useEffect(() => {
-    // FORCE BROWSER TO START AT THE VERY TOP EVERY TIME
-    window.scrollTo(0, 0);
+    // 1. Instantly snap to the absolute top
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     
+    // 2. Prevent the browser from trying to remember old scroll positions
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    // 3. Fire a secondary fallback scroll just in case Next.js tries to pull it down after loading
+    const scrollTimer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }, 100);
+
     fetchProducts();
     loadWishlist();
+
+    return () => clearTimeout(scrollTimer);
   }, []);
 
   async function fetchProducts() {
@@ -350,7 +362,7 @@ export default function ShopPage() {
           </div>
         </div>
 
-        {/* Right Product Grid Area */}
+        {/* Right Product Grid Area (2 Columns on Mobile, 3 on Desktop) */}
         <div id="product-grid" className="flex-1 w-full scroll-mt-[140px]">
           {loading ? (
             <p className="text-center py-20 text-[#6B5F5A] text-xs uppercase tracking-widest">Loading Collection...</p>
@@ -405,7 +417,6 @@ export default function ShopPage() {
                         </svg>
                       </button>
 
-                      {/* Hidden on mobile, shows on hover on Desktop */}
                       <div className="hidden md:block absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm z-20">
                         <button 
                           onClick={(e) => handleQuickAdd(e, product)}
@@ -430,7 +441,6 @@ export default function ShopPage() {
                           <span className="text-xs md:text-sm font-bold text-[#2E2624]">${effectivePrice.toFixed(2)}</span>
                         )}
                         
-                        {/* Mobile Quick Add Button */}
                         <button 
                           onClick={(e) => handleQuickAdd(e, product)}
                           className="md:hidden w-7 h-7 flex items-center justify-center bg-[#FBF3EC] border border-[#F3D9CE] text-[#2E2624] rounded-full active:bg-[#D98C7A] active:text-white"
